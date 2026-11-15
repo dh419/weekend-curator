@@ -10,7 +10,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(REPO_ROOT, 'docs')
 TEMPLATES_DIR = os.path.join(REPO_ROOT, 'templates')
 MASTER_HTML_PATH = os.path.join(TEMPLATES_DIR, 'master_dashboard.html')
-FOLDER_ID = '1jQIwN8b4SG536ClUWPAg3qUjo4GTNrJz'
+FOLDER_ID = '19jx-SYkJqEz02VG4iLLSzPupxhluBLfN'  # dashboard_incoming/weekend-curator
 KST = timezone(timedelta(hours=9))
 
 
@@ -42,7 +42,7 @@ def main():
     ).execute()
     files = res.get('files', [])
     if not files:
-        raise FileNotFoundError("No *-weekend.json found in dashboard_incoming.")
+        raise FileNotFoundError("No *-weekend.json found in dashboard_incoming/weekend-curator.")
 
     target = files[0]
     print(f"Fetching {target['name']} (ID: {target['id']})...")
