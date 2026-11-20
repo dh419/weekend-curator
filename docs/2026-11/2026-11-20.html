@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11.21~11.22 주말 나들이 6선</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    }
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+    }
+    header .sub { font-size: 0.85rem; opacity: 0.9; margin-bottom: 6px; }
+    header h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; }
+    .weather-strip { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.88rem; }
+    .weather-pill {
+      background: rgba(255,255,255,0.18);
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .spot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .spot-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.09);
+      border-color: #93c5fd;
+    }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
+    .badge.outing { background: var(--green-soft); color: var(--green); }
+    .badge.festival { background: var(--purple-soft); color: var(--purple); }
+    .badge.sat { background: var(--amber-soft); color: var(--amber); }
+    .badge.sun { background: var(--primary-soft); color: var(--primary); }
+    .spot-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
+    .spot-drive { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; font-weight: 600; }
+    .spot-summary { font-size: 0.9rem; color: #334155; margin-bottom: 16px; line-height: 1.5; }
+    .spot-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border);
+      padding-top: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .noodle-tag {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 560px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .close-btn {
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .detail-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .detail-box strong { display: block; margin-bottom: 6px; color: #0f172a; }
+    .noodle-detail {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .map-btn {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      background: #03c75a;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .map-btn.sub { background: #2563eb; }
+    .map-btn.site { background: #475569; }
+    .check-label { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="sub">📍 동탄반석로 71 출발 · 👧 은우(7세) &amp; 👦 우준(3세) 맞춤 대시보드 (11.21~11.22)</div>
+      <h1>11.21~11.22 주말 나들이 6선</h1>
+      <div class="weather-strip">
+        <span class="weather-pill">토(11.21) 맑음·초겨울추위 -5~2℃</span><span class="weather-pill">일(11.22) 맑음·낮 잔잔 -5~6℃</span><span class="weather-pill">미세먼지 주말 내내 좋음</span>
+      </div>
+    </header>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterSpots('all', this)">전체 (6)</button>
+      <button class="filter-btn" onclick="filterSpots('outing', this)">🌳 나들이 (3)</button>
+      <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
+      <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
+      <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
+    </div>
+
+    <div class="card-grid" id="grid"></div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="badges" id="mBadges"></div>
+          <h2 id="mTitle" style="font-size:1.35rem;"></h2>
+          <div id="mDrive" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="detail-box">
+        <strong>👧 은우(7세) 맞춤 포인트</strong>
+        <p id="mGirl"></p>
+      </div>
+      <div class="detail-box">
+        <strong>👦 우준(3세) 맞춤 포인트</strong>
+        <p id="mBoy"></p>
+      </div>
+      <div class="detail-box">
+        <strong>🚼 유모차 &amp; 편의시설 팁</strong>
+        <p id="mTip"></p>
+      </div>
+      <div class="detail-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+        <strong style="color:#166534;">🅿️ 주차장 정보 &amp; 주차 팁</strong>
+        <p id="mParking" style="color:#14532d;"></p>
+      </div>
+      <div class="noodle-detail">
+        <strong id="mNoodleName" style="color:#92400e; display:block; margin-bottom:4px;"></strong>
+        <p id="mNoodleDesc"></p>
+      </div>
+      <div class="btn-row">
+        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener">🗺️ 장소 지도</a>
+        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener">🍜 국수집 지도</a>
+        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener">🌐 공식 누리집</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="ckBackdrop" onclick="closeChecklist()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 style="font-size:1.25rem;">📋 주말 나들이 필수 준비물 팩</h2>
+        <button class="close-btn" onclick="closeChecklist()">✕</button>
+      </div>
+      <div class="detail-box">
+        <strong>👧 은우(7세)</strong>
+        <label class="check-label"><input type="checkbox"> 얇은 바람막이 겉옷</label>
+        <label class="check-label"><input type="checkbox"> 개인 텀블러·물병</label>
+        <label class="check-label"><input type="checkbox"> 편한 운동화·여벌 양말</label>
+      </div>
+      <div class="detail-box">
+        <strong>👦 우준(3세)</strong>
+        <label class="check-label"><input type="checkbox"> 휴대용 경량 유모차</label>
+        <label class="check-label"><input type="checkbox"> 국수용 실리콘 가위</label>
+        <label class="check-label"><input type="checkbox"> 기저귀 4~5개·물티슈·여벌 옷</label>
+      </div>
+      <div class="detail-box" style="margin-bottom:0;">
+        <strong>👨👩👧👦 가족 공통</strong>
+        <label class="check-label"><input type="checkbox"> 피크닉 돗자리·무릎담요</label>
+        <label class="check-label"><input type="checkbox"> 비상 상비약(밴드·연고)</label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const spots = [{"type": "outing", "day": "sat", "driveMin": 22, "badgeType": "🌳 나들이 1", "badgeDay": "❄️ 토요일 실내", "title": "화성시어린이문화센터", "drive": "🚗 자차 약 22분 (화성시 봉담읍)", "summary": "기온이 크게 떨어지는 초겨울 토요일에 따뜻하고 쾌적하게 즐길 수 있는 실내 키즈체험관·전시·공연 복합문화공간입니다.", "girl": "키즈체험관 직업·놀이 체험(48개월 이상 온라인 사전예약 필수) 및 아이누리극장 어린이 공연 관람", "boy": "48개월 미만 전시 관람(현장 발권) 및 안전하게 설계된 실내 유아 놀이 동선 체험", "tip": "수유실·가족화장실 완비, 엘리베이터를 이용해 유모차 이동이 편리합니다(화~일 09:30~18:30, 월요일 휴관).", "parking": "전용 주차장 135대 무료 개방(09:00~19:00). 주말 오전 예약 회차 20분 전 입차를 권장합니다.", "noodleTag": "🍜 이두형홍두깨칼국수", "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 7분)", "noodleDesc": "넓은 전용 주차장을 갖추고 있으며, 맵지 않고 순한 수제 손칼국수와 만두전골을 온 가족이 부담 없이 즐길 수 있습니다.", "placeQuery": "화성시어린이문화센터", "foodQuery": "화성 봉담 이두형홍두깨칼국수", "siteUrl": "https://childrenjob.hscity.go.kr/"}, {"type": "outing", "day": "sun", "driveMin": 25, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 일요일 낮 추천", "title": "수원 광교호수공원", "drive": "🚗 자차 약 25분 (수원시 영통구)", "summary": "바람이 잔잔하고 햇살이 좋은 일요일 낮(6℃)에 유모차로 완벽하게 산책하기 좋은 평탄한 수변 데크길과 놀이터입니다.", "girl": "신비한물넘이 옆 어린이 놀이터 활동 및 프라이부르크 전망대에서 호수 풍경 조망", "boy": "단차 없는 평탄한 호수 데크길 유모차 산책 및 오리·물새 관찰하기", "tip": "인접한 앨리웨이 광교 건물 내 수유실·기저귀교환대·유모차 엘리베이터를 연계해 이용하기 매우 편리합니다.", "parking": "광교호수공원 제1·2공영주차장(3시간 1,000원, 1일 최대 5,000원). 주말 낮 혼잡 시 제2주차장 또는 앨리웨이 지하주차장 추천.", "noodleTag": "🍜 영통백합칼국수 광교점", "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 3분)", "noodleDesc": "앨리웨이 광교 어라운드라이프관 2층 위치(지하주차장 무료 지원). 시원하고 맑은 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.", "placeQuery": "수원 광교호수공원", "foodQuery": "영통백합칼국수 광교점", "siteUrl": "https://www.gglakepark.or.kr/"}, {"type": "outing", "day": "sat", "driveMin": 12, "badgeType": "🌳 나들이 3", "badgeDay": "❄️ 토·일 실내외", "title": "동탄호수공원 & 라크몽", "drive": "🚗 자차 약 12분 (화성시 송동)", "summary": "집에서 가장 가까운 호수 평지 산책과 라크몽 실내 동물원(주렁주렁)을 한 번에 묶어 추위를 피할 수 있는 하이브리드 코스입니다.", "girl": "라크몽 4~5층 주렁주렁 실내 동물 체험 및 네이처스케이프+ 어드벤처 놀이", "boy": "호수공원 평지 유모차 산책 후 추워지면 라크몽 실내에서 안전하게 동물 관람", "tip": "라크몽 내부에 수유실·기저귀교환대·가족화장실이 잘 갖춰져 있어 영유아 동반 시 매우 쾌적합니다(10:00~22:00).", "parking": "라크몽 지하 2~3층 주차장 이용(매장·식당 이용 시 무료 정산). 주말에는 지하 3층이 비교적 여유롭습니다.", "noodleTag": "🍜 소이연남 동탄라크몽점", "noodleName": "🍜 연계 국수집: 소이연남 동탄라크몽점 (원내 도보 1분)", "noodleDesc": "라크몽 1층 위치. 아이들도 잘 먹는 순한 소고기 쌀국수와 아기의자가 구비되어 있어 실내 동선으로 바로 이동하기 편리합니다.", "placeQuery": "동탄 라크몽", "foodQuery": "소이연남 동탄라크몽점", "siteUrl": "https://lakmonofficial.cafe24.com/"}, {"type": "festival", "day": "sat", "driveMin": 22, "badgeType": "🎉 전시 1", "badgeDay": "❄️ 토요일 실내", "title": "경기도어린이박물관 15주년 행사", "drive": "🚗 자차 약 22분 (용인시 기흥구)", "summary": "개관 15주년 기념 교육체험 '열다섯, 같이 놀자!'와 11월 행사(11.9~11.25), 3층 신규 전시가 진행 중인 대표 실내 박물관입니다.", "girl": "3층 신규 상설전시 '우리는 지구별 친구들' 및 개관 15주년 체험 프로그램 참여", "boy": "1층 영유아 전용 자연놀이터 및 튼튼놀이터에서 안전한 실내 신체 놀이", "tip": "유아휴게실(수유실)·피크닉룸 완비. 개인 유모차만 이용 가능(대여 불가, 1층 보관소 운영)하며 온라인 사전예약 권장(10:00~17:30).", "parking": "박물관 전용 주차장 이용(뮤지엄숍 1만원 이상 구매 시 2시간 무료). 주말 만차 시 인근 상갈동 공영주차장 활용.", "noodleTag": "🍜 방자네바지락칼국수", "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 10분)", "noodleDesc": "어정역 앞 가게 전용 주차장 완비. 맵지 않고 시원한 감태바지락칼국수가 아이들 입맛에도 잘 맞습니다.", "placeQuery": "경기도어린이박물관", "foodQuery": "용인 방자네바지락칼국수", "siteUrl": "https://gcm.ggcf.kr/events/141"}, {"type": "festival", "day": "sun", "driveMin": 28, "badgeType": "🎉 전시 2", "badgeDay": "🆕 11.20 오픈", "title": "경기상상캠퍼스 디오라마 특별전", "drive": "🚗 자차 약 28분 (수원시 권선구)", "summary": "11.20(금) 개막한 전곡선사박물관 후원 선사시대 디오라마 특별전 《작은 세상, 커다란 이야기》(디자인1978 1층)입니다.", "girl": "선사시대 미니어처 디오라마 관찰 및 주말 공예·창작 체험 공간 탐방(참가비 2,000원)", "boy": "단차 없는 1층 실내 전시관 유모차 관람 후 햇살 좋은 오후 숲속 캠퍼스 산책", "tip": "디자인1978 1층 단차가 없어 유모차 진입이 용이하며 건물 내 수유실·화장실 이용 가능(10:00~18:00, 월요일 휴관).", "parking": "캠퍼스 내 넓은 지상 주차장을 보유하고 있어 주말 낮에도 비교적 주차 여유가 있는 편입니다.", "noodleTag": "🍜 다선칼국수 본점", "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 8분)", "noodleDesc": "수원역 인근 위치. 슴슴하고 깊은 맑은 바지락칼국수와 보리밥을 제공하며, 점심 피크를 피해 11:30 이전이나 13시 이후 방문을 추천합니다.", "placeQuery": "수원 경기상상캠퍼스", "foodQuery": "수원역 다선칼국수 본점", "siteUrl": "https://sscampus.ggcf.kr/exhibitions/185"}, {"type": "festival", "day": "sun", "driveMin": 35, "badgeType": "🎉 축제 3", "badgeDay": "🎄 11.21 오픈", "title": "에버랜드 크리스마스 위시 2026", "drive": "🚗 자차 약 35분 (용인시 처인구)", "summary": "11.21(토)부터 시작되는 크리스마스 시즌 축제! 10m 대형 트리와 퍼레이드, 판다월드를 즐길 수 있습니다.", "girl": "10m 대형 크리스마스 트리 포토존, 회전목마·어린이 어트랙션 및 퍼레이드 관람", "boy": "유모차 타고 판다월드·주토피아 구경 및 화려한 크리스마스 트리 장식 감상", "tip": "유아차·웨건 대여소(스마트예약 가능, 15kg 이하) 및 정문·글로벌페어 등 수유실이 다수 완비되어 있습니다(10:00~22:00).", "parking": "무료 1·2·3주차장(유모차 전용 칸 있는 무료 셔틀 운행) 또는 정문 유료주차장(소형 1일 15,000원) 선택 이용 가능.", "noodleTag": "🍜 포메인 에버랜드직영점", "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보)", "noodleDesc": "10:00~20:00(금·토 21:00) 운영. 고수와 매운 소스를 뺀 순한 소고기 쌀국수와 아기의자가 완비되어 있어 아이와 식사하기 좋습니다.", "placeQuery": "에버랜드", "foodQuery": "포메인 에버랜드직영점", "siteUrl": "https://www.everland.com/everland/event"}];
+
+    function renderGrid(filter = 'all') {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      spots.forEach((s, idx) => {
+        if (filter === 'outing' && s.type !== 'outing') return;
+        if (filter === 'festival' && s.type !== 'festival') return;
+        if (filter === 'near' && s.driveMin > 20) return;
+        const card = document.createElement('div');
+        card.className = 'spot-card';
+        card.onclick = () => openModal(idx);
+        card.innerHTML = `
+          <div>
+            <div class="badges">
+              <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${s.badgeType}</span>
+              <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${s.badgeDay}</span>
+            </div>
+            <div class="spot-title">${s.title}</div>
+            <div class="spot-drive">${s.drive}</div>
+            <div class="spot-summary">${s.summary}</div>
+          </div>
+          <div class="spot-footer">
+            <span class="noodle-tag">${s.noodleTag}</span>
+            <span>상세 보기 →</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterSpots(filter, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(filter);
+    }
+
+    function openModal(idx) {
+      const s = spots[idx];
+      document.getElementById('mBadges').innerHTML = `
+        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${s.badgeType}</span>
+        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${s.badgeDay}</span>
+      `;
+      document.getElementById('mTitle').textContent = s.title;
+      document.getElementById('mDrive').textContent = s.drive;
+      document.getElementById('mGirl').textContent = s.girl;
+      document.getElementById('mBoy').textContent = s.boy;
+      document.getElementById('mTip').textContent = s.tip;
+      document.getElementById('mParking').textContent = s.parking || '전용 주차장 완비 (주차 편의 우수)';
+      document.getElementById('mNoodleName').textContent = s.noodleName;
+      document.getElementById('mNoodleDesc').textContent = s.noodleDesc;
+      document.getElementById('mPlaceLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery);
+      document.getElementById('mFoodLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery);
+      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery));
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    function openChecklist() {
+      document.getElementById('ckBackdrop').classList.add('open');
+    }
+
+    function closeChecklist() {
+      document.getElementById('ckBackdrop').classList.remove('open');
+    }
+
+    renderGrid();
+  </script>
+</body>
+</html>
