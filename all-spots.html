@@ -514,6 +514,12 @@
       currentFilter = f;
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
+      const sortSel = document.getElementById('sortSelect');
+      if (f === 'repeat') {
+        sortSel.value = 'count';
+      } else if (sortSel.value === 'count') {
+        sortSel.value = 'latest';
+      }
       applyFilters();
     }
 
@@ -555,7 +561,9 @@
           const ca = a.groupCount || a.recommendCount || 1;
           const cb = b.groupCount || b.recommendCount || 1;
           if (cb !== ca) return cb - ca;
-          if ((a.clusterId || '') !== (b.clusterId || '')) return (a.clusterId || '').localeCompare(b.clusterId || '');
+          if ((a.clusterId || '') !== (b.clusterId || '')) {
+            return (a.clusterId || '').localeCompare(b.clusterId || '');
+          }
           return (b.latestDate || '').localeCompare(a.latestDate || '');
         }
         if (sortBy === 'name') return (a.title || '').localeCompare(b.title || '', 'ko');
