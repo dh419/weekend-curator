@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>📌 전체 나들이 추천 리스트 모아보기</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --surface: #111827;
+      --card: #1e293b;
+      --card-hover: #243247;
+      --primary: #6366f1;
+      --primary-soft: rgba(99, 102, 241, 0.16);
+      --green: #34d399;
+      --green-soft: rgba(16, 185, 129, 0.15);
+      --purple: #c084fc;
+      --purple-soft: rgba(168, 85, 247, 0.16);
+      --amber: #fbbf24;
+      --amber-soft: rgba(245, 158, 11, 0.16);
+      --sky: #38bdf8;
+      --sky-soft: rgba(56, 189, 248, 0.14);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
+      border: 1px solid rgba(129, 140, 248, 0.3);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.45);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    header .sub { font-size: 0.82rem; color: #c7d2fe; margin-bottom: 4px; font-weight: 600; }
+    header h1 { font-size: 1.45rem; font-weight: 800; color: #fff; }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .kpi-box {
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .kpi-label { font-size: 0.74rem; color: #cbd5e1; margin-bottom: 3px; }
+    .kpi-val { font-size: 1.15rem; font-weight: 800; color: #fff; }
+
+    .controls-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 220px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .select-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .view-toggle {
+      display: inline-flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 9px 13px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .view-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .result-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .spot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .spot-card:hover {
+      transform: translateY(-3px);
+      background: var(--card-hover);
+      border-color: #818cf8;
+    }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .badge { font-size: 0.72rem; font-weight: 700; padding: 3px 9px; border-radius: 6px; }
+    .badge.outing { background: var(--green-soft); color: var(--green); }
+    .badge.festival { background: var(--purple-soft); color: var(--purple); }
+    .badge.date { background: var(--sky-soft); color: var(--sky); }
+    .badge.repeat { background: var(--amber-soft); color: var(--amber); }
+
+    .spot-title { font-size: 1.08rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .spot-drive { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+    .spot-summary { font-size: 0.86rem; color: #cbd5e1; line-height: 1.5; }
+    .noodle-chip {
+      margin-top: 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+      font-size: 0.78rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .spot-footer {
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #a5b4fc;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      min-width: 760px;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th {
+      background: rgba(15, 23, 42, 0.8);
+      color: #cbd5e1;
+      font-weight: 700;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    tbody tr { cursor: pointer; transition: background 0.12s; }
+    tbody tr:hover { background: rgba(99, 102, 241, 0.12); }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 22px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .modal-close {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .detail-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+    .detail-label {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #93c5fd;
+      margin-bottom: 4px;
+    }
+    .action-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: var(--card);
+      color: #fff;
+      border: 1px solid var(--border);
+    }
+    .action-btn.primary { background: var(--primary); border-color: var(--primary); }
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <div>
+          <div class="sub">동탄반석로 71 출발 · 누적 아카이브</div>
+          <h1>📌 전체 나들이 · 맛집 추천 모아보기</h1>
+        </div>
+      </div>
+      <div class="kpi-strip">
+        <div class="kpi-box">
+          <div class="kpi-label">고유 추천 장소</div>
+          <div class="kpi-val" id="kpiUnique">0곳</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">나들이 / 축제</div>
+          <div class="kpi-val" id="kpiSplit">0 / 0</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">30분 이내 근거리</div>
+          <div class="kpi-val" id="kpiNear">0곳</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-label">누적 주간 리포트</div>
+          <div class="kpi-val" id="kpiWeeks">0주</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="controls-panel">
+      <div class="search-row">
+        <input id="searchBox" class="search-input" type="search" placeholder="장소명, 지역(용인/동탄/수원/화성), 국수·맛집, 팁 키워드 검색..." oninput="applyFilters()" />
+        <select id="sortSelect" class="select-box" onchange="applyFilters()" aria-label="정렬 기준">
+          <option value="latest">최신 추천순</option>
+          <option value="drive">이동시간 짧은순</option>
+          <option value="count">추천 횟수순</option>
+          <option value="name">가나다순</option>
+        </select>
+        <div class="view-toggle" role="group" aria-label="보기 방식">
+          <button id="btnCardView" class="view-btn active" onclick="setView('card')">카드형</button>
+          <button id="btnTableView" class="view-btn" onclick="setView('table')">표형</button>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">전체</button>
+        <button class="filter-btn" data-filter="outing" onclick="setFilter('outing', this)">🌿 나들이</button>
+        <button class="filter-btn" data-filter="festival" onclick="setFilter('festival', this)">🎉 축제·행사</button>
+        <button class="filter-btn" data-filter="near30" onclick="setFilter('near30', this)">🚗 30분 이내</button>
+        <button class="filter-btn" data-filter="near45" onclick="setFilter('near45', this)">🚗 45분 이내</button>
+        <button class="filter-btn" data-filter="noodle" onclick="setFilter('noodle', this)">🍜 국수·비매운 맛집</button>
+        <button class="filter-btn" data-filter="repeat" onclick="setFilter('repeat', this)">🔄 2회+ 추천</button>
+      </div>
+    </section>
+
+    <div class="result-meta">
+      <span id="resultCount">표시 중: 0곳</span>
+      <span style="font-size:0.78rem;">카드를 클릭하면 아이별 포인트·주차·맛집 상세를 볼 수 있습니다.</span>
+    </div>
+
+    <div id="contentArea"></div>
+  </div>
+
+  <div id="spotModal" class="modal-backdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div id="mBadges" class="badges"></div>
+          <h2 id="mTitle" style="font-size:1.25rem; font-weight:800; color:#fff;"></h2>
+          <div id="mDrive" style="font-size:0.84rem; color:#94a3b8; margin-top:4px;"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">📝 핵심 요약</div>
+        <div id="mSummary"></div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">👧 첫째 포인트</div>
+        <div id="mGirl"></div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">👦 둘째 포인트</div>
+        <div id="mBoy"></div>
+      </div>
+      <div class="detail-box" id="mParkingBox" style="display:none;">
+        <div class="detail-label">🅿️ 주차 · 유모차 팁</div>
+        <div id="mParking"></div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">💡 현장 팁</div>
+        <div id="mTip"></div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label" id="mNoodleLabel">🍜 주변 맛집</div>
+        <div id="mNoodle"></div>
+      </div>
+      <div class="detail-box">
+        <div class="detail-label">📅 추천된 리포트</div>
+        <div id="mHistory" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;"></div>
+      </div>
+      <div class="action-links" id="mLinks"></div>
+    </div>
+  </div>
+
+  <script>
+    const INLINE_ARCHIVE = /*__ALL_SPOTS_JSON__*/{"meta": {"uniqueCount": 42, "weekCount": 7}, "spots": [{"type": "outing", "day": "sat", "driveMin": 22, "badgeType": "🌳 나들이 1", "badgeDay": "❄️ 토요일 실내", "title": "화성시어린이문화센터", "drive": "🚗 자차 약 22분 (화성시 봉담읍)", "summary": "기온이 크게 떨어지는 초겨울 토요일에 따뜻하고 쾌적하게 즐길 수 있는 실내 키즈체험관·전시·공연 복합문화공간입니다.", "girl": "키즈체험관 직업·놀이 체험(48개월 이상 온라인 사전예약 필수) 및 아이누리극장 어린이 공연 관람", "boy": "48개월 미만 전시 관람(현장 발권) 및 안전하게 설계된 실내 유아 놀이 동선 체험", "tip": "수유실·가족화장실 완비, 엘리베이터를 이용해 유모차 이동이 편리합니다(화~일 09:30~18:30, 월요일 휴관).", "parking": "전용 주차장 135대 무료 개방(09:00~19:00). 주말 오전 예약 회차 20분 전 입차를 권장합니다.", "noodleTag": "🍜 이두형홍두깨칼국수", "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 7분)", "noodleDesc": "넓은 전용 주차장을 갖추고 있으며, 맵지 않고 순한 수제 손칼국수와 만두전골을 온 가족이 부담 없이 즐길 수 있습니다.", "placeQuery": "화성시어린이문화센터", "foodQuery": "화성 봉담 이두형홍두깨칼국수", "siteUrl": "https://childrenjob.hscity.go.kr/", "key": "화성시어린이문화센터", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "festival", "day": "sun", "driveMin": 35, "badgeType": "🎉 축제 3", "badgeDay": "🎄 11.21 오픈", "title": "에버랜드 크리스마스 위시 2026", "drive": "🚗 자차 약 35분 (용인시 처인구)", "summary": "11.21(토)부터 시작되는 크리스마스 시즌 축제! 10m 대형 트리와 퍼레이드, 판다월드를 즐길 수 있습니다.", "girl": "10m 대형 크리스마스 트리 포토존, 회전목마·어린이 어트랙션 및 퍼레이드 관람", "boy": "유모차 타고 판다월드·주토피아 구경 및 화려한 크리스마스 트리 장식 감상", "tip": "유아차·웨건 대여소(스마트예약 가능, 15kg 이하) 및 정문·글로벌페어 등 수유실이 다수 완비되어 있습니다(10:00~22:00).", "parking": "무료 1·2·3주차장(유모차 전용 칸 있는 무료 셔틀 운행) 또는 정문 유료주차장(소형 1일 15,000원) 선택 이용 가능.", "noodleTag": "🍜 포메인 에버랜드직영점", "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보)", "noodleDesc": "10:00~20:00(금·토 21:00) 운영. 고수와 매운 소스를 뺀 순한 소고기 쌀국수와 아기의자가 완비되어 있어 아이와 식사하기 좋습니다.", "placeQuery": "에버랜드", "foodQuery": "포메인 에버랜드직영점", "siteUrl": "https://www.everland.com/everland/event", "key": "에버랜드크리스마스위시2026", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "outing", "day": "sun", "driveMin": 25, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 일요일 낮 추천", "title": "수원 광교호수공원", "drive": "🚗 자차 약 25분 (수원시 영통구)", "summary": "바람이 잔잔하고 햇살이 좋은 일요일 낮(6℃)에 유모차로 완벽하게 산책하기 좋은 평탄한 수변 데크길과 놀이터입니다.", "girl": "신비한물넘이 옆 어린이 놀이터 활동 및 프라이부르크 전망대에서 호수 풍경 조망", "boy": "단차 없는 평탄한 호수 데크길 유모차 산책 및 오리·물새 관찰하기", "tip": "인접한 앨리웨이 광교 건물 내 수유실·기저귀교환대·유모차 엘리베이터를 연계해 이용하기 매우 편리합니다.", "parking": "광교호수공원 제1·2공영주차장(3시간 1,000원, 1일 최대 5,000원). 주말 낮 혼잡 시 제2주차장 또는 앨리웨이 지하주차장 추천.", "noodleTag": "🍜 영통백합칼국수 광교점", "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 3분)", "noodleDesc": "앨리웨이 광교 어라운드라이프관 2층 위치(지하주차장 무료 지원). 시원하고 맑은 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.", "placeQuery": "수원 광교호수공원", "foodQuery": "영통백합칼국수 광교점", "siteUrl": "https://www.gglakepark.or.kr/", "key": "수원광교호수공원", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "outing", "day": "sat", "driveMin": 12, "badgeType": "🌳 나들이 3", "badgeDay": "❄️ 토·일 실내외", "title": "동탄호수공원 & 라크몽", "drive": "🚗 자차 약 12분 (화성시 송동)", "summary": "집에서 가장 가까운 호수 평지 산책과 라크몽 실내 동물원(주렁주렁)을 한 번에 묶어 추위를 피할 수 있는 하이브리드 코스입니다.", "girl": "라크몽 4~5층 주렁주렁 실내 동물 체험 및 네이처스케이프+ 어드벤처 놀이", "boy": "호수공원 평지 유모차 산책 후 추워지면 라크몽 실내에서 안전하게 동물 관람", "tip": "라크몽 내부에 수유실·기저귀교환대·가족화장실이 잘 갖춰져 있어 영유아 동반 시 매우 쾌적합니다(10:00~22:00).", "parking": "라크몽 지하 2~3층 주차장 이용(매장·식당 이용 시 무료 정산). 주말에는 지하 3층이 비교적 여유롭습니다.", "noodleTag": "🍜 소이연남 동탄라크몽점", "noodleName": "🍜 연계 국수집: 소이연남 동탄라크몽점 (원내 도보 1분)", "noodleDesc": "라크몽 1층 위치. 아이들도 잘 먹는 순한 소고기 쌀국수와 아기의자가 구비되어 있어 실내 동선으로 바로 이동하기 편리합니다.", "placeQuery": "동탄 라크몽", "foodQuery": "소이연남 동탄라크몽점", "siteUrl": "https://lakmonofficial.cafe24.com/", "key": "동탄호수공원&라크몽", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "festival", "day": "sun", "driveMin": 28, "badgeType": "🎉 전시 2", "badgeDay": "🆕 11.20 오픈", "title": "경기상상캠퍼스 디오라마 특별전", "drive": "🚗 자차 약 28분 (수원시 권선구)", "summary": "11.20(금) 개막한 전곡선사박물관 후원 선사시대 디오라마 특별전 《작은 세상, 커다란 이야기》(디자인1978 1층)입니다.", "girl": "선사시대 미니어처 디오라마 관찰 및 주말 공예·창작 체험 공간 탐방(참가비 2,000원)", "boy": "단차 없는 1층 실내 전시관 유모차 관람 후 햇살 좋은 오후 숲속 캠퍼스 산책", "tip": "디자인1978 1층 단차가 없어 유모차 진입이 용이하며 건물 내 수유실·화장실 이용 가능(10:00~18:00, 월요일 휴관).", "parking": "캠퍼스 내 넓은 지상 주차장을 보유하고 있어 주말 낮에도 비교적 주차 여유가 있는 편입니다.", "noodleTag": "🍜 다선칼국수 본점", "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 8분)", "noodleDesc": "수원역 인근 위치. 슴슴하고 깊은 맑은 바지락칼국수와 보리밥을 제공하며, 점심 피크를 피해 11:30 이전이나 13시 이후 방문을 추천합니다.", "placeQuery": "수원 경기상상캠퍼스", "foodQuery": "수원역 다선칼국수 본점", "siteUrl": "https://sscampus.ggcf.kr/exhibitions/185", "key": "경기상상캠퍼스디오라마특별전", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "festival", "day": "sat", "driveMin": 22, "badgeType": "🎉 전시 1", "badgeDay": "❄️ 토요일 실내", "title": "경기도어린이박물관 15주년 행사", "drive": "🚗 자차 약 22분 (용인시 기흥구)", "summary": "개관 15주년 기념 교육체험 '열다섯, 같이 놀자!'와 11월 행사(11.9~11.25), 3층 신규 전시가 진행 중인 대표 실내 박물관입니다.", "girl": "3층 신규 상설전시 '우리는 지구별 친구들' 및 개관 15주년 체험 프로그램 참여", "boy": "1층 영유아 전용 자연놀이터 및 튼튼놀이터에서 안전한 실내 신체 놀이", "tip": "유아휴게실(수유실)·피크닉룸 완비. 개인 유모차만 이용 가능(대여 불가, 1층 보관소 운영)하며 온라인 사전예약 권장(10:00~17:30).", "parking": "박물관 전용 주차장 이용(뮤지엄숍 1만원 이상 구매 시 2시간 무료). 주말 만차 시 인근 상갈동 공영주차장 활용.", "noodleTag": "🍜 방자네바지락칼국수", "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 10분)", "noodleDesc": "어정역 앞 가게 전용 주차장 완비. 맵지 않고 시원한 감태바지락칼국수가 아이들 입맛에도 잘 맞습니다.", "placeQuery": "경기도어린이박물관", "foodQuery": "용인 방자네바지락칼국수", "siteUrl": "https://gcm.ggcf.kr/events/141", "key": "경기도어린이박물관15주년행사", "latestDate": "2026-11-20", "latestWeek": "11월 3주", "latestPath": "docs/2026-11/2026-11-20.html", "recommendCount": 1, "appearances": [{"id": "2026-11-20", "date": "2026-11-20", "week": "11월 3주", "path": "docs/2026-11/2026-11-20.html"}]}, {"type": "festival", "day": "sun", "driveMin": 22, "badgeType": "🎉 축제 2", "badgeDay": "☀️ 일요일 마지막날", "title": "한국민속촌 가을축제", "drive": "🚗 자차 약 22분 (용인시 기흥구)", "summary": "11.15(일) 종료되는 한국민속촌 가을축제 마지막 주말. 맑은 일요일에 전통 가옥 단풍과 풍물놀이·퍼레이드를 만끽할 수 있습니다.", "girl": "전통 놀이체험, 사물놀이·마상무예 등 야외 공연 관람 및 조선시대 캐릭터와 사진 찍기", "boy": "유아용 놀이기구(놀이마을) 탑승 및 평탄한 전통 마을 길 유모차 나들이", "tip": "상가마을 3호 유모차 대여(대여료 2,000원/보증금 10,000원) 가능. 상가마을 3호 및 장터 10호에 유아휴게실(수유실·기저귀교환대·아기의자·전자레인지) 완비.", "parking": "전용 주차장 유료(소형 1일 2,000원, 재입차 불가). 일요일 정오 이후 입구 정체가 잦으므로 오전 10시 오픈런 방문 추천.", "noodleTag": "🍜 유복칼국수 용인민속촌점", "noodleName": "🍜 연계 국수집: 유복칼국수 용인민속촌점 (차로 2분)", "noodleDesc": "브레이크타임 없이 11:00~21:00 운영. 맑고 순한 복해물칼국수·왕고기만두를 제공하며 아기의자·아기식기 완비, 매장 앞 무료 주차(민속촌 주차 영수증 시 2,000원 할인).", "placeQuery": "용인 한국민속촌", "foodQuery": "유복칼국수 용인민속촌점", "siteUrl": "https://www.koreanfolk.co.kr/entertainment/convenience", "key": "한국민속촌가을축제", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "outing", "day": "sun", "driveMin": 18, "badgeType": "🌳 나들이 3", "badgeDay": "☀️ 일요일 추천", "title": "오산 물향기수목원", "drive": "🚗 자차 약 18분 (오산시 수청동)", "summary": "동탄에서 가장 가깝고 입장료가 무료인 평지형 수목원. 맑은 일요일 오전 유모차를 밀며 늦가을 숲과 물방울온실을 산책하기 좋습니다.", "girl": "습지생태원 데크길 탐방, 물방울온실 내 열대식물 관찰 및 넓은 잔디마당 자유 활동", "boy": "평탄한 보행로와 완만한 나무 데크길 유모차 산책 및 낙엽 밟기·자연 촉감 놀이", "tip": "유모차 대여 서비스가 없으므로 개인 유모차 필수 지참. 수목원 내 수유실 및 기저귀교환대 구비(09:00~17:00, 월요일 휴관, 입장료 무료).", "parking": "전용 주차장 유료(1일 정액 경차 1,500원 / 소·중형 3,000원 / 대형 5,000원). 맑은 일요일 오전 11시 이후 혼잡하므로 10시 전후 입차 권장.", "noodleTag": "🍜 다정면가", "noodleName": "🍜 연계 국수집: 다정면가 (차로 8분)", "noodleDesc": "가게 뒤편 넓은 무료 주차장 완비. 진한 멸치육수의 쫄깃한 생면 잔치국수와 아이들이 좋아하는 바삭한 돈까스 메뉴를 함께 즐길 수 있습니다.", "placeQuery": "오산 물향기수목원", "foodQuery": "오산 내삼미동 다정면가", "siteUrl": "https://forest.gg.go.kr/forest/10320", "key": "오산물향기수목원", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "outing", "day": "sat", "driveMin": 30, "badgeType": "🌳 나들이 2", "badgeDay": "🌧️ 토요일 온실·실내", "title": "수원 일월수목원", "drive": "🚗 자차 약 30분 (수원시 장안구)", "summary": "무장애(BF) 설계의 대형 유리온실 전시온실에서 비를 피하며 사막·지중해 식물을 관찰할 수 있는 도심형 수목원입니다.", "girl": "전시온실 내 선인장·올리브나무 등 이색 식물 관찰 및 비 그친 후 인접 일월공원 '꿈꾸는 놀이터 자연바람' 놀이", "boy": "단차 없는 무장애 온실 데크길을 따라 유모차로 편안하게 이동하며 물고기·식물 구경", "tip": "방문자센터 1층에 수유실, 기저귀교환대, 아기의자 완비 및 유모차 대여 가능. 6세 이하 무료 입장(성인 4,000원, 7~12세 1,500원, 09:30~17:30).", "parking": "전용 주차장 유료(3시간 이내 2,000원 / 3~6시간 3,000원 / 6~9시간 4,000원, 경차·저공해·다자녀 50% 감면). 주말 낮 만차 시 일월공원 인근 공영주차장 이용.", "noodleTag": "🍜 다선칼국수 본점", "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 12분)", "noodleDesc": "화~일 11:30~23:00 운영. 슴슴하고 감칠맛 나는 맑은 바지락칼국수와 보리밥 서비스가 인기이며, 점심 피크(12시대) 웨이팅을 피해 11:30 전이나 13시 이후 방문 추천.", "placeQuery": "수원 일월수목원", "foodQuery": "수원역 다선칼국수 본점", "siteUrl": "https://www.suwon.go.kr/sw-www/sw-iwarbor/sw-iwarbor-02/sw-iwarbor-02-01/sw-iwarbor-02-01-03.jsp", "key": "수원일월수목원", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "outing", "day": "sat", "driveMin": 25, "badgeType": "🌳 나들이 1", "badgeDay": "🌧️ 토요일 우천·실내", "title": "수원 국립농업박물관", "drive": "🚗 자차 약 25분 (수원시 권선구)", "summary": "비 오는 토요일에 쾌적하게 즐길 수 있는 무료 실내 복합문화공간. 어린이박물관 체험과 유리온실 식물원, 곤충관이 한 건물에 연결되어 있습니다.", "girl": "트랙터 시뮬레이터 탑승, 논밭갈이 네컷사진 무료 촬영, 어린이박물관 농사 체험 활동", "boy": "유리온실 식물원 열대식물 구경, 곤충관 관람 및 실내 넓은 복도 안전한 도보 산책", "tip": "전시동 B1층 안내데스크에서 유모차 무료 대여(신분증 지참) 및 동일 층 수유실·물품보관소 이용 가능. 교육동 2층 피크닉실(54석) 완비. (어린이박물관은 사전 예약 또는 현장 잔여분 발권)", "parking": "지상 및 지하 전용 주차장 무료 개방(10:00~18:00, 월요일 휴관). 비 오는 주말 오전 11시 이후 지하 주차장 혼잡 시 지상 주차장 이용 권장.", "noodleTag": "🍜 밀조아생바지락칼국수", "noodleName": "🍜 연계 국수집: 밀조아생바지락칼국수 (차로 10분)", "noodleDesc": "매장 앞 넓은 전용 무료 주차장 보유(20:00 마감). 맵지 않고 시원한 생바지락칼국수 위주로 온 가족이 부담 없이 식사하기 좋습니다.", "placeQuery": "수원 국립농업박물관", "foodQuery": "수원 고색동 밀조아생바지락칼국수", "siteUrl": "https://www.namuk.or.kr/kr/500/subview.do", "key": "수원국립농업박물관", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "festival", "day": "sun", "driveMin": 42, "badgeType": "🎉 축제 3", "badgeDay": "☀️ 일요일 추천", "title": "서울랜드 크리스마스 마켓", "drive": "🚗 자차 약 42분 (과천시 막계동)", "summary": "크리스마스365타운에서 열리는 미리 만나는 크리스마스 마켓. 대형 트리와 시즌 소품, 가족 놀이기구를 한 번에 즐길 수 있습니다.", "girl": "대형 크리스마스 트리 포토존, 마켓 구경 및 회전목마·어린이 어트랙션 탑승", "boy": "유모차로 마켓 거리와 일루미네이션 구경 및 라바·캐릭터존 체험", "tip": "정문·동문 유아차 대여소(마감 40분 전까지) 운영. 정문 시계탑 옆 및 라바트위스터 옆에 수유실·기저귀교환대 갖춘 유아휴게실 완비(주말 09:30~22:00).", "parking": "서울랜드 동문주차장(과천시 막계동 473-1) 이용. 당일 서울랜드 이용권·영수증 사전정산기 확인 시 1일 1회 무료(미정산 시 중·소형 30분당 2,000원).", "noodleTag": "🍜 서울랜드 장터 (장터국수)", "noodleName": "🍜 연계 국수집: 서울랜드 장터 / 포메인 (원내 도보 3분)", "noodleDesc": "11:00~19:00 운영. 테마파크 내 장터에서 맵지 않은 장터국수·설렁탕을, 포메인에서 순한 쌀국수를 바로 이용할 수 있어 식사 이동 동선이 가장 편리합니다.", "placeQuery": "과천 서울랜드", "foodQuery": "과천 서울랜드 장터", "siteUrl": "https://seoulland.co.kr/?p=37", "key": "서울랜드크리스마스마켓", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "festival", "day": "sun", "driveMin": 40, "badgeType": "🎉 축제 1", "badgeDay": "☀️ 일요일 추천", "title": "2026 과천 토리아리배 전국 승마페스티벌", "drive": "🚗 자차 약 40분 (과천시 중앙동)", "summary": "11.14(토)~15(일) 이틀간 정부과천청사 5대지 특설경기장에서 열리는 전국 승마 축제로, 무료 어린이 승마 및 말 먹이주기 체험이 운영됩니다.", "girl": "무료 어린이 승마 체험, 장애물 승마 경기 관람 및 포토존 기념 촬영", "boy": "가까이에서 말 구경 및 안전한 말 먹이주기 체험, 넓은 야외 잔디 광장 산책", "tip": "임시 특설경기장 행사이므로 기저귀·물티슈·보온용품 사전 준비 권장. 수유실 필요 시 인접 과천시민회관 내 시설 이용 가능.", "parking": "행사장 인근 과천시청 옥외주차장(135면) 토·일요일 무료 개방. 만차 시 도보권 과천시민회관 부설주차장(322면, 10분당 400원, 주말 10:00~18:00) 이용.", "noodleTag": "🍜 한성칼국수 과천점", "noodleName": "🍜 연계 국수집: 한성칼국수 과천점 (차로 8분)", "noodleDesc": "10:30~21:30 영업(화요일 휴무). 사골·한우 양지 육수의 순한 칼국수와 접시만두가 일품이며, 아기의자와 주차 안내요원이 상주하는 넓은 야외 주차장을 갖췄습니다.", "placeQuery": "정부과천청사 5대지", "foodQuery": "과천 한성칼국수", "siteUrl": "https://www.pressian.com/pages/articles/2026111111332330661", "key": "2026과천토리아리배전국승마페스티벌", "latestDate": "2026-11-14", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-14.html", "recommendCount": 1, "appearances": [{"id": "2026-11-14", "date": "2026-11-14", "week": "11월 2주", "path": "docs/2026-11/2026-11-14.html"}]}, {"type": "outing", "day": "sun", "driveMin": 15, "badgeType": "🌳 나들이 3 (잔디·역사)", "badgeDay": "☀️ 일요일 오후", "title": "화성 융건릉 & 역사문화관", "drive": "🚗 자차 약 15~18분 (화성시 안녕동)", "summary": "울창한 솔숲 피톤치드와 넓은 평지 흙길을 걸으며 가을 정취를 만끽하는 힐링 코스", "girl": "도토리·솔방울 줍기 숲 탐험, 역사문화관 인터랙티브 영상 및 스탬프 체험", "boy": "완만한 평지 흙길(경량 유모차 주행 수월), 솔방울 만지기 자연 촉감 놀이", "tip": "입구 역사문화관 내 수유실 및 기저귀교환대, 유모차 무료 대여(매표소 신분증 지참)", "parking": "🅿️ 융건릉 공영 전용 주차장 (전액 무료). 가을 주말 오후 1~3시 혼잡하므로 오전 11시 전 또는 오후 3시 반 이후 방문 추천, 만차 시 길 건너 공영주차장 이용", "noodleTag": "🍜 융건릉맨날국수", "noodleName": "🍜 연계 국수집: 융건릉맨날국수 화성점 (차로 2분)", "noodleDesc": "맑고 시원한 동죽조개칼국수 & 배말톳김밥, 1층 단독 전용 주차장 완비 및 아기의자 보유", "placeQuery": "융건릉", "foodQuery": "융건릉맨날국수 화성점", "siteUrl": "https://royaltombs.cha.go.kr", "key": "화성융건릉&역사문화관", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "outing", "day": "sat", "driveMin": 22, "badgeType": "🌳 나들이 2 (실내복합)", "badgeDay": "🌧️ 토요일 비·실내", "title": "용인어린이상상의숲 《공연놀이터 & 열린도서관》", "drive": "🚗 자차 약 22~25분 (용인시 처인구)", "summary": "비 오는 토요일 완벽 대비! 아이들의 상상력을 자극하는 대형 실내 어린이 전용 복합 문화공간", "girl": "어린이 공연놀이터 <춤추는 강아지> 관람, 미디어 숲 인터랙티브 체험존", "boy": "책숲 유아 전용 푹신 매트존, 원목 교구 놀이터, 실내 평지 유모차 산책", "tip": "1층 가족휴게실, 수유실, 전자레인지 완비, 실내 지하주차장 연결로 우천 시 우산 불필요", "parking": "🅿️ 용인미르스타디움 지하/지상 통합 주차장 (당일 이용객 전액 무료). 주차 면수 1,000대 이상으로 주말에도 만차 걱정 없이 매우 쾌적", "noodleTag": "🍜 용인 민속손칼국수", "noodleName": "🍜 연계 국수집: 용인 민속손칼국수 (차로 5분)", "noodleDesc": "구수한 멸치육수 손칼국수와 맑은 수제비, 아기용 안 매운 국물 제공, 전용 주차장 보유", "placeQuery": "용인어린이상상의숲", "foodQuery": "용인 민속손칼국수", "siteUrl": "https://www.yicf.or.kr/forest", "key": "용인어린이상상의숲《공연놀이터&열린도서관》", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "outing", "day": "sun", "driveMin": 18, "badgeType": "🌳 나들이 1 (수목원)", "badgeDay": "☀️ 일요일 맑음", "title": "수원 영흥수목원 《헨젤과 그레텔: 유혹의 숲》", "drive": "🚗 자차 약 18~20분 (수원시 영통구)", "summary": "가을 숲길과 동화 속 과자집 포토존, 유모차 완벽 무장애 데크로드를 즐기는 도심 힐링 수목원", "girl": "동화 테마 야외 숲길 탐험, 가을 열매·단풍 관찰, 숲 놀이터 신체 놀이", "boy": "전 구간 유모차 무장애 데크길, 온실 내 평지 산책, 폭신한 잔디마당", "tip": "방문자센터 1층 수유실 및 기저귀교환대 완비, 온실 내부 엘리베이터 이동 가능", "parking": "🅿️ 수목원 전용 지상/지하 주차장 (3시간 1,000원 / 1일 최대 5,000원). 주말 오전 11시 전 입차 시 여유, 만차 시 영흥푸르지오 인근 공영주차장 이용 권장", "noodleTag": "🍜 영통 대머리손칼국수", "noodleName": "🍜 연계 국수집: 대머리손칼국수 영통점 (차로 6분)", "noodleDesc": "자극 없이 시원한 닭칼국수 & 바지락칼국수, 아기의자 완비 및 매장 앞 주차 4~5대 가능", "placeQuery": "영흥수목원", "foodQuery": "대머리손칼국수 영통점", "siteUrl": "https://www.suwon.go.kr/sw-ise/index.do", "key": "수원영흥수목원《헨젤과그레텔:유혹의숲》", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "festival", "day": "sat", "driveMin": 24, "badgeType": "🎉 축제 2 (연희공연)", "badgeDay": "🌧️ 토요일 공연", "title": "수원 빛누리아트홀 창작 연희극 《줄 타는 아이와 아프리카 도마뱀》", "drive": "🚗 자차 약 24~26분 (수원문화원 빛누리아트홀)", "summary": "전통 줄타기와 아프리카 음악이 어우러져 어린이의 상상력을 자극하는 주말 한정 가족 창작극", "girl": "흥겨운 전통 타악 장단과 아프리카 도마뱀 인형극 관람, 무대 인터랙션", "boy": "쾌적한 아트홀 유아용 보조방석 제공, 신나는 리듬 음악 감상", "tip": "실내 전용 공연장으로 비 오는 날 최적, 쾌적한 로비 수유실 완비", "parking": "🅿️ 빛누리아트홀 지상/지하 주차장 (공연 관람객 전액 무료). 공연 시작 30분 전 도착 권장, 진입로 및 주차 공간 넓어 주차 수월", "noodleTag": "🍜 고색동 바지락칼국수", "noodleName": "🍜 연계 국수집: 고색동 서해바지락칼국수 (차로 5분)", "noodleDesc": "산더미 바지락이 들어간 시원하고 맑은 육수 칼국수, 고소한 해물파전, 가게 앞 전용 주차장 완비", "placeQuery": "수원 빛누리아트홀", "foodQuery": "서해바지락칼국수 수원", "siteUrl": "https://swcf.or.kr", "key": "수원빛누리아트홀창작연희극《줄타는아이와아프리카도마뱀》", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "festival", "day": "sun", "driveMin": 35, "badgeType": "🎉 축제 3 (과학체험)", "badgeDay": "☀️ 일요일 맑음", "title": "국립과천과학관 가을 특별 기획전 《미래 모빌리티 & 자연사관》", "drive": "🚗 자차 약 35~40분 (과천시 상하벌로)", "summary": "실물 크기 기차와 공룡, 유아 전용 감각놀이터를 모두 즐기는 수도권 대표 가족 과학 축제", "girl": "자연사관 공룡 화석 및 실물 모형 탐험, 미래 우주선 체험", "boy": "1층 만 5세 이하 전용 유아체험관 볼풀·미끄럼틀, 야외 실물 기차 광장", "tip": "원내 대형 유아휴게실(수유실, 기저귀교환대, 전자레인지) 완비, 유모차 대여 무료", "parking": "🅿️ 국립과천과학관 대형 동주차장/중앙주차장 (일반 5,000원 정액제, 다자녀 50% 감면). 유아차 동반 시 '동주차장'에 주차해야 유아체험관 매표소와 가장 가깝고 평지 이동 수월", "noodleTag": "🍜 과천 한성칼국수", "noodleName": "🍜 연계 국수집: 과천 한성칼국수 (차로 6분)", "noodleDesc": "담백하고 진한 한우 사골 손칼국수 & 부드러운 접시만두, 아기의자 완비, 가게 앞 전용 주차장", "placeQuery": "국립과천과학관", "foodQuery": "과천 한성칼국수", "siteUrl": "https://www.sciencecenter.go.kr", "key": "국립과천과학관가을특별기획전《미래모빌리티&자연사관》", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "festival", "day": "sat", "driveMin": 25, "badgeType": "🎉 축제 1 (키즈아트)", "badgeDay": "🌧️ 실내 특별행사", "title": "2026 유아동 예술교육 페스타 《키득 키즈 아트 놀이터》", "drive": "🚗 자차 약 25~28분 (수원시 장안구 복합문화공간 111CM)", "summary": "11월 14일 한정! 만 2~5세 맞춤 미술 예술놀이터와 그림책 작가 1인극, 매직 버블쇼 축제", "girl": "그림책 1인극 및 스토리텔링 참여, 매직아트 버블쇼, 창의 미술 만들기 체험", "boy": "촉감 중심 감각 예술놀이터, 넓은 실내 평지 공간 유모차 관람", "tip": "복합문화공간 111CM 라운지 실내 진행으로 우천 무관, 층별 유아휴게실 완비", "parking": "🅿️ 복합문화공간 111CM 전용 주차장 (행사 및 카페 이용 시 기본 무료 정산). 만차 시 바로 맞은편 대유평공원 지하 공영주차장(도보 2분, 저렴한 시 공영 요금) 이용 편리", "noodleTag": "🍜 정자동 메밀꽃필무렵", "noodleName": "🍜 연계 국수집: 메밀꽃필무렵 정자점 (차로 4분)", "noodleDesc": "순하고 부드러운 들기름막국수 & 맑은 온메밀, 자극 없는 순메밀 손만두, 상가 지하주차장 지원", "placeQuery": "복합문화공간 111CM", "foodQuery": "메밀꽃필무렵 정자점", "siteUrl": "https://swcf.or.kr", "key": "2026유아동예술교육페스타《키득키즈아트놀이터》", "latestDate": "2026-11-13", "latestWeek": "11월 2주", "latestPath": "docs/2026-11/2026-11-13.html", "recommendCount": 1, "appearances": [{"id": "2026-11-13", "date": "2026-11-13", "week": "11월 2주", "path": "docs/2026-11/2026-11-13.html"}]}, {"type": "outing", "day": "sat", "driveMin": 27, "badgeType": "🌳 나들이 3", "badgeDay": "☀️ 평화 정원", "title": "화성 남양성모성지 평화의 정원 & 숲길", "drive": "🚗 자차 약 25~30분 (화성시 남양읍)", "summary": "차량 소음 없는 드넓은 평지 잔디밭과 마리오 보타 대성당이 어우러진 치유 정원", "girl": "마리오 보타 설계 대성당 건축 탐방, 잔디 조각공원 가을 산책", "boy": "차량 소음 없는 드넓은 평지 잔디밭, 유모차 산책하기 가장 쾌적한 흙길/포장길", "tip": "순례자센터 1층 아늑한 수유실 완비, 전 구역 완경사 슬로프, 넓은 무료 주차장", "noodleTag": "🍜 남양 대가손칼국수", "noodleName": "🍜 연계 국수집: 남양 대가손칼국수 (차로 3분)", "noodleDesc": "맵지 않고 담백한 닭칼국수 & 맑은 멸치칼국수, 부드러운 왕만두", "placeQuery": "남양성모성지", "foodQuery": "남양 대가손칼국수", "siteUrl": "https://www.namyangshrine.net/", "key": "화성남양성모성지평화의정원&숲길", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "outing", "day": "sun", "driveMin": 18, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 실내 체험", "title": "용인 경기도어린이박물관 & 백남준아트센터", "drive": "🚗 자차 약 18~20분 (용인 기흥구 상갈로 6)", "summary": "전천후 실내 오감발달 체험과 1층 영아 전용 자연놀이터가 있는 대표 실내 명소", "girl": "튼튼어린이 건설현장 체험, 바람의 나라 과학원리, 동화 속 보물찾기", "boy": "1층 아기발달체험실(자연놀이터), 안전 볼풀장, 푹신한 블록 놀이", "tip": "각 층별 전용 수유실(전자레인지, 정수기), 유모차 이동 엘리베이터 동선 (사전예약제)", "noodleTag": "🍜 삼동소바 본점", "noodleName": "🍜 연계 국수집: 삼동소바 본점 (차로 5분)", "noodleDesc": "자극 없는 따뜻한 온소바 & 사누끼우동, 부드러운 수제돈가스", "placeQuery": "경기도어린이박물관", "foodQuery": "삼동소바 본점", "siteUrl": "https://gcm.ggcf.kr/", "key": "용인경기도어린이박물관&백남준아트센터", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "outing", "day": "sat", "driveMin": 13, "badgeType": "🌳 나들이 1", "badgeDay": "⚡ 15분 이내", "title": "오산 물향기수목원 (단풍터널 & 메타세쿼이아)", "drive": "🚗 자차 약 12~15분 (오산시 청학로 211)", "summary": "메타세쿼이아 단풍터널과 무장애 목재 데크길, 곤충생태원이 있는 도심 근교 수목원", "girl": "곤충생태원 탐방, 가을 물방울온실, 단풍잎 관찰 및 솔방울 줍기", "boy": "완만한 숲길 무장애 목재 데크길, 유모차 산책 최적, 잔디 쉼터", "tip": "방문자센터 유모차 무료 대여소, 수유실 및 기저귀교환대 완비 (월 휴무)", "noodleTag": "🍜 두마레칼국수", "noodleName": "🍜 연계 국수집: 두마레칼국수 (차로 4분)", "noodleDesc": "자극 없이 맑고 시원한 바지락칼국수 & 순한 고기손만두", "placeQuery": "오산 물향기수목원", "foodQuery": "오산 두마레칼국수", "siteUrl": "https://forest.gg.go.kr/", "key": "오산물향기수목원(단풍터널&메타세쿼이아)", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "festival", "day": "sun", "driveMin": 40, "badgeType": "🎉 축제 3 (공예축제)", "badgeDay": "☀️ 도자 체험", "title": "2026 이천 예스파크(도자예술마을) 가을 공예 축제", "drive": "🚗 자차 약 38~42분 (이천시 신둔면)", "summary": "도자기 물레 체험과 찰흙 촉감놀이, 이국적인 공방거리 산책을 즐기는 가을 공예 축제", "girl": "도자기 물레 체험, 나만의 가을 머그컵 그림 그리기, 거리 마임 공연", "boy": "안전한 찰흙 빚기 촉감놀이, 이국적인 공방거리 유모차 산책", "tip": "마을 관광안내소 1층 유아휴게실(수유실, 기저귀대), 전 구역 무장애 포장로, 무료 주차", "noodleTag": "🍜 신둔 가마솥칼국수", "noodleName": "🍜 연계 국수집: 신둔 가마솥칼국수 (차로 4분)", "noodleDesc": "조미료 없는 맑고 시원한 해물바지락칼국수 & 수제비", "placeQuery": "이천 예스파크", "foodQuery": "신둔 가마솥칼국수", "siteUrl": "http://2000yespark.or.kr/", "key": "2026이천예스파크(도자예술마을)가을공예축제", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "festival", "day": "sat", "driveMin": 20, "badgeType": "🎉 축제 1 (빛축제)", "badgeDay": "🌙 야간 피크닉", "title": "2026 수원 경기아트센터 가을 빛축제 & 피크닉", "drive": "🚗 자차 약 18~22분 (수원 팔달구 야외광장)", "summary": "야외 LED 일루미네이션 터널과 어린이 클래식 버스킹이 펼쳐지는 도심 광장 축제", "girl": "환상적인 야외 LED 일루미네이션 터널, 어린이 클래식 버스킹 관람", "boy": "안전한 보행자 전용 대광장 유모차 주행, 빛 조형물 시각 자극 놀이", "tip": "대극장 로비 쾌적한 수유실(수유쿠션, 기저귀대 완비), 야외 평지 슬로프, 지하주차장", "noodleTag": "🍜 인계동 본가손칼국수", "noodleName": "🍜 연계 국수집: 인계동 본가손칼국수 (차로 4분)", "noodleDesc": "진하고 순한 국물의 손칼국수 & 사골칼국수, 아이 전용 그릇 제공", "placeQuery": "경기아트센터", "foodQuery": "인계동 본가손칼국수", "siteUrl": "https://www.ggac.or.kr/", "key": "2026수원경기아트센터가을빛축제&피크닉", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "festival", "day": "sat", "driveMin": 36, "badgeType": "🎉 축제 2 (가을단풍)", "badgeDay": "☀️ 동물원·단풍", "title": "2026 과천 서울대공원 가을 단풍 페스티벌", "drive": "🚗 자차 약 35~38분 (과천시 대공원광장로 102)", "summary": "코끼리열차와 동물원 단풍 둘레길, 가을 장미원 산책을 함께 즐기는 가을 축제", "girl": "코끼리열차 탑승, 기린·하마 관찰, 테마가든 가을 장미원 산책", "boy": "완만한 동물원 메인 순환로 유모차 산책, 동물 모형 사진 촬영", "tip": "원내 유모차 300대 대여소, 주요 쉼터마다 쾌적한 모유수유실 완비", "noodleTag": "🍜 과천 밀마을국수", "noodleName": "🍜 연계 국수집: 과천 밀마을국수 (차로 5분)", "noodleDesc": "순하고 구수한 진잔치국수 & 들깨칼국수, 담백한 메밀전병", "placeQuery": "서울대공원", "foodQuery": "과천 밀마을국수", "siteUrl": "https://grandpark.seoul.go.kr/", "key": "2026과천서울대공원가을단풍페스티벌", "latestDate": "2026-11-06", "latestWeek": "11월 1주", "latestPath": "docs/2026-11/2026-11-06.html", "recommendCount": 1, "appearances": [{"id": "2026-11-06", "date": "2026-11-06", "week": "11월 1주", "path": "docs/2026-11/2026-11-06.html"}]}, {"type": "outing", "day": "sun", "driveMin": 3, "badgeType": "🌳 나들이 3", "badgeDay": "⚡ 도심 초근접", "title": "화성 동탄여울공원 & 작가정원", "drive": "🚗 자차 약 7~10분 (화성시 오산동 1060)", "summary": "동탄 도심 속 완벽한 평지 잔디밭과 모래·짚라인 놀이터, 가을꽃 작가정원 코스", "girl": "넓은 모래놀이터 & 짚라인 놀이터, 감각적인 작가정원 가을꽃 탐방, 킥보드 주행", "boy": "도심 속 완벽 평지 잔디밭, 폭신한 유모차 전용 산책로, 잔디마당 아장아장", "tip": "공원관리소 내 깨끗한 수유실·가족화장실, 100% 무장애 평지 슬로프", "noodleTag": "🍜 밀가온 칼국수", "noodleName": "🍜 연계 국수집: 밀가온 칼국수 (차로 4분)", "noodleDesc": "진하고 맑은 멸치칼국수 & 순한국물 닭칼국수, 부드러운 고기만두", "placeQuery": "동탄여울공원", "foodQuery": "밀가온 칼국수", "siteUrl": "https://hscity.go.kr/", "key": "화성동탄여울공원&작가정원", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "outing", "day": "sat", "driveMin": 26, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 잔디·곤충체험", "title": "용인 농촌테마파크 & 들꽃광장", "drive": "🚗 자차 약 28~32분 (용인 처인구 원삼면)", "summary": "곤충생태체험관, 넓은 들꽃 잔디광장, 작은 동물농장이 어우러진 자연 체험 공원", "girl": "곤충생태체험관 관람, 가을 숲속 놀이터 흔들다리 및 들꽃 미로 찾기", "boy": "완만한 잔디마당 산책, 동물농장 아기 염소·토끼 보기, 평상 원두막 휴식", "tip": "종합안내소 유모차 무료 대여, 관리동 1층 유아휴게실/수유실 및 무료 주차장 완비", "noodleTag": "🍜 원삼메밀집", "noodleName": "🍜 연계 국수집: 원삼메밀집 (차로 5분)", "noodleDesc": "자극 없는 들기름 메밀국수 & 어린이 막국수, 담백한 한돈 수육", "placeQuery": "용인농촌테마파크", "foodQuery": "원삼메밀집", "siteUrl": "https://www.yongin.go.kr/tour/", "key": "용인농촌테마파크&들꽃광장", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "outing", "day": "sat", "driveMin": 15, "badgeType": "🌳 나들이 1", "badgeDay": "☀️ 호수·책놀이터", "title": "수원 광교푸른숲도서관 & 호수공원", "drive": "🚗 자차 약 18~22분 (수원 영통구 광교호수로 131)", "summary": "숲속 책놀이터와 완벽한 무장애 호수 데크 산책로를 동시에 즐기는 힐링 코스", "girl": "푸른숲 책놀이터 동화책 탐독, 호수 산책로 생태 관찰 및 숲속 데크길 탐험", "boy": "완만한 무장애 호수 데크길 유모차 산책, 호수 바람 쐬기, 잔디밭 아장아장", "tip": "도서관 내 쾌적한 유아휴게실(수유실, 기저귀교환대, 정수기), 전 구역 무장애 데크", "noodleTag": "🍜 백청우칼국수 광교점", "noodleName": "🍜 연계 국수집: 백청우칼국수 광교점 (차로 6분)", "noodleDesc": "자극 없는 맑은 해물·백합칼국수, 순한 면발과 야채죽", "placeQuery": "광교푸른숲도서관", "foodQuery": "백청우칼국수 광교점", "siteUrl": "https://www.suwonlib.go.kr/gps/", "key": "수원광교푸른숲도서관&호수공원", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "festival", "day": "sun", "driveMin": 36, "badgeType": "🎉 특별전 3", "badgeDay": "☀️ 실내외 겸용", "title": "국립과천과학관 가을 특별전 (공룡동산 & 유아체험관)", "drive": "🚗 자차 약 35~40분 (과천시 상하벌로 110)", "summary": "실물 크기 야외 공룡동산과 영유아 전용 체험관이 결합된 전천후 과학 나들이", "girl": "실물크기 공룡 모형 탐험, 공룡 화석 발굴 체험존, 기초과학관 오감실험", "boy": "유아전용 어린이체험관 볼풀·촉감놀이, 유모차 전용 대형 슬로프, 수목원 산책", "tip": "본관 1층 초대형 유아휴게실(모유수유실 4실, 전자레인지), 유모차 50대 무료 대여", "noodleTag": "🍜 봉덕칼국수 / 밀마을", "noodleName": "🍜 연계 국수집: 봉덕칼국수 / 밀마을 국수 (차로 6분)", "noodleDesc": "맑고 시원한 바지락 순한 칼국수(안매운맛 주문), 잔치국수", "placeQuery": "국립과천과학관", "foodQuery": "과천 봉덕칼국수", "siteUrl": "https://www.sciencecenter.go.kr/", "key": "국립과천과학관가을특별전(공룡동산&유아체험관)", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "festival", "day": "sat", "driveMin": 10, "badgeType": "🎉 축제 2 (가을축제)", "badgeDay": "☀️ 단풍·전통체험", "title": "2026 한국민속촌 가을축제 (귀신사바·단풍잔치)", "drive": "🚗 자차 약 15~18분 (용인 기흥구 민속촌로 90)", "summary": "가을 단풍길과 전래동화 마당극, 천연 염색 체험을 즐기는 가족 대표 나들이 명소", "girl": "전통 가을 단풍길 탐방, 유쾌한 도깨비 전래동화 마당극, 천연 염색 체험", "boy": "고즈넉한 흙길 유모차 산책(메인 동선 평탄화), 나룻배 관람, 소·당나귀 구경", "tip": "정문 안내소 유모차 대여소(3천원), 의무실 옆 쾌적한 모유수유실 완비", "noodleTag": "🍜 장터 잔치국수", "noodleName": "🍜 연계 국수집: 민속촌 장터 국수마당 (내부 장터)", "noodleDesc": "맵지 않은 진사골 잔치국수 & 맑은 멸치국수, 담백한 해물파전", "placeQuery": "한국민속촌", "foodQuery": "한국민속촌 장터", "siteUrl": "https://www.koreanfolk.co.kr/", "key": "2026한국민속촌가을축제(귀신사바·단풍잔치)", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "festival", "day": "sat", "driveMin": 17, "badgeType": "🎉 축제 1 (10/31)", "badgeDay": "☀️ 주말 광장축제", "title": "2026 수원 홀리스타 페스티벌 (화성행궁광장)", "drive": "🚗 자차 약 25~30분 (수원 팔달구 화성행궁광장)", "summary": "10.31 주말 화성행궁광장에서 열리는 분장 퍼레이드와 어린이 문화예술 오감체험 축제", "girl": "홀리스타 분장 퍼레이드 및 페이스페인팅, 어린이 문화예술 오감체험 부스", "boy": "넓은 행궁광장 유모차 주행, 야외 합창·마술쇼 음악 관람, 안전한 보행광장", "tip": "화성행궁 안내센터 수유실, 행궁광장 공용 수유실 및 가족화장실, 전 구역 평지", "noodleTag": "🍜 대원옥 온면", "noodleName": "🍜 연계 국수집: 대원옥 평양냉면·온면 (도보 4분)", "noodleDesc": "슴슴하고 깊은 육수의 순한 온면 및 어린이 온메밀, 소고기 수육", "placeQuery": "화성행궁광장", "foodQuery": "수원 대원옥", "siteUrl": "https://www.swcf.or.kr/", "key": "2026수원홀리스타페스티벌(화성행궁광장)", "latestDate": "2026-10-30", "latestWeek": "10월 5주", "latestPath": "docs/2026-10/2026-10-30.html", "recommendCount": 1, "appearances": [{"id": "2026-10-30", "date": "2026-10-30", "week": "10월 5주", "path": "docs/2026-10/2026-10-30.html"}]}, {"type": "outing", "day": "sun", "driveMin": 28, "badgeType": "🌳 나들이 3", "badgeDay": "☀️ 실내외 겸용", "title": "화성시 우리꽃식물원 (한옥 온실)", "drive": "🚗 자차 약 25~30분 (화성시 팔탄면)", "summary": "전통 한옥 유리온실과 생태연못, 가을 은행나무 솔숲길 및 유아 숲놀이터가 있는 식물원", "girl": "사계절 한옥 온실 속 희귀 식물 탐험, 스탬프 투어 미션, 야외 솔숲 생태 놀이터", "boy": "온실 내 비단잉어 구경, 턱 없는 목재 데크 유모차 주행, 넓은 분수광장 걷기", "tip": "매표소 유모차 무료 대여소 운영, 식물관 내 수유실 및 전 구역 램프 설치", "noodleTag": "🍜 팔탄 바지락손칼국수", "noodleName": "🍜 연계 국수집: 팔탄 바지락손칼국수 (차로 5분)", "noodleDesc": "고추·후추 없는 맑고 개운한 바지락칼국수 & 굴림만두 (아기의자·룸 좌석 완비)", "placeQuery": "화성시 우리꽃식물원", "foodQuery": "팔탄 바지락손칼국수", "siteUrl": "https://botanic.hscity.go.kr/botanic/index.jsp", "key": "화성시우리꽃식물원(한옥온실)", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "outing", "day": "sat", "driveMin": 16, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 가을 나들이", "title": "용인 기흥 만골근린공원 (숲놀이터)", "drive": "🚗 자차 약 15~18분 (용인 기흥구 상갈동)", "summary": "성곽 모양 대형 모험 숲놀이터와 바닥 탄성 매트, 완만한 무장애 산책로를 갖춘 공원", "girl": "성곽 복합 놀이대 그물다리 건너기, 나선형 원통 미끄럼틀 등 모험 신체 놀이", "boy": "푹신한 탄성 매트 바닥이라 안전하며, 유아 전용 완만한 미끄럼틀과 평지 잔디 탐색", "tip": "완만한 경사로로 유모차 진입이 편하고, 바로 옆 기흥도서관 1층 수유실 이용 가능", "noodleTag": "🍜 신갈 총각손칼국수", "noodleName": "🍜 연계 국수집: 신갈 총각손칼국수 (차로 5분)", "noodleDesc": "다진 양념 없이 나오는 맑고 깊은 멸치육수 손칼국수 (면발이 부드러움)", "placeQuery": "기흥 만골근린공원", "foodQuery": "신갈 총각손칼국수", "siteUrl": "https://www.yongin.go.kr/", "key": "용인기흥만골근린공원(숲놀이터)", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "outing", "day": "sat", "driveMin": 13, "badgeType": "🌳 나들이 1", "badgeDay": "☀️ 가을 나들이", "title": "오산 맑음나눔터공원 & 에코리움", "drive": "🚗 자차 약 12~14분 (오산시 탑동대우길 39)", "summary": "생태체험관 에코리움 무료 관람과 야외 대형 미끄럼틀, 넓은 평지 잔디밭이 어우러진 공원", "girl": "에코리움 전망대 관람, 민물고기·곤충 체험, 야외 성곽 미끄럼틀과 짚라인 놀이", "boy": "차도 없는 안전한 평지 잔디밭 걷기, 탄성 바닥 유아용 낮은 미끄럼틀, 데크 유모차 산책", "tip": "에코리움 내부 엘리베이터 완비(4층까지), 쾌적한 실내 수유실 및 기저귀 교환대 구비", "noodleTag": "🍜 백청우칼국수 오산점", "noodleName": "🍜 연계 국수집: 백청우칼국수 오산점 (차로 5분)", "noodleDesc": "맑은 해물손칼국수 & 고기손만두 (아이들이 좋아하는 순한 육수, 아기의자 완비)", "placeQuery": "오산맑음터공원", "foodQuery": "백청우칼국수 오산점", "siteUrl": "https://www.osan.go.kr/", "key": "오산맑음나눔터공원&에코리움", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "festival", "day": "sat", "driveMin": 18, "badgeType": "🎉 축제 2 (10/17~25)", "badgeDay": "☀️ 피날레 주말", "title": "2026 조선왕릉축전 피날레 (융릉·건릉)", "drive": "🚗 자차 약 15~20분 (화성시 안녕동)", "summary": "유네스코 세계유산 융건릉 솔숲에서 펼쳐지는 어린이 사관 탐방 미션과 책마당 축제", "girl": "'조선명탐정: 왕릉사관록' 사관 복장 미션 해결, 숲속 책마당, 왕릉 음악회 감상", "boy": "키 큰 소나무 숲길 평탄한 흙길 유모차 산책, 솔방울·단풍잎 줍기", "tip": "정문 매표소 인근 수유실 및 가족 화장실 마련, 경사 완만한 유모차 최적 코스", "noodleTag": "🍜 융건릉맨날국수", "noodleName": "🍜 연계 국수집: 융건릉맨날국수 화성점 (정문 차로 1분)", "noodleDesc": "동죽조개칼국수 & 배말톳김밥 (자극 없는 맑은 조개 육수, 아기의자 완비)", "placeQuery": "화성 융건릉", "foodQuery": "융건릉맨날국수 화성점", "siteUrl": "https://jrtf.or.kr/brand/info/", "key": "2026조선왕릉축전피날레(융릉·건릉)", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "festival", "day": "sat", "driveMin": 47, "badgeType": "🎉 축제 1 (10/22~26)", "badgeDay": "☀️ 가을 축제", "title": "2026 제23회 이천쌀문화축제", "drive": "🚗 자차 약 45~50분 (이천농업테마공원)", "summary": "대형 가마솥 쌀밥 짓기, 600m 무지개 가래떡 뽑기, 볏짚 미끄럼틀 놀이터 축제", "girl": "600m 가래떡 뽑기 이벤트, 짚풀 공예 만들기, 전통 마당극 및 농경 도구 체험", "boy": "푹신한 볏짚 미끄럼틀 놀이터, 따끈한 이천 쌀밥·떡 시식, 평지 공원 유모차 이동", "tip": "축제장 내 임시 수유실·기저귀 교환 부스 설치, 주 이동로 아스팔트/데크 포장", "noodleTag": "🍜 가마솥 쌀밥 & 칼국수", "noodleName": "🍜 연계 먹거리: 축제장 쌀밥 정식 & 인근 바지락칼국수", "noodleDesc": "축제장 내 2천원 가마솥 쌀밥 시식과 인근 순한 바지락칼국수 조합 추천", "placeQuery": "이천농업테마공원", "foodQuery": "이천농업테마공원 칼국수", "siteUrl": "http://www.ricefestival.or.kr/", "key": "2026제23회이천쌀문화축제", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "festival", "day": "sun", "driveMin": 32, "badgeType": "🎉 축제 3 (~11/1)", "badgeDay": "☀️ 가을 목장", "title": "2026 안성팜랜드 코스목동 축제", "drive": "🚗 자차 약 30~35분 (안성시 공도읍)", "summary": "핑크뮬리와 코스모스 언덕, 양·알파카 등 목장 동물 친구들과 교감하는 가을 축제", "girl": "코스모스 언덕 사진 촬영, 양·알파카 당근 먹이주기, 가축 레이싱쇼 & 승마 체험", "boy": "가족형 전동자전거 탑승, 아기 양·토끼 만지기, 완만한 초원 산책로 유모차 드라이브", "tip": "정문 유모차 대여소(3천원), 쾌적한 수유실 및 가족 화장실 곳곳 완비", "noodleTag": "🍜 공도 바지락칼국수", "noodleName": "🍜 연계 국수집: 공도 바지락칼국수·손만두 (차로 6분)", "noodleDesc": "해물 베이스의 순한 육수 칼국수와 부드러운 수제 왕만두 (3세 유아 식사 최적)", "placeQuery": "안성팜랜드", "foodQuery": "공도 바지락칼국수", "siteUrl": "https://nhasfarmland.com/new/comm/comm01.php?ptype=view&idx=8310&code=notice", "key": "2026안성팜랜드코스목동축제", "latestDate": "2026-10-23", "latestWeek": "10월 4주", "latestPath": "docs/2026-10/2026-10-23.html", "recommendCount": 1, "appearances": [{"id": "2026-10-23", "date": "2026-10-23", "week": "10월 4주", "path": "docs/2026-10/2026-10-23.html"}]}, {"type": "outing", "day": "sat", "driveMin": 16, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 토요일 추천", "title": "용인 만골근린공원 숲놀이터", "drive": "🚗 자차 약 15~18분 (용인 기흥구 상갈동)", "summary": "성곽 모양 대형 조합 놀이대와 유아 전용 매트 놀이터가 공존하는 공원", "girl": "성곽 조합 놀이대 오르기, 원통형 미끄럼틀, 짚라인 등 모험 신체 놀이", "boy": "전체가 푹신한 탄성 매트 바닥으로 안전하며, 하단부 유아 전용 완만한 미끄럼틀 및 모래놀이", "tip": "경사로가 완만해 유모차 진입이 편하고, 바로 옆 기흥도서관 가족화장실·수유실 이용 가능", "noodleTag": "🍜 신갈 총각손칼국수", "noodleName": "🍜 연계 국수집: 신갈 총각손칼국수 (차로 5분)", "noodleDesc": "진하고 구수한 멸치육수 손칼국수 (주문 시 양념장 별도 요청 시 아이들 먹기 아주 순함)", "placeQuery": "기흥 만골근린공원", "foodQuery": "신갈 총각손칼국수", "siteUrl": "https://www.yongin.go.kr/", "key": "용인만골근린공원숲놀이터", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}, {"type": "outing", "day": "sat", "driveMin": 13, "badgeType": "🌳 나들이 1", "badgeDay": "☀️ 토요일 추천", "title": "오산맑음터공원 & 에코리움", "drive": "🚗 자차 약 12~14분 (오산시 탑동)", "summary": "무료 생태학습관(에코리움) + 대형 놀이터 + 평지 산책로 복합 공원", "girl": "에코리움 민물고기·곤충 관찰 및 전망대 체험, 야외 그물다리·미끄럼틀 놀이터", "boy": "차도 없는 안전한 평지 잔디밭 걷기, 탄성 바닥 유아용 낮은 미끄럼틀, 무장애 데크 산책", "tip": "에코리움 내 엘리베이터·수유실·기저귀 교환대 구비 (죽미령공원과 가장 비슷한 구성)", "noodleTag": "🍜 백청우칼국수 오산점", "noodleName": "🍜 연계 국수집: 백청우칼국수 오산점 (차로 5~7분)", "noodleDesc": "지난주 두 아이 모두 맛있게 먹은 검증된 맑은 해물칼국수 & 손만두 (주차장·아기의자 구비)", "placeQuery": "오산맑음터공원", "foodQuery": "백청우칼국수 오산점", "siteUrl": "https://www.osan.go.kr/", "key": "오산맑음터공원&에코리움", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}, {"type": "outing", "day": "sun", "driveMin": 23, "badgeType": "🌳 나들이 3", "badgeDay": "🌧️ 일요일 우천·실내", "title": "수원 국립농업박물관 & 식물원", "drive": "🚗 자차 약 22~25분 (수원 권선구)", "summary": "비 오는 일요일 유모차로 전 구역 이동 가능한 쾌적한 국립 실내 박물관", "girl": "인터랙티브 어린이박물관, 트랙터 시뮬레이터 탑승, 농업·곤충 전시 체험", "boy": "따뜻한 실내 식물원 폭포·비단잉어 구경, 넓고 평탄한 실내 복도 유모차 산책", "tip": "유모차 무료 대여, 층별 최신 수유실 및 가족 화장실, 넓은 주차장 완비", "noodleTag": "🍜 기장옥 샤브칼국수", "noodleName": "🍜 연계 국수집: 기장옥 샤브칼국수 수원본점 (차로 6분)", "noodleDesc": "맵지 않은 맑은 육수 소고기 샤브샤브 + 칼국수 + 계란야채죽 코스 (아기의자 구비)", "placeQuery": "수원 국립농업박물관", "foodQuery": "기장옥 샤브칼국수 수원본점", "siteUrl": "https://www.nam.or.kr/", "key": "수원국립농업박물관&식물원", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}, {"type": "festival", "day": "sun", "driveMin": 38, "badgeType": "🎉 축제 2 (10~11월)", "badgeDay": "🌧️ 실내외 겸용", "title": "국립과천과학관 《레트로 & 퓨처》", "drive": "🚗 자차 약 35~45분 (과천시 상하벌로)", "summary": "로봇·AI 미션 체험과 유아체험관·공룡공원을 한 번에 즐기는 가을 과학축제", "girl": "아기 로봇 G1 미션, AI 모션 스포츠, 자연사관 공룡·곤충 특별 해설 참여", "boy": "1층 만 5세 이하 전용 유아체험관 놀이터, 야외 실물 기차 및 공룡공원 산책", "tip": "대형 실내 시설로 일요일 비 예보 시에도 날씨 영향 없이 종일 나들이 가능", "noodleTag": "🍜 과천 한성칼국수", "noodleName": "🍜 연계 국수집: 과천 한성칼국수 (차로 5~7분)", "noodleDesc": "자극 없는 진한 사골 손칼국수·사골만둣국·접시만두 (1층 넓은 전용 주차장)", "placeQuery": "국립과천과학관", "foodQuery": "과천 한성칼국수", "siteUrl": "https://www.sciencecenter.go.kr/", "key": "국립과천과학관《레트로&퓨처》", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}, {"type": "festival", "day": "sun", "driveMin": 16, "badgeType": "🎉 기획전 3 (~10/25)", "badgeDay": "🌧️ 일요일 우천·실내", "title": "경기도어린이박물관 《열려라~ 독립상자!》", "drive": "🚗 자차 약 15~18분 (용인 기흥구 상갈동)", "summary": "기간 한정 체험형 순회전시 & 주말 작가 워크숍이 열리는 실내 대표 명소", "girl": "1층 독립상자 열기 미션·역사 보드게임·스탬프 체험, 5~7세 주말 워크숍 '펭귄 도미노'", "boy": "1층 만 3세 이하 영유아 전용 공간 '자연놀이터'(푹신한 매트·채소 뽑기 촉각 놀이)", "tip": "100% 사전 예약제로 쾌적함 유지, 층별 유모차 보관소 및 수유실 완비", "noodleTag": "🍜 신갈 총각손칼국수", "noodleName": "🍜 연계 국수집: 신갈 총각손칼국수 (차로 5분)", "noodleDesc": "구수한 멸치육수 손칼국수 (박물관 관람 전후 이동 동선 최적)", "placeQuery": "경기도어린이박물관", "foodQuery": "신갈 총각손칼국수", "siteUrl": "https://gcm.ggcf.kr/", "key": "경기도어린이박물관《열려라~독립상자!》", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}, {"type": "festival", "day": "sat", "driveMin": 18, "badgeType": "🎉 축제 1 (10/17~25)", "badgeDay": "☀️ 토요일 추천", "title": "2026 세계유산 조선왕릉축전 (융건릉)", "drive": "🚗 자차 약 15~20분 (화성시 안녕동)", "summary": "평탄한 소나무 숲길 산책과 기간 한정 어린이 사관 미션·공연 축제", "girl": "어린이 미션 프로그램 '조선명탐정: 왕릉사관록', 야외 왕릉 책마당 및 전통 공연", "boy": "턱이 없는 평탄한 소나무 숲길 유모차 산책, 솔방울과 도토리 줍기 놀이", "tip": "정문 매표소 및 역사문화관 인근 수유실·가족 화장실 구비", "noodleTag": "🍜 융건릉맨날국수", "noodleName": "🍜 연계 국수집: 융건릉맨날국수 화성점 (정문 차로 1분)", "noodleDesc": "시원하고 맑은 동죽조개칼국수 & 배말톳김밥 (1층 유모차 진입 수월·아기의자 구비)", "placeQuery": "화성 융건릉", "foodQuery": "융건릉맨날국수 화성점", "siteUrl": "https://jrtf.or.kr/brand/info/", "key": "2026세계유산조선왕릉축전(융건릉)", "latestDate": "2026-10-17", "latestWeek": "10월 3주", "latestPath": "docs/2026-10/2026-10-17.html", "recommendCount": 1, "appearances": [{"id": "2026-10-17", "date": "2026-10-17", "week": "10월 3주", "path": "docs/2026-10/2026-10-17.html"}]}]}/*__END_ALL_SPOTS_JSON__*/;
+    let allSpots = [];
+    let currentFilter = 'all';
+    let currentView = 'card';
+
+    async function init() {
+      let payload = INLINE_ARCHIVE;
+      try {
+        const res = await fetch('all-spots.json?v=' + Date.now());
+        if (res.ok) {
+          payload = await res.json();
+        }
+      } catch (e) {}
+
+      allSpots = payload.spots || [];
+      const meta = payload.meta || {};
+      const outingCnt = allSpots.filter(s => s.type === 'outing').length;
+      const festCnt = allSpots.filter(s => s.type === 'festival').length;
+      const nearCnt = allSpots.filter(s => (s.driveMin || 999) <= 30).length;
+
+      document.getElementById('kpiUnique').innerText = `${allSpots.length}곳`;
+      document.getElementById('kpiSplit').innerText = `${outingCnt} / ${festCnt}`;
+      document.getElementById('kpiNear').innerText = `${nearCnt}곳`;
+      document.getElementById('kpiWeeks').innerText = `${meta.weekCount || 0}주`;
+
+      applyFilters();
+    }
+
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      applyFilters();
+    }
+
+    function setView(v) {
+      currentView = v;
+      document.getElementById('btnCardView').classList.toggle('active', v === 'card');
+      document.getElementById('btnTableView').classList.toggle('active', v === 'table');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchBox').value.trim().toLowerCase();
+      const sortBy = document.getElementById('sortSelect').value;
+
+      let list = allSpots.filter(s => {
+        if (currentFilter === 'outing' && s.type !== 'outing') return false;
+        if (currentFilter === 'festival' && s.type !== 'festival') return false;
+        if (currentFilter === 'near30' && (s.driveMin || 999) > 30) return false;
+        if (currentFilter === 'near45' && (s.driveMin || 999) > 45) return false;
+        if (currentFilter === 'noodle' && !s.noodleName) return false;
+        if (currentFilter === 'repeat' && (s.recommendCount || 1) < 2) return false;
+
+        if (q) {
+          const hay = [
+            s.title, s.drive, s.summary, s.girl, s.boy, s.tip, s.parking,
+            s.noodleTag, s.noodleName, s.noodleDesc, s.latestDate
+          ].filter(Boolean).join(' ').toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      list.sort((a, b) => {
+        if (sortBy === 'drive') return (a.driveMin || 999) - (b.driveMin || 999);
+        if (sortBy === 'count') return (b.recommendCount || 1) - (a.recommendCount || 1) || (b.latestDate || '').localeCompare(a.latestDate || '');
+        if (sortBy === 'name') return (a.title || '').localeCompare(b.title || '', 'ko');
+        return (b.latestDate || '').localeCompare(a.latestDate || '');
+      });
+
+      document.getElementById('resultCount').innerText = `표시 중: ${list.length}곳 (전체 ${allSpots.length}곳)`;
+      render(list);
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function render(list) {
+      const area = document.getElementById('contentArea');
+      if (list.length === 0) {
+        area.innerHTML = '<div class="empty-state">조건에 맞는 추천 장소가 없습니다.</div>';
+        return;
+      }
+
+      if (currentView === 'table') {
+        area.innerHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>장소명</th>
+                  <th>이동</th>
+                  <th>주변 맛집</th>
+                  <th>추천 주차</th>
+                  <th>요약</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${list.map(s => `
+                  <tr onclick="openModal('${esc(s.key)}')">
+                    <td><span class="badge ${s.type === 'festival' ? 'festival' : 'outing'}">${esc(s.badgeType || (s.type === 'festival' ? '🎉 축제' : '🌿 나들이'))}</span></td>
+                    <td style="font-weight:800; color:#fff;">${esc(s.title)}</td>
+                    <td style="white-space:nowrap; color:#cbd5e1;">${s.driveMin ? s.driveMin + '분' : '-'}</td>
+                    <td style="color:#fde68a;">${esc(s.noodleName || '-')}</td>
+                    <td style="white-space:nowrap;">${esc(s.latestDate)} ${s.recommendCount > 1 ? `(${s.recommendCount}회)` : ''}</td>
+                    <td style="color:#94a3b8; max-width:340px;">${esc(s.summary)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        return;
+      }
+
+      area.innerHTML = `<div class="card-grid">${list.map(s => `
+        <div class="spot-card" onclick="openModal('${esc(s.key)}')">
+          <div>
+            <div class="badges">
+              <span class="badge ${s.type === 'festival' ? 'festival' : 'outing'}">${esc(s.badgeType || (s.type === 'festival' ? '🎉 축제' : '🌿 나들이'))}</span>
+              <span class="badge date">${esc(s.latestDate)}</span>
+              ${s.recommendCount > 1 ? `<span class="badge repeat">🔄 ${s.recommendCount}회 추천</span>` : ''}
+            </div>
+            <div class="spot-title">${esc(s.title)}</div>
+            <div class="spot-drive">${esc(s.drive)}</div>
+            <div class="spot-summary">${esc(s.summary)}</div>
+            ${s.noodleName ? `<div class="noodle-chip">🍜 ${esc(s.noodleName)}</div>` : ''}
+          </div>
+          <div class="spot-footer">
+            <span>상세 &amp; 지도 보기</span>
+            <span>→</span>
+          </div>
+        </div>
+      `).join('')}</div>`;
+    }
+
+    function openModal(key) {
+      const s = allSpots.find(x => x.key === key);
+      if (!s) return;
+
+      document.getElementById('mBadges').innerHTML = `
+        <span class="badge ${s.type === 'festival' ? 'festival' : 'outing'}">${esc(s.badgeType || '')}</span>
+        <span class="badge date">최근 ${esc(s.latestDate)}</span>
+        ${s.recommendCount > 1 ? `<span class="badge repeat">총 ${s.recommendCount}회 추천</span>` : ''}
+      `;
+      document.getElementById('mTitle').innerText = s.title || '';
+      document.getElementById('mDrive').innerText = s.drive || '';
+      document.getElementById('mSummary').innerText = s.summary || '-';
+      document.getElementById('mGirl').innerText = s.girl || '-';
+      document.getElementById('mBoy').innerText = s.boy || '-';
+      document.getElementById('mTip').innerText = s.tip || '-';
+
+      if (s.parking) {
+        document.getElementById('mParkingBox').style.display = 'block';
+        document.getElementById('mParking').innerText = s.parking;
+      } else {
+        document.getElementById('mParkingBox').style.display = 'none';
+      }
+
+      document.getElementById('mNoodleLabel').innerText = `🍜 ${s.noodleTag || '주변 맛집'}: ${s.noodleName || '-'}`;
+      document.getElementById('mNoodle').innerText = s.noodleDesc || '-';
+
+      const histHtml = (s.appearances || []).map(a =>
+        `<a href="${esc(a.path)}" class="action-btn" style="padding:4px 10px; font-size:0.75rem;">${esc(a.date)} (${esc(a.week)})</a>`
+      ).join('');
+      document.getElementById('mHistory').innerHTML = histHtml;
+
+      const links = [];
+      if (s.placeQuery) {
+        links.push(`<a class="action-btn primary" target="_blank" href="https://map.naver.com/p/search/${encodeURIComponent(s.placeQuery)}">📍 장소 네이버지도</a>`);
+      }
+      if (s.foodQuery) {
+        links.push(`<a class="action-btn" target="_blank" href="https://map.naver.com/p/search/${encodeURIComponent(s.foodQuery)}">🍜 맛집 네이버지도</a>`);
+      }
+      if (s.siteUrl) {
+        links.push(`<a class="action-btn" target="_blank" href="${esc(s.siteUrl)}">🔗 공식 안내</a>`);
+      }
+      document.getElementById('mLinks').innerHTML = links.join('');
+      document.getElementById('spotModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('spotModal').classList.remove('open');
+    }
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    init();
+  </script>
+</body>
+</html>

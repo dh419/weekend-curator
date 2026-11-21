@@ -66,6 +66,21 @@
       </div>
     </div>
 
+    <!-- Pinned Top Entry -->
+    <div class="px-3 pt-3 pb-2 border-b border-slate-800/80 bg-slate-900/90">
+      <div class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400/90 px-1 mb-1.5 flex items-center gap-1">
+        <span>📌</span><span>고정 메뉴</span>
+      </div>
+      <button onclick="selectAllSpots()" id="item-all-spots"
+        class="report-btn w-full text-left p-2.5 rounded-lg transition-all duration-150 group border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-indigo-200 group-hover:text-white">전체 추천 리스트 모아보기</span>
+          <span id="allSpotsBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">ALL</span>
+        </div>
+        <div class="text-[11px] text-slate-400 group-hover:text-slate-300 truncate mt-0.5">누적 나들이 · 축제 · 맛집 통합 검색</div>
+      </button>
+    </div>
+
     <!-- Report Items Navigation -->
     <div class="flex-1 overflow-y-auto p-3 space-y-1" id="reportList">
       <div class="text-center py-8 text-xs text-slate-500">리포트 목록을 불러오는 중...</div>
@@ -130,8 +145,12 @@
         reports = await res.json();
         renderList(reports);
         
-        // Handle URL Hash navigation (e.g. #2026-W45)
+        // Handle URL Hash navigation (e.g. #all-spots or #2026-W45)
         const hash = window.location.hash.replace('#', '').trim();
+        if (hash === 'all-spots') {
+          selectAllSpots();
+          return;
+        }
         if (hash) {
           const matched = reports.find(r => r.id === hash || r.week === hash);
           if (matched) {
@@ -195,6 +214,19 @@
       highlightItem(id);
 
       // Close mobile sidebar if open
+      if (window.innerWidth < 768) {
+        toggleSidebar(false);
+      }
+    }
+
+    function selectAllSpots() {
+      currentReport = { id: 'all-spots', week: '📌 전체', title: '전체 나들이 · 맛집 추천 모아보기', path: 'all-spots.html' };
+      document.getElementById('currentBadge').innerText = '📌 전체';
+      document.getElementById('currentTitle').innerText = '전체 나들이 · 맛집 추천 모아보기';
+      document.getElementById('externalLink').href = 'all-spots.html';
+      document.getElementById('reportFrame').src = 'all-spots.html';
+      history.replaceState(null, null, '#all-spots');
+      highlightItem('all-spots');
       if (window.innerWidth < 768) {
         toggleSidebar(false);
       }
