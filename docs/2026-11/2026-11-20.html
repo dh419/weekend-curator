@@ -196,6 +196,67 @@
     .map-btn.sub { background: #2563eb; }
     .map-btn.site { background: #475569; }
     .check-label { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; font-size: 0.9rem; }
+    .extra-section {
+      margin-top: 34px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-head .section-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .extra-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .extra-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .extra-card .spot-title { margin-bottom: 2px; }
+    .extra-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .mini-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .mini-box strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .badge.play { background: #e0f2fe; color: #0369a1; }
+    .badge.meal { background: #fef2f2; color: #dc2626; }
+    .badge.mild { background: var(--green-soft); color: var(--green); }
     /*__WC_DARK_THEME__*/
     :root[data-theme="dark"] {
       --bg: #0b1120;
@@ -221,6 +282,9 @@
     :root[data-theme="dark"] .info-box { background: #0f172a !important; border-color: #334155 !important; }
     :root[data-theme="dark"] .close-btn { background: #1e293b !important; color: #f1f5f9 !important; }
     :root[data-theme="dark"] .spot-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .mini-box { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    :root[data-theme="dark"] .badge.play { background: rgba(14, 165, 233, 0.2); color: #38bdf8; }
+    :root[data-theme="dark"] .badge.meal { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
   </style>
 </head>
 <body>
@@ -238,10 +302,142 @@
       <button class="filter-btn" onclick="filterSpots('outing', this)">🌳 나들이 (3)</button>
       <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
       <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
+      <button class="filter-btn" onclick="scrollToSection('home-play-section')">🏠 집안 놀이 (3)</button>
+      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (3)</button>
       <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
     </div>
 
     <div class="card-grid" id="grid"></div>
+
+    <section class="extra-section" id="home-play-section">
+      <div class="section-head">
+        <h2>🏠 추위·휴식 대비 집안 놀이 3종 추천</h2>
+        <span class="section-sub">은우(7세) &amp; 우준(3세) 함께 노는 저소음·저준비물 놀이</span>
+      </div>
+      <div class="extra-grid">
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge play">🏠 집안 놀이 1</span>
+            <span class="badge mild">🚗 신체·균형</span>
+          </div>
+          <div class="spot-title">거실 테이프 도로 &amp; 주차 미션</div>
+          <div class="extra-meta">준비물: 종이(마스킹)테이프, 장난감 자동차, 색종이 신호등</div>
+          <div class="mini-box">
+            <strong>👧 은우(7세) 포인트</strong>
+            직접 테이프로 교차로·회전구간·주차 칸 번호를 설계하고, "2번 칸에 후진 주차" 같은 미션 카드 놀이로 확장할 수 있어요.
+          </div>
+          <div class="mini-box">
+            <strong>👦 우준(3세) 포인트</strong>
+            바닥 선을 따라 기어가거나 자동차를 굴리고, 테이프 길 위를 발 맞춰 걸으며 대근육 균형 감각을 기르기 좋습니다.
+          </div>
+          <div class="mini-box">
+            <strong>💡 부모 팁</strong>
+            점핑 없이 기어다니고 걷는 놀이라 층간소음 걱정이 적고, 놀이 후 테이프만 떼어내면 정리가 1분 만에 끝납니다.
+          </div>
+        </article>
+
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge play">🏠 집안 놀이 2</span>
+            <span class="badge mild">🏕️ 상상·역할</span>
+          </div>
+          <div class="spot-title">이불 동굴 캠핑 &amp; 손전등 그림자극</div>
+          <div class="extra-meta">준비물: 얇은 이불/담요, 의자·소파, 스마트폰 손전등, 인형</div>
+          <div class="mini-box">
+            <strong>👧 은우(7세) 포인트</strong>
+            동굴 입구 간판을 그려 붙이고, 손전등으로 동물 손그림자나 인형극 스토리를 직접 만들어 동생에게 들려주는 감독 역할을 좋아합니다.
+          </div>
+          <div class="mini-box">
+            <strong>👦 우준(3세) 포인트</strong>
+            어두운 텐트 공간의 아늑함에 집중력이 높아지며, 불빛에 비친 동물 모양 맞히기와 까꿍 놀이로 즐거워합니다.
+          </div>
+          <div class="mini-box">
+            <strong>💡 부모 팁</strong>
+            식탁 의자 두 개나 소파 등받이에 이불을 고정하면 안전하며, 안에서 간식 타임(과일·보리차)까지 묶으면 주말 오후 1시간이 순삭됩니다.
+          </div>
+        </article>
+
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge play">🏠 집안 놀이 3</span>
+            <span class="badge mild">🎳 에너지 발산</span>
+          </div>
+          <div class="spot-title">종이컵 볼링 &amp; 수면양말 골인 게임</div>
+          <div class="extra-meta">준비물: 종이컵 10개(또는 빈 페트병), 말아 둔 수면양말, 빨래바구니</div>
+          <div class="mini-box">
+            <strong>👧 은우(7세) 포인트</strong>
+            종이컵에 점수(1~5점)를 적어 피라미드로 쌓고, 몇 개를 쓰러뜨렸는지 덧셈·점수판 기록까지 자연스럽게 놀이로 연결됩니다.
+          </div>
+          <div class="mini-box">
+            <strong>👦 우준(3세) 포인트</strong>
+            가벼운 양말 공을 던져 종이컵 탑을 무너뜨리는 쾌감이 크고, 다쳐도 전혀 아프지 않아 안전하게 에너지를 쏟을 수 있어요.
+          </div>
+          <div class="mini-box">
+            <strong>💡 부모 팁</strong>
+            거실 매트 위에서 진행하고 단단한 공 대신 말아 둔 양말을 사용하면 가구 파손과 소음 모두 방지할 수 있습니다.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="extra-section" id="kids-meal-section">
+      <div class="section-head">
+        <h2>🍳 토·일 애들 먹일 비매운 요리 3종 추천</h2>
+        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0%)</span>
+      </div>
+      <div class="extra-grid">
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge meal">🍲 토요일 추천</span>
+            <span class="badge mild">🌶️ 맵기 0% · 따뜻한국물</span>
+          </div>
+          <div class="spot-title">맑은 소고기 무 떡만둣국</div>
+          <div class="extra-meta">⏱️ 약 20분 · 재료: 소고기(양지/국거리), 무, 떡국떡, 물만두, 계란, 국간장</div>
+          <div class="mini-box">
+            <strong>👩‍🍳 3단계 초간단 레시피</strong>
+            ① 나박 썬 무와 소고기를 참기름에 살짝 볶다 물을 부어 10분 끓입니다. ② 떡국떡과 한입 크기 물만두를 넣고 국간장·소금으로 슴슴하게 간합니다. ③ 계란물을 둘러 익힌 뒤 김가루를 올려 완성!
+          </div>
+          <div class="mini-box">
+            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
+            후추·고춧가루 없이 맑고 구수한 국물이라 추운 토요일에 딱입니다. 우준이용 떡은 먹기 전에 가위로 반 잘라 주면 목 걸림 없이 안전해요.
+          </div>
+        </article>
+
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge meal">🍙 일요일 점심 추천</span>
+            <span class="badge mild">🧀 맵기 0% · 촉촉바삭</span>
+          </div>
+          <div class="spot-title">치즈 감자채전 &amp; 햄야채 주먹밥</div>
+          <div class="extra-meta">⏱️ 약 20분 · 재료: 감자 2개, 피자치즈, 소금, 밥, 다진 당근·애호박·햄, 참기름</div>
+          <div class="mini-box">
+            <strong>👩‍🍳 3단계 초간단 레시피</strong>
+            ① 얇게 채 썬 감자(전분 물기 그대로)에 소금 한 꼬집을 섞어 팬에 얇게 펼칩니다. ② 앞뒤로 노릇하게 굽다 치즈를 올려 녹입니다. ③ 잘게 다져 볶은 햄·야채를 밥과 참기름에 비벼 동그랗게 뭉칩니다.
+          </div>
+          <div class="mini-box">
+            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
+            케첩 대신 치즈의 고소함으로 간을 맞추면 맵지 않고 담백합니다. 주먹밥은 은우가 직접 동그랗게 빚는 요리 놀이로 참여시키면 편식도 줄어요.
+          </div>
+        </article>
+
+        <article class="extra-card">
+          <div class="badges">
+            <span class="badge meal">🍗 주말 저녁 특식</span>
+            <span class="badge mild">🍯 맵기 0% · 단짠단백</span>
+          </div>
+          <div class="spot-title">순한 버터간장 닭안심 계란덮밥</div>
+          <div class="extra-meta">⏱️ 약 15분 · 재료: 닭안심, 양파, 계란 2개, 진간장, 올리고당(설탕), 버터 1조각</div>
+          <div class="mini-box">
+            <strong>👩‍🍳 3단계 초간단 레시피</strong>
+            ① 한입 크기로 자른 닭안심과 채 썬 양파를 팬에 볶습니다. ② 물 5큰술·간장 2큰술·올리고당 1.5큰술을 넣고 약불로 졸입니다. ③ 푼 계란과 버터를 두르고 반숙 느낌일 때 따뜻한 밥 위에 얹습니다.
+          </div>
+          <div class="mini-box">
+            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
+            퍽퍽하지 않은 닭안심과 부드러운 계란, 버터 간장의 달콤짭짤한 조합이라 매운 걸 못 먹는 아이들도 밥 한 그릇을 금방 비웁니다.
+          </div>
+        </article>
+      </div>
+    </section>
   </div>
 
   <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
@@ -376,6 +572,11 @@
 
     function closeChecklist() {
       document.getElementById('ckBackdrop').classList.remove('open');
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     renderGrid();
