@@ -25,6 +25,40 @@
       --muted: #94a3b8;
       --border: #334155;
     }
+    :root[data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --card: #ffffff;
+      --card-hover: #f1f5f9;
+      --primary: #4f46e5;
+      --primary-soft: #e0e7ff;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+      --amber: #b45309;
+      --amber-soft: #fef3c7;
+      --sky: #0369a1;
+      --sky-soft: #e0f2fe;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    :root[data-theme="light"] .spot-title,
+    :root[data-theme="light"] #mTitle { color: #0f172a !important; }
+    :root[data-theme="light"] .spot-summary,
+    :root[data-theme="light"] .detail-box,
+    :root[data-theme="light"] th { color: #334155 !important; }
+    :root[data-theme="light"] th { background: #f1f5f9 !important; }
+    :root[data-theme="light"] .noodle-chip { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+    :root[data-theme="light"] .spot-footer { color: #4338ca; }
+    :root[data-theme="light"] .detail-label { color: #1d4ed8; }
+    :root[data-theme="light"] .modal-close { color: #0f172a; }
+    :root[data-theme="light"] .action-btn { color: #0f172a; }
+    :root[data-theme="light"] .action-btn.primary { color: #ffffff; }
+    :root[data-theme="light"] .badge.indoor { background: #e0f2fe; color: #0369a1; }
+    :root[data-theme="light"] .badge.outdoor { background: #ffedd5; color: #c2410c; }
+    :root[data-theme="light"] .badge.both { background: #ccfbf1; color: #0f766e; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%;
@@ -665,6 +699,17 @@
 
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeModal();
+    });
+
+    function applyTheme(t) {
+      document.documentElement.dataset.theme = (t === 'light') ? 'light' : 'dark';
+    }
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) applyTheme(savedTheme);
+    } catch (e) {}
+    window.addEventListener('message', e => {
+      if (e.data && e.data.type === 'wc-theme') applyTheme(e.data.theme);
     });
 
     init();

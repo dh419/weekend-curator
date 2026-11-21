@@ -31,6 +31,32 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Unified Light Theme Overrides */
+    html[data-theme="light"], html[data-theme="light"] body { background: #f8fafc !important; color: #0f172a !important; }
+    html[data-theme="light"] #sidebar { background: #ffffff !important; border-color: #e2e8f0 !important; }
+    html[data-theme="light"] #sidebar .border-slate-800,
+    html[data-theme="light"] #sidebar .border-slate-800\/80 { border-color: #e2e8f0 !important; }
+    html[data-theme="light"] #sidebar h1,
+    html[data-theme="light"] #sidebar .text-white { color: #0f172a !important; }
+    html[data-theme="light"] #sidebar .text-slate-200 { color: #1e293b !important; }
+    html[data-theme="light"] #sidebar .text-slate-400 { color: #64748b !important; }
+    html[data-theme="light"] #sidebar .text-slate-500 { color: #64748b !important; }
+    html[data-theme="light"] #sidebar .bg-slate-950,
+    html[data-theme="light"] #sidebar .bg-slate-950\/40,
+    html[data-theme="light"] #sidebar .bg-slate-900\/90 { background: #f8fafc !important; }
+    html[data-theme="light"] #searchInput { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+    html[data-theme="light"] #item-all-spots { background: #eef2ff !important; border-color: #c7d2fe !important; }
+    html[data-theme="light"] #item-all-spots .text-indigo-200 { color: #3730a3 !important; }
+    html[data-theme="light"] .report-btn:hover { background: #f1f5f9 !important; }
+    html[data-theme="light"] main { background: #f8fafc !important; }
+    html[data-theme="light"] header { background: rgba(255, 255, 255, 0.9) !important; border-color: #e2e8f0 !important; }
+    html[data-theme="light"] #currentTitle { color: #0f172a !important; }
+    html[data-theme="light"] #copyBtn { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
+    html[data-theme="light"] #externalLink { color: #475569 !important; }
+    html[data-theme="light"] #reportFrame,
+    html[data-theme="light"] main > div.flex-1 { background: #f8fafc !important; }
+    html[data-theme="light"] #themeToggleBtn { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
   </style>
 </head>
 <body class="h-full flex overflow-hidden font-sans antialiased">
@@ -52,9 +78,15 @@
           <p class="text-[11px] text-slate-400 mt-1">Family Weekend Dashboard</p>
         </div>
       </div>
-      <button class="md:hidden text-slate-400 hover:text-white p-1" onclick="toggleSidebar()">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
+      <div class="flex items-center gap-1.5">
+        <button id="themeToggleBtn" onclick="toggleHubTheme()" title="라이트/다크 테마 전환"
+          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <span id="themeIcon">☀️</span><span id="themeLabel">라이트</span>
+        </button>
+        <button class="md:hidden text-slate-400 hover:text-white p-1" onclick="toggleSidebar()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
     </div>
 
     <!-- Quick Search / Filter -->
@@ -292,6 +324,44 @@
         document.getElementById('searchInput').focus();
       }
     });
+
+    function getHubTheme() {
+      return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+    }
+
+    function syncIframeTheme() {
+      const frame = document.getElementById('reportFrame');
+      try {
+        if (frame && frame.contentWindow) {
+          frame.contentWindow.postMessage({ type: 'wc-theme', theme: getHubTheme() }, '*');
+        }
+      } catch (e) {}
+    }
+
+    function applyHubTheme(theme) {
+      const t = theme === 'light' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+      try { localStorage.setItem('theme', t); } catch (e) {}
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      if (icon && label) {
+        if (t === 'light') {
+          icon.textContent = '🌙';
+          label.textContent = '다크';
+        } else {
+          icon.textContent = '☀️';
+          label.textContent = '라이트';
+        }
+      }
+      syncIframeTheme();
+    }
+
+    function toggleHubTheme() {
+      applyHubTheme(getHubTheme() === 'light' ? 'dark' : 'light');
+    }
+
+    document.getElementById('reportFrame').addEventListener('load', syncIframeTheme);
+    applyHubTheme(getHubTheme());
 
     init();
   </script>
