@@ -82,6 +82,36 @@ def normalize_key(title):
     return re.sub(r'\s+', '', str(title or '')).strip().lower()
 
 
+def infer_env_type(sp):
+    explicit = str(sp.get('envType') or sp.get('indoorType') or '').strip().lower()
+    if explicit in ('indoor', 'outdoor', 'both'):
+        return explicit
+
+    title = str(sp.get('title') or '')
+    body = ' '.join(str(sp.get(k) or '') for k in ('summary', 'girl', 'boy', 'tip', 'parking'))
+    full = f"{title} {body}"
+
+    # Explicit compound/hybrid venues first
+    if any(k in title for k in ('수목원', '식물원', '과학관', '농업박물관', '에코리움', '맑음터', '맑음나눔터', '푸른숲도서관', '라크몽', '역사문화관', '농촌테마파크')):
+        return 'both'
+    if '상상캠퍼스' in title and ('실외' in full or '산책' in full or '야외' in full):
+        return 'both'
+
+    has_indoor = any(k in full for k in ('실내', '박물관', '과학관', '미술관', '아트홀', '아트센터', '어린이문화센터', '도서관', '아쿠아리움', '수족관', '키즈카페', '온실', '체험관', '상상의숲', '놀이터 페스타', '아트 놀이터'))
+    has_outdoor = any(k in full for k in ('야외', '실외', '호수공원', '근린공원', '여울공원', '수목원', '에버랜드', '서울랜드', '서울대공원', '민속촌', '팜랜드', '승마', '피크닉', '산책로', '둘레길', '모래놀이', '물놀이', '왕릉', '광장', '성지', '숲길', '예스파크', '빛축제'))
+
+    if '아트센터' in title and '피크닉' in title:
+        return 'outdoor'
+    if any(k in title for k in ('어린이문화센터', '어린이박물관', '빛누리아트홀', '어린이상상의숲', '키즈 아트 놀이터', '디오라마 특별전')):
+        return 'indoor'
+
+    if has_indoor and has_outdoor:
+        return 'both'
+    if has_indoor:
+        return 'indoor'
+    return 'outdoor'
+
+
 def build_all_spots(reports):
     # Reports are already sorted newest-first
     by_key = {}
@@ -101,6 +131,7 @@ def build_all_spots(reports):
             if key not in by_key:
                 entry = dict(sp)
                 entry['key'] = key
+                entry['envType'] = infer_env_type(sp)
                 entry['latestDate'] = rep['date']
                 entry['latestWeek'] = rep['week']
                 entry['latestPath'] = rep['path']
