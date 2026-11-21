@@ -5,6 +5,7 @@ import time
 from datetime import datetime, timedelta
 from google import genai
 from google.genai import types
+from weekend_defaults import DEFAULT_HOME_PLAYS, DEFAULT_KIDS_MEALS
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(REPO_ROOT, 'docs')
@@ -56,6 +57,8 @@ def generate_dashboard():
    - 각 장소별 은우({girl_age}세) 맞춤 활동, 우준({boy_age}세) 맞춤 놀이, 유모차/편의시설 팁
    - **주차장 정보 상세(필수)**: 전용 주차장 위치(지상/지하), 주차 요금(무료/유료 시간당 요금), 주말 혼잡도 및 만차 시 주차 팁
    - 각 장소 인근 맵지 않고 순한 국수 맛집(바지락칼국수, 잔치국수, 사골칼국수, 우동 등) 매칭 (아기의자, 식당 자체 주차장 유무 포함)
+3. 집안 놀이 3종 (추위·우천·휴식 대비 두 아이가 함께 노는 저소음·저준비물 놀이)
+4. 토·일 비매운 아이 요리 7종 (매운 양념 0%, 순한 국물·부드러운 식감 중심 주말 집밥/간식)
 
 반드시 아래 JSON 스키마 규격으로만 출력하세요 (마크다운 코드블록 없이 순수 JSON만 반환):
 {{
@@ -80,6 +83,26 @@ def generate_dashboard():
       "placeQuery": "네이버 지도 검색어",
       "foodQuery": "네이버 지도 검색어",
       "siteUrl": "공식 누리집 URL 또는 네이버 지도 URL"
+    }}
+  ],
+  "homePlays": [
+    {{
+      "tag": "🚗 신체·균형",
+      "title": "놀이 이름",
+      "prep": "준비물 요약",
+      "girl": "은우 맞춤 포인트",
+      "boy": "우준 맞춤 포인트",
+      "tip": "층간소음·정리 팁"
+    }}
+  ],
+  "kidsMeals": [
+    {{
+      "dayBadge": "🍲 토요일 추천",
+      "mildBadge": "🌶️ 맵기 0% · 특징",
+      "title": "요리명 (7종)",
+      "meta": "⏱️ 조리시간 · 재료 요약",
+      "recipe": "3단계 초간단 레시피",
+      "tip": "아이 맞춤 팁"
     }}
   ]
 }}
@@ -132,6 +155,8 @@ def generate_dashboard():
     data = json.loads(raw_text)
     weather_pills_html = data['weatherPillsHtml']
     spots_json_str = json.dumps(data['spots'], ensure_ascii=False)
+    home_plays_str = json.dumps(data.get('homePlays') or DEFAULT_HOME_PLAYS, ensure_ascii=False)
+    kids_meals_str = json.dumps(data.get('kidsMeals') or DEFAULT_KIDS_MEALS, ensure_ascii=False)
 
     with open(MASTER_HTML_PATH, 'r', encoding='utf-8') as f:
         template = f.read()
@@ -141,6 +166,8 @@ def generate_dashboard():
     html = html.replace('{{BOY_AGE}}', str(boy_age))
     html = html.replace('{{WEATHER_PILLS_HTML}}', weather_pills_html)
     html = html.replace('{{SPOTS_JSON}}', spots_json_str)
+    html = html.replace('{{HOME_PLAYS_JSON}}', home_plays_str)
+    html = html.replace('{{KIDS_MEALS_JSON}}', kids_meals_str)
 
     month_dir = os.path.join(DOCS_DIR, current_month_str)
     os.makedirs(month_dir, exist_ok=True)

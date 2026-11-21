@@ -196,6 +196,67 @@
     .map-btn.sub { background: #2563eb; }
     .map-btn.site { background: #475569; }
     .check-label { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; font-size: 0.9rem; }
+    .extra-section {
+      margin-top: 34px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-head .section-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .extra-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .extra-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .extra-card .spot-title { margin-bottom: 2px; }
+    .extra-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .mini-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .mini-box strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .badge.play { background: #e0f2fe; color: #0369a1; }
+    .badge.meal { background: #fef2f2; color: #dc2626; }
+    .badge.mild { background: var(--green-soft); color: var(--green); }
     /*__WC_DARK_THEME__*/
     :root[data-theme="dark"] {
       --bg: #0b1120;
@@ -221,6 +282,9 @@
     :root[data-theme="dark"] .info-box { background: #0f172a !important; border-color: #334155 !important; }
     :root[data-theme="dark"] .close-btn { background: #1e293b !important; color: #f1f5f9 !important; }
     :root[data-theme="dark"] .spot-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .mini-box { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    :root[data-theme="dark"] .badge.play { background: rgba(14, 165, 233, 0.2); color: #38bdf8; }
+    :root[data-theme="dark"] .badge.meal { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
   </style>
 </head>
 <body>
@@ -238,10 +302,28 @@
       <button class="filter-btn" onclick="filterSpots('outing', this)">🌳 나들이 (3)</button>
       <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
       <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
+      <button class="filter-btn" onclick="scrollToSection('home-play-section')">🏠 집안 놀이 (3)</button>
+      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (7)</button>
       <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
     </div>
 
     <div class="card-grid" id="grid"></div>
+
+    <section class="extra-section" id="home-play-section">
+      <div class="section-head">
+        <h2>🏠 추위·휴식 대비 집안 놀이 3종 추천</h2>
+        <span class="section-sub">은우({{GIRL_AGE}}세) &amp; 우준({{BOY_AGE}}세) 함께 노는 저소음·저준비물 놀이</span>
+      </div>
+      <div class="extra-grid" id="homePlayGrid"></div>
+    </section>
+
+    <section class="extra-section" id="kids-meal-section">
+      <div class="section-head">
+        <h2>🍳 토·일 애들 먹일 비매운 요리 7종 추천</h2>
+        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0%)</span>
+      </div>
+      <div class="extra-grid" id="kidsMealGrid"></div>
+    </section>
   </div>
 
   <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
@@ -310,6 +392,8 @@
 
   <script>
     const spots = {{SPOTS_JSON}};
+    const homePlays = {{HOME_PLAYS_JSON}};
+    const kidsMeals = {{KIDS_MEALS_JSON}};
 
     function renderGrid(filter = 'all') {
       const grid = document.getElementById('grid');
@@ -378,7 +462,47 @@
       document.getElementById('ckBackdrop').classList.remove('open');
     }
 
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderExtras() {
+      const playGrid = document.getElementById('homePlayGrid');
+      if (playGrid && Array.isArray(homePlays)) {
+        playGrid.innerHTML = homePlays.map((p, idx) => `
+          <article class="extra-card">
+            <div class="badges">
+              <span class="badge play">🏠 집안 놀이 ${idx + 1}</span>
+              <span class="badge mild">${p.tag || '실내 놀이'}</span>
+            </div>
+            <div class="spot-title">${p.title}</div>
+            <div class="extra-meta">${p.prep || ''}</div>
+            <div class="mini-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong>${p.girl || ''}</div>
+            <div class="mini-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong>${p.boy || ''}</div>
+            <div class="mini-box"><strong>💡 부모 팁</strong>${p.tip || ''}</div>
+          </article>
+        `).join('');
+      }
+      const mealGrid = document.getElementById('kidsMealGrid');
+      if (mealGrid && Array.isArray(kidsMeals)) {
+        mealGrid.innerHTML = kidsMeals.map(m => `
+          <article class="extra-card">
+            <div class="badges">
+              <span class="badge meal">${m.dayBadge || '🍲 주말 추천'}</span>
+              <span class="badge mild">${m.mildBadge || '🌶️ 맵기 0%'}</span>
+            </div>
+            <div class="spot-title">${m.title}</div>
+            <div class="extra-meta">${m.meta || ''}</div>
+            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${m.recipe || ''}</div>
+            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong>${m.tip || ''}</div>
+          </article>
+        `).join('');
+      }
+    }
+
     renderGrid();
+    renderExtras();
     /*__WC_DARK_JS__*/
     function applyWcTheme(t) {
       document.documentElement.dataset.theme = (t === 'dark') ? 'dark' : 'light';

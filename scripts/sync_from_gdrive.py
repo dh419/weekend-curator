@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
+from weekend_defaults import DEFAULT_HOME_PLAYS, DEFAULT_KIDS_MEALS
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(REPO_ROOT, 'docs')
@@ -69,6 +70,8 @@ def main():
     html = html.replace('{{BOY_AGE}}', str(boy_age))
     html = html.replace('{{WEATHER_PILLS_HTML}}', data['weatherPillsHtml'])
     html = html.replace('{{SPOTS_JSON}}', json.dumps(data['spots'], ensure_ascii=False))
+    html = html.replace('{{HOME_PLAYS_JSON}}', json.dumps(data.get('homePlays') or DEFAULT_HOME_PLAYS, ensure_ascii=False))
+    html = html.replace('{{KIDS_MEALS_JSON}}', json.dumps(data.get('kidsMeals') or DEFAULT_KIDS_MEALS, ensure_ascii=False))
 
     out_dir = os.path.join(DOCS_DIR, month_part)
     os.makedirs(out_dir, exist_ok=True)
