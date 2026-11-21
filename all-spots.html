@@ -44,6 +44,8 @@
       --muted: #64748b;
       --border: #e2e8f0;
     }
+    :root[data-theme="light"] header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); border-color: #93c5fd; }
+    :root[data-theme="light"] .kpi-box { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.28); }
     :root[data-theme="light"] .spot-title,
     :root[data-theme="light"] #mTitle { color: #0f172a !important; }
     :root[data-theme="light"] .spot-summary,
@@ -601,7 +603,7 @@
                   <tr onclick="openModal('${esc(s.key)}')">
                     <td><span class="badge ${s.type === 'festival' ? 'festival' : 'outing'}">${esc(s.badgeType || (s.type === 'festival' ? '🎉 축제' : '🌿 나들이'))}</span></td>
                     <td style="white-space:nowrap;">${envBadge(s.envType)}</td>
-                    <td style="font-weight:800; color:#fff;">${esc(s.title)}</td>
+                    <td style="font-weight:800; color:var(--text);">${esc(s.title)}</td>
                     <td style="white-space:nowrap; color:#cbd5e1;">${s.driveMin ? s.driveMin + '분' : '-'}</td>
                     <td style="color:#fde68a;">${esc(s.noodleName || '-')}</td>
                     <td style="white-space:nowrap;">${esc(s.latestDate)} ${(s.groupCount || s.recommendCount || 1) > 1 ? `(${s.groupCount || s.recommendCount}회)` : ''}</td>

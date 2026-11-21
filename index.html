@@ -236,8 +236,8 @@
       document.getElementById('currentTitle').innerText = target.title;
       document.getElementById('externalLink').href = target.path;
 
-      // Load into iframe
-      document.getElementById('reportFrame').src = target.path;
+      // Load into iframe (cache-busted for fresh theme/data)
+      document.getElementById('reportFrame').src = target.path + '?v=' + Date.now();
 
       // Update URL hash without scroll
       history.replaceState(null, null, '#' + target.id);
@@ -256,7 +256,7 @@
       document.getElementById('currentBadge').innerText = '📌 전체';
       document.getElementById('currentTitle').innerText = '전체 나들이 · 맛집 추천 모아보기';
       document.getElementById('externalLink').href = 'all-spots.html';
-      document.getElementById('reportFrame').src = 'all-spots.html';
+      document.getElementById('reportFrame').src = 'all-spots.html?v=' + Date.now();
       history.replaceState(null, null, '#all-spots');
       highlightItem('all-spots');
       if (window.innerWidth < 768) {
