@@ -112,6 +112,64 @@ def infer_env_type(sp):
     return 'outdoor'
 
 
+def core_tokens(sp):
+    raw = f"{sp.get('title', '')} {sp.get('placeQuery', '')}"
+    raw = re.sub(r'[《》〈〉「」\[\]\(\)·\.,&~\-\!]', ' ', raw)
+    raw = re.sub(r'\b20\d{2}\b|제?\d+회|제?\d+주년', ' ', raw)
+    raw = raw.replace('융릉 건릉', '융건릉').replace('융릉건릉', '융건릉').replace('맑음나눔터공원', '맑음터공원')
+    stop = {
+        '가을', '봄', '여름', '겨울', '크리스마스', '축제', '페스티벌', '특별', '기획전', '특별전',
+        '행사', '피날레', '세계유산', '유아동', '예술교육', '페스타', '창작', '연희극', '전시', '공연',
+        '마당', '숲놀이터', '가을축제', '단풍', '위시', '마켓', '피크닉', '공예', '빛축제', '호수공원',
+        '수원', '용인', '화성', '화성시', '오산', '과천', '이천', '안성', '기흥', '동탄', '어린이', '가족'
+    }
+    return {w for w in raw.split() if w not in stop and len(w) >= 2}
+
+
+def assign_similar_clusters(spots_list):
+    n = len(spots_list)
+    parent = list(range(n))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[rb] = ra
+
+    toks_list = [core_tokens(s) for s in spots_list]
+    for i in range(n):
+        for j in range(i + 1, n):
+            ti, tj = toks_list[i], toks_list[j]
+            inter = ti & tj
+            if inter and (len(inter) / len(ti | tj) >= 0.4 or any(len(w) >= 3 for w in inter)):
+                union(i, j)
+
+    clusters = {}
+    for i in range(n):
+        clusters.setdefault(find(i), []).append(i)
+
+    for root, idxs in clusters.items():
+        cid = f"c-{root}"
+        total_mentions = sum(spots_list[i].get('recommendCount', 1) for i in idxs)
+        for i in idxs:
+            sp = spots_list[i]
+            sp['clusterId'] = cid
+            sp['groupCount'] = max(len(idxs), total_mentions)
+            sp['relatedSpots'] = [
+                {
+                    "key": spots_list[j]['key'],
+                    "title": spots_list[j]['title'],
+                    "latestDate": spots_list[j].get('latestDate', ''),
+                }
+                for j in idxs if j != i
+            ]
+
+
 def build_all_spots(reports):
     # Reports are already sorted newest-first
     by_key = {}
@@ -146,6 +204,7 @@ def build_all_spots(reports):
 
     spots_list = list(by_key.values())
     spots_list.sort(key=lambda x: (x.get('latestDate', ''), x.get('title', '')), reverse=True)
+    assign_similar_clusters(spots_list)
 
     payload = {
         "meta": {

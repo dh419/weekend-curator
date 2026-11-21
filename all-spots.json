@@ -36,7 +36,10 @@
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
         }
-      ]
+      ],
+      "clusterId": "c-0",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -70,7 +73,10 @@
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
         }
-      ]
+      ],
+      "clusterId": "c-1",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -104,7 +110,10 @@
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
         }
-      ]
+      ],
+      "clusterId": "c-2",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -138,7 +147,10 @@
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
         }
-      ]
+      ],
+      "clusterId": "c-3",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -172,7 +184,10 @@
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
         }
-      ]
+      ],
+      "clusterId": "c-4",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -205,6 +220,20 @@
           "date": "2026-11-20",
           "week": "11월 3주",
           "path": "docs/2026-11/2026-11-20.html"
+        }
+      ],
+      "clusterId": "c-5",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "용인경기도어린이박물관&백남준아트센터",
+          "title": "용인 경기도어린이박물관 & 백남준아트센터",
+          "latestDate": "2026-11-06"
+        },
+        {
+          "key": "경기도어린이박물관《열려라~독립상자!》",
+          "title": "경기도어린이박물관 《열려라~ 독립상자!》",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -240,6 +269,15 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
         }
+      ],
+      "clusterId": "c-6",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "2026한국민속촌가을축제(귀신사바·단풍잔치)",
+          "title": "2026 한국민속촌 가을축제 (귀신사바·단풍잔치)",
+          "latestDate": "2026-10-30"
+        }
       ]
     },
     {
@@ -273,6 +311,15 @@
           "date": "2026-11-14",
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
+        }
+      ],
+      "clusterId": "c-7",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "오산물향기수목원(단풍터널&메타세쿼이아)",
+          "title": "오산 물향기수목원 (단풍터널 & 메타세쿼이아)",
+          "latestDate": "2026-11-06"
         }
       ]
     },
@@ -308,7 +355,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
         }
-      ]
+      ],
+      "clusterId": "c-8",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -341,6 +391,15 @@
           "date": "2026-11-14",
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
+        }
+      ],
+      "clusterId": "c-9",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "수원국립농업박물관&식물원",
+          "title": "수원 국립농업박물관 & 식물원",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -376,7 +435,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
         }
-      ]
+      ],
+      "clusterId": "c-10",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -410,7 +472,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-14.html"
         }
-      ]
+      ],
+      "clusterId": "c-11",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -443,6 +508,20 @@
           "date": "2026-11-13",
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
+        }
+      ],
+      "clusterId": "c-12",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "2026조선왕릉축전피날레(융릉·건릉)",
+          "title": "2026 조선왕릉축전 피날레 (융릉·건릉)",
+          "latestDate": "2026-10-23"
+        },
+        {
+          "key": "2026세계유산조선왕릉축전(융건릉)",
+          "title": "2026 세계유산 조선왕릉축전 (융건릉)",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -478,7 +557,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
         }
-      ]
+      ],
+      "clusterId": "c-13",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -512,7 +594,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
         }
-      ]
+      ],
+      "clusterId": "c-14",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -546,7 +631,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
         }
-      ]
+      ],
+      "clusterId": "c-15",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -579,6 +667,20 @@
           "date": "2026-11-13",
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
+        }
+      ],
+      "clusterId": "c-16",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "국립과천과학관가을특별전(공룡동산&유아체험관)",
+          "title": "국립과천과학관 가을 특별전 (공룡동산 & 유아체험관)",
+          "latestDate": "2026-10-30"
+        },
+        {
+          "key": "국립과천과학관《레트로&퓨처》",
+          "title": "국립과천과학관 《레트로 & 퓨처》",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -614,7 +716,10 @@
           "week": "11월 2주",
           "path": "docs/2026-11/2026-11-13.html"
         }
-      ]
+      ],
+      "clusterId": "c-17",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -647,7 +752,10 @@
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
         }
-      ]
+      ],
+      "clusterId": "c-18",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -679,6 +787,20 @@
           "date": "2026-11-06",
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
+        }
+      ],
+      "clusterId": "c-5",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "경기도어린이박물관15주년행사",
+          "title": "경기도어린이박물관 15주년 행사",
+          "latestDate": "2026-11-20"
+        },
+        {
+          "key": "경기도어린이박물관《열려라~독립상자!》",
+          "title": "경기도어린이박물관 《열려라~ 독립상자!》",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -713,6 +835,15 @@
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
         }
+      ],
+      "clusterId": "c-7",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "오산물향기수목원",
+          "title": "오산 물향기수목원",
+          "latestDate": "2026-11-14"
+        }
       ]
     },
     {
@@ -746,7 +877,10 @@
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
         }
-      ]
+      ],
+      "clusterId": "c-21",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -779,7 +913,10 @@
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
         }
-      ]
+      ],
+      "clusterId": "c-22",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -812,7 +949,10 @@
           "week": "11월 1주",
           "path": "docs/2026-11/2026-11-06.html"
         }
-      ]
+      ],
+      "clusterId": "c-23",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -845,7 +985,10 @@
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
         }
-      ]
+      ],
+      "clusterId": "c-24",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -878,7 +1021,10 @@
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
         }
-      ]
+      ],
+      "clusterId": "c-25",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -911,7 +1057,10 @@
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
         }
-      ]
+      ],
+      "clusterId": "c-26",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -943,6 +1092,20 @@
           "date": "2026-10-30",
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
+        }
+      ],
+      "clusterId": "c-16",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "국립과천과학관가을특별기획전《미래모빌리티&자연사관》",
+          "title": "국립과천과학관 가을 특별 기획전 《미래 모빌리티 & 자연사관》",
+          "latestDate": "2026-11-13"
+        },
+        {
+          "key": "국립과천과학관《레트로&퓨처》",
+          "title": "국립과천과학관 《레트로 & 퓨처》",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -977,6 +1140,15 @@
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
         }
+      ],
+      "clusterId": "c-6",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "한국민속촌가을축제",
+          "title": "한국민속촌 가을축제",
+          "latestDate": "2026-11-14"
+        }
       ]
     },
     {
@@ -1010,7 +1182,10 @@
           "week": "10월 5주",
           "path": "docs/2026-10/2026-10-30.html"
         }
-      ]
+      ],
+      "clusterId": "c-29",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -1043,7 +1218,10 @@
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
         }
-      ]
+      ],
+      "clusterId": "c-30",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -1075,6 +1253,15 @@
           "date": "2026-10-23",
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
+        }
+      ],
+      "clusterId": "c-31",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "용인만골근린공원숲놀이터",
+          "title": "용인 만골근린공원 숲놀이터",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -1109,6 +1296,15 @@
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
         }
+      ],
+      "clusterId": "c-32",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "오산맑음터공원&에코리움",
+          "title": "오산맑음터공원 & 에코리움",
+          "latestDate": "2026-10-17"
+        }
       ]
     },
     {
@@ -1141,6 +1337,20 @@
           "date": "2026-10-23",
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
+        }
+      ],
+      "clusterId": "c-12",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "화성융건릉&역사문화관",
+          "title": "화성 융건릉 & 역사문화관",
+          "latestDate": "2026-11-13"
+        },
+        {
+          "key": "2026세계유산조선왕릉축전(융건릉)",
+          "title": "2026 세계유산 조선왕릉축전 (융건릉)",
+          "latestDate": "2026-10-17"
         }
       ]
     },
@@ -1175,7 +1385,10 @@
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
         }
-      ]
+      ],
+      "clusterId": "c-34",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "festival",
@@ -1208,7 +1421,10 @@
           "week": "10월 4주",
           "path": "docs/2026-10/2026-10-23.html"
         }
-      ]
+      ],
+      "clusterId": "c-35",
+      "groupCount": 1,
+      "relatedSpots": []
     },
     {
       "type": "outing",
@@ -1240,6 +1456,15 @@
           "date": "2026-10-17",
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
+        }
+      ],
+      "clusterId": "c-31",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "용인기흥만골근린공원(숲놀이터)",
+          "title": "용인 기흥 만골근린공원 (숲놀이터)",
+          "latestDate": "2026-10-23"
         }
       ]
     },
@@ -1274,6 +1499,15 @@
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
         }
+      ],
+      "clusterId": "c-32",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "오산맑음나눔터공원&에코리움",
+          "title": "오산 맑음나눔터공원 & 에코리움",
+          "latestDate": "2026-10-23"
+        }
       ]
     },
     {
@@ -1306,6 +1540,15 @@
           "date": "2026-10-17",
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
+        }
+      ],
+      "clusterId": "c-9",
+      "groupCount": 2,
+      "relatedSpots": [
+        {
+          "key": "수원국립농업박물관",
+          "title": "수원 국립농업박물관",
+          "latestDate": "2026-11-14"
         }
       ]
     },
@@ -1340,6 +1583,20 @@
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
         }
+      ],
+      "clusterId": "c-16",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "국립과천과학관가을특별기획전《미래모빌리티&자연사관》",
+          "title": "국립과천과학관 가을 특별 기획전 《미래 모빌리티 & 자연사관》",
+          "latestDate": "2026-11-13"
+        },
+        {
+          "key": "국립과천과학관가을특별전(공룡동산&유아체험관)",
+          "title": "국립과천과학관 가을 특별전 (공룡동산 & 유아체험관)",
+          "latestDate": "2026-10-30"
+        }
       ]
     },
     {
@@ -1373,6 +1630,20 @@
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
         }
+      ],
+      "clusterId": "c-5",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "경기도어린이박물관15주년행사",
+          "title": "경기도어린이박물관 15주년 행사",
+          "latestDate": "2026-11-20"
+        },
+        {
+          "key": "용인경기도어린이박물관&백남준아트센터",
+          "title": "용인 경기도어린이박물관 & 백남준아트센터",
+          "latestDate": "2026-11-06"
+        }
       ]
     },
     {
@@ -1405,6 +1676,20 @@
           "date": "2026-10-17",
           "week": "10월 3주",
           "path": "docs/2026-10/2026-10-17.html"
+        }
+      ],
+      "clusterId": "c-12",
+      "groupCount": 3,
+      "relatedSpots": [
+        {
+          "key": "화성융건릉&역사문화관",
+          "title": "화성 융건릉 & 역사문화관",
+          "latestDate": "2026-11-13"
+        },
+        {
+          "key": "2026조선왕릉축전피날레(융릉·건릉)",
+          "title": "2026 조선왕릉축전 피날레 (융릉·건릉)",
+          "latestDate": "2026-10-23"
         }
       ]
     }
