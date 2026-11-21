@@ -2,7 +2,7 @@ import os
 import re
 import json
 import glob
-from datetime import datetime
+from datetime import datetime, date, timedelta, timezone
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(REPO_ROOT, 'docs')
@@ -76,6 +76,45 @@ def extract_spots_from_html(html_path):
     except Exception as e:
         print(f"Error extracting spots from {html_path}: {e}")
     return []
+
+
+def infer_festival_end_date(sp):
+    if sp.get('type') != 'festival':
+        return None
+    txt = f"{sp.get('title', '')} {sp.get('summary', '')} {sp.get('tip', '')}"
+    latest = datetime.strptime(sp['latestDate'], '%Y-%m-%d').date()
+    yr = latest.year
+
+    # 1. Explicit MM.DD~MM.DD or MM.DD~DD
+    m_range = re.search(r'(\d{1,2})\.(\d{1,2})(?:\([^)]*\))?\s*[~\-]\s*(?:(\d{1,2})\.)?(\d{1,2})', txt)
+    if m_range:
+        m1, d1 = int(m_range.group(1)), int(m_range.group(2))
+        m2 = int(m_range.group(3)) if m_range.group(3) else m1
+        d2 = int(m_range.group(4))
+        return date(yr + (1 if m2 < m1 else 0), m2, d2).isoformat()
+
+    # 2. Explicit "MM.DD(...) 종료"
+    m_end = re.search(r'(\d{1,2})\.(\d{1,2})(?:\([^)]*\))?\s*종료', txt)
+    if m_end:
+        return date(yr, int(m_end.group(1)), int(m_end.group(2))).isoformat()
+
+    # 3. Explicit "MM월 DD일 한정" or "MM.DD 주말"
+    m_one = re.search(r'(\d{1,2})월\s*(\d{1,2})일\s*한정|(\d{1,2})\.(\d{1,2})\s*주말', txt)
+    if m_one:
+        if m_one.group(1):
+            return date(yr, int(m_one.group(1)), int(m_one.group(2))).isoformat()
+        return (date(yr, int(m_one.group(3)), int(m_one.group(4))) + timedelta(days=1)).isoformat()
+
+    # 4. "주말 한정" 공연/행사
+    if '주말 한정' in txt:
+        return (latest + timedelta(days=2)).isoformat()
+
+    # 5. Christmas season festivals stay active until Dec 27
+    if '크리스마스' in txt:
+        return date(yr, 12, 27).isoformat()
+
+    # 6. Other festivals/exhibitions: default 7-day window from recommendation date
+    return (latest + timedelta(days=7)).isoformat()
 
 
 def normalize_key(title):
@@ -191,6 +230,7 @@ def build_all_spots(reports):
                 entry['key'] = key
                 entry['envType'] = infer_env_type(sp)
                 entry['latestDate'] = rep['date']
+                entry['endDate'] = infer_festival_end_date(entry)
                 entry['latestWeek'] = rep['week']
                 entry['latestPath'] = rep['path']
                 entry['recommendCount'] = 1
