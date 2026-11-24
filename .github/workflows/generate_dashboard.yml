@@ -49,6 +49,9 @@ jobs:
           GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
           KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_API }}
+          HOME_ADDRESS: ${{ secrets.HOME_ADDRESS }}
+          HOME_COORDS: ${{ secrets.HOME_COORDS }}
+          FAMILY_PROFILE: ${{ secrets.FAMILY_PROFILE }}
         run: |
           python scripts/sync_from_gdrive.py
 

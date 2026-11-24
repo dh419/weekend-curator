@@ -11,9 +11,21 @@ KAKAO_BLOG_SEARCH_URL = "https://dapi.kakao.com/v2/search/blog"
 KAKAO_WEB_SEARCH_URL = "https://dapi.kakao.com/v2/search/web"
 KAKAO_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/directions"
 
-HOME_ADDRESS = "동탄"
-# Fallback coords for Dongtanbanseok-ro 71 (Hwaseong-si, Gyeonggi-do)
-DEFAULT_HOME_COORDS = (127.0706, 37.2063)
+HOME_ADDRESS = os.environ.get("HOME_ADDRESS") or "동탄"
+
+
+def _load_default_home_coords():
+    raw = os.environ.get("HOME_COORDS", "").strip()
+    if "," in raw:
+        try:
+            lon_s, lat_s = raw.split(",", 1)
+            return (float(lon_s.strip()), float(lat_s.strip()))
+        except ValueError:
+            pass
+    return (127.0690, 37.2000)
+
+
+DEFAULT_HOME_COORDS = _load_default_home_coords()
 
 TAG_RE = re.compile(r"<[^>]+>")
 
@@ -318,9 +330,11 @@ def refine_with_gemini(data, ctx, gemini_key, girl_age, boy_age):
     from google.genai import types
 
     client = genai.Client(api_key=gemini_key)
+    family_profile = os.environ.get("FAMILY_PROFILE") or f"은우 {girl_age}세, 우준 {boy_age}세"
     prompt = f"""
-당신은 동탄 가족(은우 {girl_age}세, 우준 {boy_age}세)의 주말 큐레이터 데이터 고도화 에디터입니다.
+당신은 동탄 가족({family_profile})의 주말 큐레이터 데이터 고도화 에디터입니다.
 아래 카카오맵/블로그/웹 검색에서 수집한 실제 데이터를 바탕으로, 기존 초안의 모든 항목(나들이/행사·축제 6곳, 집안 놀이 3종, 비매운 아이 요리)을 핵심 위주로 교정·고도화하세요.
+(참고: 출력 텍스트에는 상세 거주지 도로명 주소나 출생연도를 직접 적지 말고 '동탄', '은우/우준'으로만 표기하세요.)
 
 [작성 원칙]
 1. 광고·인사말은 모두 걸러내고 실제 부모 후기에서 나온 팩트(유모차 동선, 기저귀교환대, 주차 요금/혼잡, 행사 기간·예약, 아기의자, 층간소음/준비물 팁, 맵지 않게 간 맞추는 레시피 팁)만 반영하세요.
