@@ -11,7 +11,7 @@ KAKAO_BLOG_SEARCH_URL = "https://dapi.kakao.com/v2/search/blog"
 KAKAO_WEB_SEARCH_URL = "https://dapi.kakao.com/v2/search/web"
 KAKAO_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/directions"
 
-HOME_ADDRESS = "동탄반석로 71"
+HOME_ADDRESS = "동탄"
 # Fallback coords for Dongtanbanseok-ro 71 (Hwaseong-si, Gyeonggi-do)
 DEFAULT_HOME_COORDS = (127.0706, 37.2063)
 
@@ -319,7 +319,7 @@ def refine_with_gemini(data, ctx, gemini_key, girl_age, boy_age):
 
     client = genai.Client(api_key=gemini_key)
     prompt = f"""
-당신은 동탄 가족(첫째 딸 {girl_age}세, 둘째 아들 {boy_age}세)의 주말 큐레이터 데이터 고도화 에디터입니다.
+당신은 동탄 가족(은우 {girl_age}세, 우준 {boy_age}세)의 주말 큐레이터 데이터 고도화 에디터입니다.
 아래 카카오맵/블로그/웹 검색에서 수집한 실제 데이터를 바탕으로, 기존 초안의 모든 항목(나들이/행사·축제 6곳, 집안 놀이 3종, 비매운 아이 요리)을 핵심 위주로 교정·고도화하세요.
 
 [작성 원칙]
