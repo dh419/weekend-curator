@@ -44,10 +44,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install google-api-python-client google-auth requests google-genai
 
-      - name: Fetch JSON from Google Drive & Enrich via Kakao + Gemini
+      - name: Fetch JSON from Google Drive & Enrich via Kakao + Naver + Gemini
         env:
           GDRIVE_SA_KEY: ${{ secrets.GDRIVE_SA_KEY }}
           KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || secrets.GEMINI_API }}
           HOME_ADDRESS: ${{ secrets.HOME_ADDRESS }}
           HOME_COORDS: ${{ secrets.HOME_COORDS }}

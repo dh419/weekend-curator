@@ -13,6 +13,7 @@ KAKAO_WEB_SEARCH_URL = "https://dapi.kakao.com/v2/search/web"
 KAKAO_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/directions"
 KAKAO_FUTURE_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/future/directions"
 KST = timezone(timedelta(hours=9))
+NAVER_BLOG_SEARCH_URL = "https://naverapihub.apigw.ntruss.com/search/v1/blog"
 
 HOME_ADDRESS = os.environ.get("HOME_ADDRESS") or "동탄"
 
@@ -250,6 +251,42 @@ def search_kakao_blogs(api_key, query, size=4):
     return results
 
 
+def search_naver_blogs(naver_id, naver_secret, query, display=3):
+    if not naver_id or not naver_secret:
+        return []
+    results = []
+    seen_urls = set()
+    try:
+        r = requests.get(
+            NAVER_BLOG_SEARCH_URL,
+            headers={
+                "X-NCP-APIGW-API-KEY-ID": naver_id,
+                "X-NCP-APIGW-API-KEY": naver_secret,
+            },
+            params={"query": clean_query(query), "display": display, "start": 1, "sort": "sim"},
+            timeout=6,
+        )
+        if r.status_code == 200:
+            for item in r.json().get("items") or []:
+                url = item.get("link") or ""
+                if not url or url in seen_urls:
+                    continue
+                seen_urls.add(url)
+                pdate = item.get("postdate") or ""
+                if len(pdate) == 8:
+                    pdate = f"{pdate[:4]}-{pdate[4:6]}-{pdate[6:8]}"
+                results.append({
+                    "title": clean_html_text(item.get("title")),
+                    "snippet": clean_html_text(item.get("description")),
+                    "url": url,
+                    "blogname": clean_html_text(item.get("bloggername")) or "네이버 블로그",
+                    "date": pdate,
+                })
+    except Exception as e:
+        print(f"[Naver] blog search error ({query}): {e}")
+    return results
+
+
 def search_kakao_web(api_key, query, size=3):
     results = []
     try:
@@ -283,9 +320,11 @@ def extract_region_short(addr):
     return " ".join(filtered[:2]) if filtered else parts[0]
 
 
-def collect_kakao_context(data, kakao_key):
+def collect_kakao_context(data, kakao_key, naver_id="", naver_secret=""):
     origin_xy = resolve_home_coords(kakao_key)
     print(f"[Kakao] Home coords resolved: {origin_xy}")
+    if naver_id and naver_secret:
+        print("[Naver] NAVER API HUB blog enrichment enabled.")
 
     spots_ctx = []
     for idx, sp in enumerate(data.get("spots") or []):
@@ -334,28 +373,37 @@ def collect_kakao_context(data, kakao_key):
                     if base_noodle:
                         sp["noodleName"] = f"{base_noodle} (차로 약 {f_min}분)"
 
-        # Blog searches for place/festival and noodle restaurant
+        # Blog searches for place/festival and noodle restaurant (Kakao + Naver)
         place_blog_q = f"{title} 아기 유모차 주차 후기" if sp.get("type") != "festival" else f"{title} 후기 주차 일정"
         place_blogs = search_kakao_blogs(kakao_key, place_blog_q, size=4)
         if not place_blogs:
             place_blogs = search_kakao_blogs(kakao_key, title, size=4)
+        naver_place_blogs = search_naver_blogs(naver_id, naver_secret, place_blog_q, display=3)
 
         food_blogs = []
+        naver_food_blogs = []
         if food_q:
-            food_blogs = search_kakao_blogs(kakao_key, f"{re.sub(r'[^가-힣a-zA-Z0-9 ]', ' ', food_q)} 아기의자 주차 후기", size=3)
+            food_kw = re.sub(r"[^가-힣a-zA-Z0-9 ]", " ", food_q)
+            food_blogs = search_kakao_blogs(kakao_key, f"{food_kw} 아기의자 주차 후기", size=3)
+            naver_food_blogs = search_naver_blogs(naver_id, naver_secret, f"{food_kw} 아기의자 주차 후기", display=2)
 
         # Web search for festival official schedule/info if festival
         web_info = []
         if sp.get("type") == "festival":
             web_info = search_kakao_web(kakao_key, f"{title} 일정 입장료 주차", size=3)
 
-        # Attach verified clickable blog links directly (max 3: 2 place/festival + 1 food)
+        # Attach verified clickable blog links directly (deduplicated Kakao + Naver, max 4)
         links = []
-        for b in place_blogs[:2]:
-            links.append({"title": b["title"], "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
-        for b in food_blogs[:1]:
-            links.append({"title": f"[맛집] {b['title']}", "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
-        sp["blogLinks"] = links
+        seen_link_urls = set()
+        for b in (naver_place_blogs[:2] + place_blogs[:2]):
+            if b["url"] not in seen_link_urls:
+                seen_link_urls.add(b["url"])
+                links.append({"title": b["title"], "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
+        for b in (naver_food_blogs[:1] + food_blogs[:1]):
+            if b["url"] not in seen_link_urls:
+                seen_link_urls.add(b["url"])
+                links.append({"title": f"[맛집] {b['title']}", "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
+        sp["blogLinks"] = links[:4]
 
         spots_ctx.append({
             "index": idx,
@@ -373,8 +421,8 @@ def collect_kakao_context(data, kakao_key):
                 "parking": sp.get("parking", ""),
                 "noodleDesc": sp.get("noodleDesc", ""),
             },
-            "placeBlogs": [{"title": b["title"], "snippet": b["snippet"], "date": b["date"]} for b in place_blogs],
-            "foodBlogs": [{"title": b["title"], "snippet": b["snippet"], "date": b["date"]} for b in food_blogs],
+            "placeBlogs": [{"title": b["title"], "snippet": b["snippet"], "date": b["date"]} for b in (naver_place_blogs + place_blogs)],
+            "foodBlogs": [{"title": b["title"], "snippet": b["snippet"], "date": b["date"]} for b in (naver_food_blogs + food_blogs)],
             "webInfo": web_info,
         })
         time.sleep(0.08)
@@ -545,9 +593,11 @@ def refine_with_gemini(data, ctx, gemini_key, girl_age, boy_age):
     return data
 
 
-def enrich_weekend_data(data, girl_age, boy_age, kakao_key=None, gemini_key=None):
+def enrich_weekend_data(data, girl_age, boy_age, kakao_key=None, gemini_key=None, naver_id=None, naver_secret=None):
     kakao_key = (kakao_key or os.environ.get("KAKAO_REST_API_KEY") or "").strip()
     gemini_key = (gemini_key or os.environ.get("GEMINI_API_KEY") or "").strip()
+    naver_id = (naver_id or os.environ.get("NAVER_CLIENT_ID") or "").strip()
+    naver_secret = (naver_secret or os.environ.get("NAVER_CLIENT_SECRET") or "").strip()
 
     # Cap kidsMeals at 6 as requested
     if isinstance(data.get("kidsMeals"), list) and len(data["kidsMeals"]) > 6:
@@ -557,7 +607,7 @@ def enrich_weekend_data(data, girl_age, boy_age, kakao_key=None, gemini_key=None
         print("[Enrich] KAKAO_REST_API_KEY not set; skipping Kakao verification.")
         return data
 
-    ctx = collect_kakao_context(data, kakao_key)
+    ctx = collect_kakao_context(data, kakao_key, naver_id=naver_id, naver_secret=naver_secret)
 
     if gemini_key:
         try:
