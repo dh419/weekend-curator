@@ -81,15 +81,15 @@ def _build_place_candidates(query, region_hint=""):
     # If composite title like "동탄호수공원 & 라크몽", prioritize the primary venue first
     primary = re.split(r"\s*[&/·]\s*", no_paren)[0].strip() if no_paren else ""
     if primary and primary != no_paren:
+        add(primary)
         if region_hint and region_hint not in primary:
             add(f"{region_hint} {primary}")
-        add(primary)
 
-    if region_hint and region_hint not in q_clean:
-        add(f"{region_hint} {q_clean}")
     add(q_clean)
     if no_paren:
         add(no_paren)
+    if region_hint and region_hint not in q_clean:
+        add(f"{region_hint} {q_clean}")
 
     # Strip event/exhibition/festival/year suffixes for venue fallback
     stripped = re.sub(
@@ -98,9 +98,9 @@ def _build_place_candidates(query, region_hint=""):
         primary or no_paren,
     ).strip()
     if stripped:
+        add(stripped)
         if region_hint and region_hint not in stripped:
             add(f"{region_hint} {stripped}")
-        add(stripped)
 
     tokens = (primary or no_paren).split()
     if len(tokens) >= 2:
@@ -109,7 +109,32 @@ def _build_place_candidates(query, region_hint=""):
     return candidates
 
 
-def search_kakao_place(api_key, query, region_hint=""):
+NON_SPOT_CATS = {"FD6", "CE7", "AG2", "CS2", "BK9", "PM9"}
+SUB_FACILITY_KEYWORDS = ("주차장", "충전소", "매표소", "화장실", "부동산", "공인중개사")
+
+
+def _pick_best_place(docs, is_spot=True):
+    region_prefixes = ("경기", "화성", "용인", "수원", "오산", "안성", "이천", "과천", "성남", "평택", "서울")
+    scored = []
+    for idx, d in enumerate(docs):
+        addr = d.get("road_address_name") or d.get("address_name") or ""
+        in_region = any(p in addr for p in region_prefixes)
+        cat = d.get("category_group_code") or ""
+        pname = d.get("place_name") or ""
+        penalty = 0
+        if not in_region:
+            penalty += 100
+        if is_spot:
+            if cat in NON_SPOT_CATS:
+                penalty += 50
+            if any(k in pname for k in SUB_FACILITY_KEYWORDS):
+                penalty += 20
+        scored.append((penalty, idx, d))
+    scored.sort(key=lambda x: (x[0], x[1]))
+    return scored[0][2]
+
+
+def search_kakao_place(api_key, query, region_hint="", is_spot=True):
     candidates = _build_place_candidates(query, region_hint)
 
     for cand in candidates:
@@ -125,12 +150,11 @@ def search_kakao_place(api_key, query, region_hint=""):
             if r.status_code == 200:
                 docs = r.json().get("documents") or []
                 if docs:
-                    # Prefer Gyeonggi/Seoul/Incheon region if multiple matches
-                    for d in docs:
-                        addr = d.get("address_name") or d.get("road_address_name") or ""
-                        if any(p in addr for p in ("경기", "화성", "용인", "수원", "오산", "안성", "이천", "과천", "성남", "평택", "서울")):
-                            return d
-                    return docs[0]
+                    picked = _pick_best_place(docs, is_spot=is_spot)
+                    if is_spot and (picked.get("category_group_code") or "") in NON_SPOT_CATS:
+                        # Try next candidate if only non-spot businesses matched
+                        continue
+                    return picked
         except Exception as e:
             print(f"[Kakao] search_places error ({cand}): {e}")
     return None
@@ -283,7 +307,7 @@ def collect_kakao_context(data, kakao_key):
             if place_doc.get("phone"):
                 sp["placePhone"] = place_doc["phone"]
 
-        food_doc = search_kakao_place(kakao_key, food_q, region_hint) if food_q else None
+        food_doc = search_kakao_place(kakao_key, food_q, region_hint, is_spot=False) if food_q else None
         if food_doc:
             if food_doc.get("place_url"):
                 sp["kakaoFoodUrl"] = food_doc["place_url"]
