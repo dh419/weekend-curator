@@ -9,10 +9,12 @@
 ## 2. 큐레이션 및 로테이션 룰
 - 이동 시간: 편도 자차 15~50분 이내 (용인, 화성, 수원, 오산, 안성, 이천, 과천 등 경기 남부/인근)
 - 총 6곳 선별: 상시 나들이 3곳 + 기간 한정 축제/행사 3곳
+- 집안 놀이 3종 + 토·일 비매운 아이 요리 6종 포함
 - 최근 방문지 로테이션 제외 (1~2달 내 방문 장소 제외)
+- GitHub Actions 자동 실행 시 `scripts/enrich_with_kakao_gemini.py`가 카카오 API(길찾기·장소·블로그·웹) + Gemini API로 나들이·행사·맛집·집놀이·요리 전체의 실측 정보와 블로그 후기 요약/링크를 자동 고도화
 
 ## 3. 출력 포맷 규격
 - 외부 CSS/JS 의존성 0% 단독 완성형 HTML
-- `templates/master_dashboard.html` 기반으로 `{{WEEKEND_LABEL}}`, `{{WEATHER_PILLS_HTML}}`, `{{SPOTS_JSON}}` 주입
+- `templates/master_dashboard.html` 기반으로 `{{WEEKEND_LABEL}}`, `{{GIRL_AGE}}`, `{{BOY_AGE}}`, `{{WEATHER_PILLS_HTML}}`, `{{SPOTS_JSON}}`, `{{HOME_PLAYS_JSON}}`, `{{KIDS_MEALS_JSON}}` 주입
 - 저장 위치: `docs/YYYY-MM/YYYY-MM-DD.html`
-- 인덱스 갱신: `hub-data.json`
+- 인덱스 갱신: `hub-data.json`, `all-spots.json`, `all-spots.html`

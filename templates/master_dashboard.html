@@ -232,7 +232,64 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
     }
+    .extra-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.09);
+      border-color: #93c5fd;
+    }
+    .extra-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      margin-top: auto;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .blog-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #1e3a8a;
+    }
+    .blog-box strong { display: block; margin-bottom: 6px; color: #1d4ed8; }
+    .blog-sub { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bfdbfe; }
+    .blog-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .blog-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #0f172a;
+      font-size: 0.86rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .blog-link-item:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+    .blog-link-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .blog-link-meta { font-size: 0.76rem; color: var(--muted); flex-shrink: 0; }
+    .addr-meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
     .extra-card .spot-title { margin-bottom: 2px; }
     .extra-meta {
       font-size: 0.82rem;
@@ -293,6 +350,12 @@
     :root[data-theme="dark"] .close-btn { background: #1e293b !important; color: #f1f5f9 !important; }
     :root[data-theme="dark"] .spot-footer { color: #a5b4fc !important; }
     :root[data-theme="dark"] .mini-box { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    :root[data-theme="dark"] .extra-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .blog-box { background: rgba(59, 130, 246, 0.12) !important; border-color: rgba(96, 165, 250, 0.35) !important; color: #dbeafe !important; }
+    :root[data-theme="dark"] .blog-box strong { color: #93c5fd !important; }
+    :root[data-theme="dark"] .blog-sub { border-top-color: rgba(96, 165, 250, 0.3); }
+    :root[data-theme="dark"] .blog-link-item { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+    :root[data-theme="dark"] .blog-link-item:hover { border-color: #818cf8 !important; background: #1e293b !important; }
     :root[data-theme="dark"] .badge.play { background: rgba(14, 165, 233, 0.2); color: #38bdf8; }
     :root[data-theme="dark"] .badge.meal { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
   </style>
@@ -313,7 +376,7 @@
       <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
       <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
       <button class="filter-btn" onclick="scrollToSection('home-play-section')">🏠 집안 놀이 (3)</button>
-      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (7)</button>
+      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (6)</button>
       <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
     </div>
 
@@ -322,15 +385,15 @@
     <section class="extra-section" id="home-play-section">
       <div class="section-head">
         <h2>🏠 추위·휴식 대비 집안 놀이 3종 추천</h2>
-        <span class="section-sub">은우({{GIRL_AGE}}세) &amp; 우준({{BOY_AGE}}세) 함께 노는 저소음·저준비물 놀이</span>
+        <span class="section-sub">은우({{GIRL_AGE}}세) &amp; 우준({{BOY_AGE}}세) 함께 노는 저소음·저준비물 놀이 (카드 클릭 시 후기/링크 보기)</span>
       </div>
       <div class="extra-grid" id="homePlayGrid"></div>
     </section>
 
     <section class="extra-section" id="kids-meal-section">
       <div class="section-head">
-        <h2>🍳 토·일 애들 먹일 비매운 요리 7종 추천</h2>
-        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0%)</span>
+        <h2>🍳 토·일 애들 먹일 비매운 요리 6종 추천</h2>
+        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0% · 카드 클릭 시 후기/링크 보기)</span>
       </div>
       <div class="extra-grid" id="kidsMealGrid"></div>
     </section>
@@ -343,6 +406,7 @@
           <div class="badges" id="mBadges"></div>
           <h2 id="mTitle" style="font-size:1.35rem;"></h2>
           <div id="mDrive" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+          <div id="mPlaceAddr" class="addr-meta" style="display:none;"></div>
         </div>
         <button class="close-btn" onclick="closeModal()">✕</button>
       </div>
@@ -365,11 +429,46 @@
       <div class="noodle-detail">
         <strong id="mNoodleName" style="color:#92400e; display:block; margin-bottom:4px;"></strong>
         <p id="mNoodleDesc"></p>
+        <div id="mFoodAddr" class="addr-meta" style="display:none;"></div>
+      </div>
+      <div class="blog-box" id="mBlogBox" style="display:none;">
+        <strong>📝 카카오 블로그 후기 핵심 요약</strong>
+        <p id="mBlogSummary"></p>
+        <div id="mNoodleBlogWrap" class="blog-sub" style="display:none;">
+          <strong>🍜 국수집 후기 요약</strong>
+          <p id="mNoodleBlogSummary"></p>
+        </div>
+        <div id="mBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 후기 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="mBlogLinks"></div>
+        </div>
       </div>
       <div class="btn-row">
-        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener">🗺️ 장소 지도</a>
-        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener">🍜 국수집 지도</a>
-        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener">🌐 공식 누리집</a>
+        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener noreferrer">🗺️ 장소 지도</a>
+        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener noreferrer">🍜 국수집 지도</a>
+        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener noreferrer">🌐 공식 누리집</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="extraModalBackdrop" onclick="closeExtraModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="badges" id="emBadges"></div>
+          <h2 id="emTitle" style="font-size:1.3rem;"></h2>
+          <div id="emMeta" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+        </div>
+        <button class="close-btn" onclick="closeExtraModal()">✕</button>
+      </div>
+      <div id="emBody"></div>
+      <div class="blog-box" id="emBlogBox" style="display:none; margin-bottom:0;">
+        <strong>📝 블로그 후기 · 노하우 핵심 요약</strong>
+        <p id="emBlogSummary"></p>
+        <div id="emBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 참고 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="emBlogLinks"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -440,28 +539,162 @@
       renderGrid(filter);
     }
 
+    function escHtml(v) {
+      return String(v || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(u) {
+      const s = String(u || '').trim();
+      return /^https?:\/\//i.test(s) ? s : '#';
+    }
+
+    function renderBlogLinksHtml(links) {
+      if (!Array.isArray(links) || !links.length) return '';
+      return links.map(l => `
+        <a class="blog-link-item" href="${escHtml(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">
+          <span class="blog-link-title">${escHtml(l.title || '블로그 후기 보기')}</span>
+          <span class="blog-link-meta">${escHtml(l.source || '바로가기')} ↗</span>
+        </a>
+      `).join('');
+    }
+
     function openModal(idx) {
       const s = spots[idx];
       document.getElementById('mBadges').innerHTML = `
-        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${s.badgeType}</span>
-        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${s.badgeDay}</span>
+        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${escHtml(s.badgeType)}</span>
+        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${escHtml(s.badgeDay)}</span>
       `;
       document.getElementById('mTitle').textContent = s.title;
       document.getElementById('mDrive').textContent = s.drive;
+
+      const placeAddrEl = document.getElementById('mPlaceAddr');
+      const addrParts = [s.placeAddress, s.placePhone].filter(Boolean);
+      if (addrParts.length) {
+        placeAddrEl.textContent = '📍 ' + addrParts.join(' · ☎️ ');
+        placeAddrEl.style.display = 'block';
+      } else {
+        placeAddrEl.style.display = 'none';
+      }
+
       document.getElementById('mGirl').textContent = s.girl;
       document.getElementById('mBoy').textContent = s.boy;
       document.getElementById('mTip').textContent = s.tip;
       document.getElementById('mParking').textContent = s.parking || '전용 주차장 완비 (주차 편의 우수)';
       document.getElementById('mNoodleName').textContent = s.noodleName;
       document.getElementById('mNoodleDesc').textContent = s.noodleDesc;
-      document.getElementById('mPlaceLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery);
-      document.getElementById('mFoodLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery);
-      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery));
+
+      const foodAddrEl = document.getElementById('mFoodAddr');
+      const fAddrParts = [s.foodAddress, s.foodPhone].filter(Boolean);
+      if (fAddrParts.length) {
+        foodAddrEl.textContent = '📍 ' + fAddrParts.join(' · ☎️ ');
+        foodAddrEl.style.display = 'block';
+      } else {
+        foodAddrEl.style.display = 'none';
+      }
+
+      const blogBox = document.getElementById('mBlogBox');
+      const bSum = (s.blogSummary || '').trim();
+      const nbSum = (s.noodleBlogSummary || '').trim();
+      const bLinks = Array.isArray(s.blogLinks) ? s.blogLinks : [];
+      if (bSum || nbSum || bLinks.length) {
+        document.getElementById('mBlogSummary').textContent = bSum || '방문 전 아래 블로그 후기 링크에서 최신 주차·동선 정보를 확인하세요.';
+        const nbWrap = document.getElementById('mNoodleBlogWrap');
+        if (nbSum) {
+          document.getElementById('mNoodleBlogSummary').textContent = nbSum;
+          nbWrap.style.display = 'block';
+        } else {
+          nbWrap.style.display = 'none';
+        }
+        const blWrap = document.getElementById('mBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('mBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        blogBox.style.display = 'block';
+      } else {
+        blogBox.style.display = 'none';
+      }
+
+      const placeLinkEl = document.getElementById('mPlaceLink');
+      const foodLinkEl = document.getElementById('mFoodLink');
+      if (s.kakaoPlaceUrl && /^https?:\/\//i.test(s.kakaoPlaceUrl)) {
+        placeLinkEl.href = s.kakaoPlaceUrl;
+        placeLinkEl.textContent = '🗺️ 카카오맵 장소';
+      } else {
+        placeLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title);
+        placeLinkEl.textContent = '🗺️ 장소 지도';
+      }
+      if (s.kakaoFoodUrl && /^https?:\/\//i.test(s.kakaoFoodUrl)) {
+        foodLinkEl.href = s.kakaoFoodUrl;
+        foodLinkEl.textContent = '🍜 카카오맵 국수집';
+      } else {
+        foodLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery || s.noodleTag || '');
+        foodLinkEl.textContent = '🍜 국수집 지도';
+      }
+      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title));
       document.getElementById('modalBackdrop').classList.add('open');
     }
 
     function closeModal() {
       document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    function openExtraModal(kind, idx) {
+      const item = kind === 'play' ? homePlays[idx] : kidsMeals[idx];
+      if (!item) return;
+      const badgesEl = document.getElementById('emBadges');
+      const titleEl = document.getElementById('emTitle');
+      const metaEl = document.getElementById('emMeta');
+      const bodyEl = document.getElementById('emBody');
+
+      if (kind === 'play') {
+        badgesEl.innerHTML = `<span class="badge play">🏠 집안 놀이 ${idx + 1}</span><span class="badge mild">${escHtml(item.tag || '실내 놀이')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.prep || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong><p>${escHtml(item.girl || '')}</p></div>
+          <div class="detail-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong><p>${escHtml(item.boy || '')}</p></div>
+          <div class="detail-box"><strong>💡 부모 팁</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      } else {
+        badgesEl.innerHTML = `<span class="badge meal">${escHtml(item.dayBadge || '🍲 주말 추천')}</span><span class="badge mild">${escHtml(item.mildBadge || '🌶️ 맵기 0%')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.meta || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👩‍🍳 3단계 초간단 레시피</strong><p>${escHtml(item.recipe || '')}</p></div>
+          <div class="detail-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      }
+
+      const bBox = document.getElementById('emBlogBox');
+      const bSum = (item.blogSummary || '').trim();
+      const bLinks = Array.isArray(item.blogLinks) ? item.blogLinks : [];
+      if (bSum || bLinks.length) {
+        document.getElementById('emBlogSummary').textContent = bSum || '아래 참고 블로그에서 실전 사진·세부 팁을 직접 확인해 보세요.';
+        const blWrap = document.getElementById('emBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('emBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        bBox.style.display = 'block';
+      } else {
+        bBox.style.display = 'none';
+      }
+
+      document.getElementById('extraModalBackdrop').classList.add('open');
+    }
+
+    function closeExtraModal() {
+      document.getElementById('extraModalBackdrop').classList.remove('open');
     }
 
     function openChecklist() {
@@ -480,36 +713,52 @@
     function renderExtras() {
       const playGrid = document.getElementById('homePlayGrid');
       if (playGrid && Array.isArray(homePlays)) {
-        playGrid.innerHTML = homePlays.map((p, idx) => `
-          <article class="extra-card">
+        playGrid.innerHTML = homePlays.map((p, idx) => {
+          const linkCount = Array.isArray(p.blogLinks) ? p.blogLinks.length : 0;
+          const footerLabel = (p.blogSummary || linkCount) ? `📝 후기 요약${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '놀이 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('play', ${idx})">
             <div class="badges">
               <span class="badge play">🏠 집안 놀이 ${idx + 1}</span>
-              <span class="badge mild">${p.tag || '실내 놀이'}</span>
+              <span class="badge mild">${escHtml(p.tag || '실내 놀이')}</span>
             </div>
-            <div class="spot-title">${p.title}</div>
-            <div class="extra-meta">${p.prep || ''}</div>
-            <div class="mini-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong>${p.girl || ''}</div>
-            <div class="mini-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong>${p.boy || ''}</div>
-            <div class="mini-box"><strong>💡 부모 팁</strong>${p.tip || ''}</div>
-          </article>
-        `).join('');
+            <div class="spot-title">${escHtml(p.title)}</div>
+            <div class="extra-meta">${escHtml(p.prep || '')}</div>
+            <div class="mini-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong>${escHtml(p.girl || '')}</div>
+            <div class="mini-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong>${escHtml(p.boy || '')}</div>
+            <div class="mini-box"><strong>💡 부모 팁</strong>${escHtml(p.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
       }
       const mealGrid = document.getElementById('kidsMealGrid');
       if (mealGrid && Array.isArray(kidsMeals)) {
-        mealGrid.innerHTML = kidsMeals.map(m => `
-          <article class="extra-card">
+        mealGrid.innerHTML = kidsMeals.map((m, idx) => {
+          const linkCount = Array.isArray(m.blogLinks) ? m.blogLinks.length : 0;
+          const footerLabel = (m.blogSummary || linkCount) ? `📝 레시피 후기${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '레시피 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('meal', ${idx})">
             <div class="badges">
-              <span class="badge meal">${m.dayBadge || '🍲 주말 추천'}</span>
-              <span class="badge mild">${m.mildBadge || '🌶️ 맵기 0%'}</span>
+              <span class="badge meal">${escHtml(m.dayBadge || '🍲 주말 추천')}</span>
+              <span class="badge mild">${escHtml(m.mildBadge || '🌶️ 맵기 0%')}</span>
             </div>
-            <div class="spot-title">${m.title}</div>
-            <div class="extra-meta">${m.meta || ''}</div>
-            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${m.recipe || ''}</div>
-            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong>${m.tip || ''}</div>
-          </article>
-        `).join('');
+            <div class="spot-title">${escHtml(m.title)}</div>
+            <div class="extra-meta">${escHtml(m.meta || '')}</div>
+            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${escHtml(m.recipe || '')}</div>
+            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong>${escHtml(m.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
       }
     }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeExtraModal();
+        closeChecklist();
+      }
+    });
 
     renderGrid();
     renderExtras();

@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import io
 from weekend_defaults import DEFAULT_HOME_PLAYS, DEFAULT_KIDS_MEALS
+from enrich_with_kakao_gemini import enrich_weekend_data
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS_DIR = os.path.join(REPO_ROOT, 'docs')
@@ -62,6 +63,15 @@ def main():
     boy_age = now_kst.year - 2024 + 1
     weekend_label = get_target_weekend_dates(now_kst)
 
+    if not data.get('homePlays'):
+        data['homePlays'] = [dict(p) for p in DEFAULT_HOME_PLAYS]
+    if not data.get('kidsMeals'):
+        data['kidsMeals'] = [dict(m) for m in DEFAULT_KIDS_MEALS[:6]]
+    elif len(data['kidsMeals']) > 6:
+        data['kidsMeals'] = data['kidsMeals'][:6]
+
+    data = enrich_weekend_data(data, girl_age, boy_age)
+
     with open(MASTER_HTML_PATH, 'r', encoding='utf-8') as f:
         tpl = f.read()
 
@@ -70,8 +80,8 @@ def main():
     html = html.replace('{{BOY_AGE}}', str(boy_age))
     html = html.replace('{{WEATHER_PILLS_HTML}}', data['weatherPillsHtml'])
     html = html.replace('{{SPOTS_JSON}}', json.dumps(data['spots'], ensure_ascii=False))
-    html = html.replace('{{HOME_PLAYS_JSON}}', json.dumps(data.get('homePlays') or DEFAULT_HOME_PLAYS, ensure_ascii=False))
-    html = html.replace('{{KIDS_MEALS_JSON}}', json.dumps(data.get('kidsMeals') or DEFAULT_KIDS_MEALS, ensure_ascii=False))
+    html = html.replace('{{HOME_PLAYS_JSON}}', json.dumps(data['homePlays'], ensure_ascii=False))
+    html = html.replace('{{KIDS_MEALS_JSON}}', json.dumps(data['kidsMeals'], ensure_ascii=False))
 
     out_dir = os.path.join(DOCS_DIR, month_part)
     os.makedirs(out_dir, exist_ok=True)
