@@ -1,4 +1,5 @@
 import os
+import re
 import json
 from datetime import datetime, timezone, timedelta
 from google.oauth2 import service_account
@@ -82,6 +83,8 @@ def main():
     html = html.replace('{{SPOTS_JSON}}', json.dumps(data['spots'], ensure_ascii=False))
     html = html.replace('{{HOME_PLAYS_JSON}}', json.dumps(data['homePlays'], ensure_ascii=False))
     html = html.replace('{{KIDS_MEALS_JSON}}', json.dumps(data['kidsMeals'], ensure_ascii=False))
+    if not re.search(r'<meta\s+name=["\']robots["\']', html, re.IGNORECASE):
+        html = re.sub(r'(<head[^>]*>)', r'\1\n  <meta name="robots" content="noindex, nofollow" />', html, count=1, flags=re.IGNORECASE)
 
     out_dir = os.path.join(DOCS_DIR, month_part)
     os.makedirs(out_dir, exist_ok=True)

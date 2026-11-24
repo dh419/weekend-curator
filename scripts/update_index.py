@@ -289,6 +289,37 @@ def update_hub_index():
 
     print(f"Successfully indexed {len(reports)} reports from docs/ into hub-data.json")
     build_all_spots(reports)
+    ensure_search_blocking()
+
+
+def ensure_noindex_in_file(html_path):
+    if not os.path.exists(html_path):
+        return
+    with open(html_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+    if re.search(r'<meta\s+name=["\']robots["\']', text, re.IGNORECASE):
+        return
+    updated, n = re.subn(
+        r'(<head[^>]*>)',
+        r'\1\n  <meta name="robots" content="noindex, nofollow" />',
+        text,
+        count=1,
+        flags=re.IGNORECASE,
+    )
+    if n > 0:
+        with open(html_path, 'w', encoding='utf-8') as f:
+            f.write(updated)
+
+
+def ensure_search_blocking():
+    robots_path = os.path.join(REPO_ROOT, 'robots.txt')
+    if not os.path.exists(robots_path):
+        with open(robots_path, 'w', encoding='utf-8') as f:
+            f.write("User-agent: *\nDisallow: /\n")
+    ensure_noindex_in_file(os.path.join(REPO_ROOT, 'index.html'))
+    ensure_noindex_in_file(ALL_SPOTS_HTML_PATH)
+    for filepath in glob.glob(os.path.join(DOCS_DIR, '**', '*.html'), recursive=True):
+        ensure_noindex_in_file(filepath)
 
 
 if __name__ == '__main__':

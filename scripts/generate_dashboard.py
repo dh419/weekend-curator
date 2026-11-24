@@ -178,6 +178,8 @@ def generate_dashboard():
     html = html.replace('{{SPOTS_JSON}}', spots_json_str)
     html = html.replace('{{HOME_PLAYS_JSON}}', home_plays_str)
     html = html.replace('{{KIDS_MEALS_JSON}}', kids_meals_str)
+    if not re.search(r'<meta\s+name=["\']robots["\']', html, re.IGNORECASE):
+        html = re.sub(r'(<head[^>]*>)', r'\1\n  <meta name="robots" content="noindex, nofollow" />', html, count=1, flags=re.IGNORECASE)
 
     month_dir = os.path.join(DOCS_DIR, current_month_str)
     os.makedirs(month_dir, exist_ok=True)
