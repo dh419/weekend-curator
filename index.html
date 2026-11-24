@@ -1,369 +1,603 @@
 <!DOCTYPE html>
-<html lang="ko" class="h-full bg-slate-950 text-slate-100">
+<html lang="ko">
 <head>
-<script>try { var t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
-  <meta charset="UTF-8">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>주말 나들이 허브</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            }
-          }
-        }
-      }
-    }
+    try {
+      var t = localStorage.getItem("theme");
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
   </script>
   <style>
-    /* Custom thin scrollbar */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-    /* Unified Light Theme Overrides */
-    html[data-theme="light"], html[data-theme="light"] body { background: #f8fafc !important; color: #0f172a !important; }
-    html[data-theme="light"] #sidebar { background: #ffffff !important; border-color: #e2e8f0 !important; }
-    html[data-theme="light"] #sidebar .border-slate-800,
-    html[data-theme="light"] #sidebar .border-slate-800\/80 { border-color: #e2e8f0 !important; }
-    html[data-theme="light"] #sidebar h1,
-    html[data-theme="light"] #sidebar .text-white { color: #0f172a !important; }
-    html[data-theme="light"] #sidebar .text-slate-200 { color: #1e293b !important; }
-    html[data-theme="light"] #sidebar .text-slate-400 { color: #64748b !important; }
-    html[data-theme="light"] #sidebar .text-slate-500 { color: #64748b !important; }
-    html[data-theme="light"] #sidebar .bg-slate-950,
-    html[data-theme="light"] #sidebar .bg-slate-950\/40,
-    html[data-theme="light"] #sidebar .bg-slate-900\/90 { background: #f8fafc !important; }
-    html[data-theme="light"] #searchInput { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
-    html[data-theme="light"] #item-all-spots { background: #eef2ff !important; border-color: #c7d2fe !important; }
-    html[data-theme="light"] #item-all-spots .text-indigo-200 { color: #3730a3 !important; }
-    html[data-theme="light"] .report-btn:hover { background: #f1f5f9 !important; }
-    html[data-theme="light"] main { background: #f8fafc !important; }
-    html[data-theme="light"] header { background: rgba(255, 255, 255, 0.9) !important; border-color: #e2e8f0 !important; }
-    html[data-theme="light"] #currentTitle { color: #0f172a !important; }
-    html[data-theme="light"] #copyBtn { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
-    html[data-theme="light"] #externalLink { color: #475569 !important; }
-    html[data-theme="light"] #reportFrame,
-    html[data-theme="light"] main > div.flex-1 { background: #f8fafc !important; }
-    html[data-theme="light"] #themeToggleBtn { background: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #4f46e5;
+      --accent-soft: #eef2ff;
+      --sidebar-w: 300px;
+    }
+    [data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #273449;
+      --accent: #818cf8;
+      --accent-soft: #1e1b4b;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .topbar {
+      height: 56px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 11px;
+      font-size: 0.84rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      font-size: 0.95rem;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn svg { width: 16px; height: 16px; display: block; }
+    .menu-btn { display: inline-flex; }
+    @media (max-width: 600px) {
+      .topbar { padding: 0 10px; gap: 8px; }
+      .brand { gap: 6px; }
+      .brand h1 { font-size: 0.95rem; }
+      .actions { gap: 4px; }
+      .btn { padding: 5px 8px; font-size: 0.78rem; }
+      .icon-btn { width: 32px; height: 32px; padding: 0; }
+    }
+    .layout {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      position: relative;
+    }
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      z-index: 15;
+      overflow: hidden;
+      transition: width 0.2s ease, transform 0.2s ease;
+    }
+    body.sidebar-collapsed .sidebar {
+      width: 0;
+      border-right: 0;
+    }
+    .sidebar-head {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      min-width: var(--sidebar-w);
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .pinned-wrap {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      min-width: var(--sidebar-w);
+    }
+    .pinned-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+    .pinned-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+    .pinned-btn:hover, .pinned-btn.active { border-color: var(--accent); }
+    .pinned-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .pinned-badge {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+    .pinned-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+    .nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 8px 20px;
+      min-width: var(--sidebar-w);
+    }
+    .month-group { margin-bottom: 6px; }
+    .month-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      text-align: left;
+    }
+    .month-toggle:hover { background: var(--surface-2); color: var(--text); }
+    .month-toggle-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+    }
+    .month-items { padding-top: 2px; }
+    .month-group.folded .month-items { display: none; }
+    .nav-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-bottom: 4px;
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+    .nav-item:hover { background: var(--surface-2); }
+    .nav-item.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+    .nav-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+    .nav-week { font-size: 0.84rem; font-weight: 700; }
+    .nav-date { font-size: 0.74rem; color: var(--muted); }
+    .nav-title {
+      font-size: 0.8rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-footer {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      font-size: 0.74rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: var(--sidebar-w);
+    }
+    .sync-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #10b981;
+      font-weight: 600;
+    }
+    .sync-dot::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #10b981;
+    }
+    .viewer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--bg);
+    }
+    .viewer iframe {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: var(--bg);
+    }
+    .empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .backdrop {
+      display: none;
+      position: fixed;
+      inset: 56px 0 0 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 14;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 50;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (max-width: 820px) {
+      body.sidebar-collapsed .sidebar { width: var(--sidebar-w); }
+      .sidebar {
+        position: fixed;
+        top: 56px;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .backdrop.open { display: block; }
+    }
   </style>
 </head>
-<body class="h-full flex overflow-hidden font-sans antialiased">
-
-  <!-- Mobile Backdrop -->
-  <div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden transition-opacity" onclick="toggleSidebar()"></div>
-
-  <!-- Sidebar Container -->
-  <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-slate-900/95 md:bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-200 -translate-x-full md:translate-x-0 backdrop-blur-md">
-    
-    <!-- Sidebar Header -->
-    <div class="h-16 px-4 flex items-center justify-between border-b border-slate-800">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-white shadow-sm">
-          📊
-        </div>
-        <div>
-          <h1 class="text-sm font-semibold text-white tracking-tight leading-none">주말 나들이 허브</h1>
-          <p class="text-[11px] text-slate-400 mt-1">Family Weekend Dashboard</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-1.5">
-        <button id="themeToggleBtn" onclick="toggleHubTheme()" title="라이트/다크 테마 전환"
-          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
-          <span id="themeIcon">☀️</span><span id="themeLabel">라이트</span>
-        </button>
-        <button class="md:hidden text-slate-400 hover:text-white p-1" onclick="toggleSidebar()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <button class="btn menu-btn" id="menuToggle" aria-label="사이드바 토글" aria-expanded="true">☰ 사이드바</button>
+      <h1>주말 나들이 허브</h1>
     </div>
-
-    <!-- Quick Search / Filter -->
-    <div class="p-3 border-b border-slate-800">
-      <div class="relative">
-        <input type="text" id="searchInput" placeholder="날짜, 장소, 축제 검색..." oninput="filterReports()" 
-          class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors">
-        <span class="absolute right-2.5 top-2 text-[10px] text-slate-600">Ctrl+K</span>
-      </div>
-    </div>
-
-    <!-- Pinned Top Entry -->
-    <div class="px-3 pt-3 pb-2 border-b border-slate-800/80 bg-slate-900/90">
-      <div class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400/90 px-1 mb-1.5 flex items-center gap-1">
-        <span>📌</span><span>고정 메뉴</span>
-      </div>
-      <button onclick="selectAllSpots()" id="item-all-spots"
-        class="report-btn w-full text-left p-2.5 rounded-lg transition-all duration-150 group border border-indigo-500/25 bg-indigo-500/10 hover:bg-indigo-500/20">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-indigo-200 group-hover:text-white">전체 추천 리스트 모아보기</span>
-          <span id="allSpotsBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-semibold">ALL</span>
-        </div>
-        <div class="text-[11px] text-slate-400 group-hover:text-slate-300 truncate mt-0.5">누적 나들이 · 축제 · 맛집 통합 검색</div>
+    <div class="actions">
+      <button class="btn icon-btn" id="copyBtn" title="URL 복사" aria-label="URL 복사">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
       </button>
+      <a class="btn icon-btn" id="openNewTab" href="#" target="_blank" rel="noopener" title="새 탭 열기" aria-label="새 탭 열기" style="display:none;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+      <button class="btn icon-btn" id="themeToggle" title="라이트/다크 전환" aria-label="라이트/다크 전환">🌙</button>
+      <a class="btn icon-btn" href="https://github.com/dh419/weekend-curator" target="_blank" rel="noopener" title="GitHub 저장소" aria-label="GitHub 저장소">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
     </div>
+  </header>
 
-    <!-- Report Items Navigation -->
-    <div class="flex-1 overflow-y-auto p-3 space-y-1" id="reportList">
-      <div class="text-center py-8 text-xs text-slate-500">리포트 목록을 불러오는 중...</div>
-    </div>
-
-    <!-- Sidebar Footer -->
-    <div class="p-3 border-t border-slate-800 bg-slate-950/40 text-[11px] text-slate-400 flex items-center justify-between">
-      <span id="reportCount">총 0개 리포트</span>
-      <span class="inline-flex items-center gap-1 text-emerald-400">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 동기화 활성
-      </span>
-    </div>
-  </aside>
-
-  <!-- Main View Area -->
-  <main class="flex-1 flex flex-col h-full overflow-hidden bg-slate-950 min-w-0">
-    
-    <!-- Top Bar -->
-    <header class="h-14 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-900/60 backdrop-blur-sm">
-      <div class="flex items-center gap-3 min-w-0">
-        <button class="md:hidden p-1.5 -ml-1 text-slate-400 hover:text-white rounded-md focus:bg-slate-800" onclick="toggleSidebar()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2">
-            <span id="currentBadge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">W00</span>
-            <h2 id="currentTitle" class="text-sm font-semibold text-white truncate">나들이 대시보드를 선택하세요</h2>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="리포트 목록 사이드바">
+      <div class="sidebar-head">
+        <input type="search" class="search-input" id="searchInput" placeholder="날짜, 장소, 축제 검색... (Ctrl+K)" aria-label="리포트 검색" />
+      </div>
+      <div class="pinned-wrap">
+        <div class="pinned-label">📌 고정 메뉴</div>
+        <button type="button" class="pinned-btn" id="allSpotsBtn">
+          <div class="pinned-row">
+            <span>전체 추천 리스트 모아보기</span>
+            <span class="pinned-badge">ALL</span>
           </div>
-        </div>
-      </div>
-
-      <!-- Action Toolbar -->
-      <div class="flex items-center gap-2">
-        <button id="copyBtn" onclick="copyCurrentUrl()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-          공유 URL 복사
+          <div class="pinned-sub">누적 나들이 · 축제 · 맛집 통합 검색</div>
         </button>
-        <a id="externalLink" href="#" target="_blank" class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition" title="새 창에서 원본 열기">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-        </a>
       </div>
-    </header>
+      <div class="nav-scroll" id="reportList">
+        <div class="empty">불러오는 중...</div>
+      </div>
+      <div class="sidebar-footer">
+        <span id="reportCount">총 0개 리포트</span>
+        <span class="sync-dot">동기화 활성</span>
+      </div>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+    <main class="viewer">
+      <iframe id="reportFrame" title="주말 나들이 뷰어" src="about:blank"></iframe>
+    </main>
+  </div>
 
-    <!-- Viewer iframe -->
-    <div class="flex-1 relative bg-slate-950">
-      <iframe id="reportFrame" class="w-full h-full border-0" src="about:blank"></iframe>
-      
-      <!-- Toast Notification -->
-      <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-10 opacity-0 transition duration-200 bg-indigo-600 text-white text-xs px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 pointer-events-none">
-        <span>✓</span> <span id="toastMsg">링크가 클립보드에 복사되었습니다!</span>
-      </div>
-    </div>
-  </main>
+  <div class="toast" id="toast">공유 URL이 복사되었습니다.</div>
 
   <script>
-    let reports = [];
-    let currentReport = null;
+    (function () {
+      var themeBtn = document.getElementById("themeToggle");
+      var reportFrame = document.getElementById("reportFrame");
 
-    async function init() {
-      try {
-        const res = await fetch('hub-data.json?v=' + Date.now());
-        reports = await res.json();
-        renderList(reports);
-        
-        // Handle URL Hash navigation (e.g. #all-spots or #2026-W45)
-        const hash = window.location.hash.replace('#', '').trim();
-        if (hash === 'all-spots') {
-          selectAllSpots();
+      function getHubTheme() {
+        return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      }
+      function syncIframeTheme() {
+        try {
+          if (reportFrame && reportFrame.contentWindow) {
+            reportFrame.contentWindow.postMessage({ type: "wc-theme", theme: getHubTheme() }, "*");
+          }
+        } catch (e) {}
+      }
+      function applyHubTheme(theme) {
+        var t = theme === "dark" ? "dark" : "light";
+        document.documentElement.dataset.theme = t;
+        try { localStorage.setItem("theme", t); } catch (e) {}
+        themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+        themeBtn.title = t === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환";
+        syncIframeTheme();
+      }
+      themeBtn.addEventListener("click", function () {
+        applyHubTheme(getHubTheme() === "dark" ? "light" : "dark");
+      });
+      reportFrame.addEventListener("load", syncIframeTheme);
+      applyHubTheme(getHubTheme());
+
+      var sidebar = document.getElementById("sidebar");
+      var backdrop = document.getElementById("backdrop");
+      var menuToggle = document.getElementById("menuToggle");
+      var isMobile = function () { return window.innerWidth <= 820; };
+
+      function toggleSidebar(force) {
+        if (isMobile()) {
+          var open = typeof force === "boolean" ? force : !sidebar.classList.contains("open");
+          sidebar.classList.toggle("open", open);
+          backdrop.classList.toggle("open", open);
+          menuToggle.setAttribute("aria-expanded", String(open));
+        } else {
+          var collapsed = typeof force === "boolean" ? !force : !document.body.classList.contains("sidebar-collapsed");
+          document.body.classList.toggle("sidebar-collapsed", collapsed);
+          menuToggle.setAttribute("aria-expanded", String(!collapsed));
+        }
+      }
+      menuToggle.addEventListener("click", function () { toggleSidebar(); });
+      backdrop.addEventListener("click", function () { toggleSidebar(false); });
+
+      var toastEl = document.getElementById("toast");
+      var toastTimer = null;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2200);
+      }
+
+      document.getElementById("copyBtn").addEventListener("click", function () {
+        navigator.clipboard.writeText(window.location.href)
+          .then(function () { showToast("공유 URL이 복사되었습니다."); })
+          .catch(function () { showToast("URL 복사에 실패했습니다."); });
+      });
+
+      var reports = [];
+      var activeId = "";
+      var foldedMonths = {};
+      var reportList = document.getElementById("reportList");
+      var reportCount = document.getElementById("reportCount");
+      var searchInput = document.getElementById("searchInput");
+      var openNewTab = document.getElementById("openNewTab");
+      var allSpotsBtn = document.getElementById("allSpotsBtn");
+
+      window.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          searchInput.focus();
+        }
+      });
+
+      function updateActiveUI() {
+        allSpotsBtn.classList.toggle("active", activeId === "all-spots");
+        Array.prototype.forEach.call(reportList.querySelectorAll(".nav-item"), function (el) {
+          el.classList.toggle("active", el.dataset.id === activeId);
+        });
+      }
+
+      function selectReport(id) {
+        var target = reports.find(function (r) { return r.id === id; });
+        if (!target) return;
+        activeId = target.id;
+        openNewTab.href = target.path;
+        openNewTab.style.display = "inline-flex";
+        reportFrame.src = target.path + "?v=" + Date.now();
+        try { history.replaceState(null, "", "#" + target.id); } catch (e) {}
+        updateActiveUI();
+        if (isMobile()) toggleSidebar(false);
+      }
+
+      function selectAllSpots() {
+        activeId = "all-spots";
+        openNewTab.href = "all-spots.html";
+        openNewTab.style.display = "inline-flex";
+        reportFrame.src = "all-spots.html?v=" + Date.now();
+        try { history.replaceState(null, "", "#all-spots"); } catch (e) {}
+        updateActiveUI();
+        if (isMobile()) toggleSidebar(false);
+      }
+      allSpotsBtn.addEventListener("click", selectAllSpots);
+
+      function renderList(list, isSearching) {
+        reportCount.textContent = "총 " + list.length + "개 리포트";
+        if (!list.length) {
+          reportList.innerHTML = '<div class="empty">검색 결과가 없습니다.</div>';
           return;
         }
-        if (hash) {
-          const matched = reports.find(r => r.id === hash || r.week === hash);
-          if (matched) {
-            selectReport(matched.id);
+        var groups = {};
+        list.forEach(function (item) {
+          var m = item.month || (item.date ? item.date.slice(0, 7) : "기타");
+          if (!groups[m]) groups[m] = [];
+          groups[m].push(item);
+        });
+        var months = Object.keys(groups).sort().reverse();
+        var latestMonth = months[0];
+        var html = "";
+        months.forEach(function (m) {
+          if (typeof foldedMonths[m] === "undefined") {
+            foldedMonths[m] = m !== latestMonth;
+          }
+          var isFolded = isSearching ? false : foldedMonths[m];
+          html += '<div class="month-group' + (isFolded ? " folded" : "") + '" data-month="' + m + '">';
+          html += '<button type="button" class="month-toggle" aria-expanded="' + String(!isFolded) + '">' +
+            '<span>' + m + '</span>' +
+            '<span class="month-toggle-meta"><span>' + groups[m].length + '</span><span class="chev">' + (isFolded ? "▸" : "▾") + '</span></span>' +
+          '</button>';
+          html += '<div class="month-items">';
+          groups[m].forEach(function (item) {
+            var act = item.id === activeId ? " active" : "";
+            html += '<button type="button" class="nav-item' + act + '" data-id="' + item.id + '">' +
+              '<div class="nav-top">' +
+                '<span class="nav-week">' + (item.week || item.id) + '</span>' +
+                '<span class="nav-date">' + (item.date || "") + '</span>' +
+              '</div>' +
+              '<div class="nav-title">' + (item.title || "") + '</div>' +
+            '</button>';
+          });
+          html += '</div></div>';
+        });
+        reportList.innerHTML = html;
+
+        Array.prototype.forEach.call(reportList.querySelectorAll(".month-toggle"), function (btn) {
+          btn.addEventListener("click", function () {
+            var group = btn.parentElement;
+            var m = group.dataset.month;
+            var nextFolded = !group.classList.contains("folded");
+            foldedMonths[m] = nextFolded;
+            group.classList.toggle("folded", nextFolded);
+            btn.setAttribute("aria-expanded", String(!nextFolded));
+            var chev = btn.querySelector(".chev");
+            if (chev) chev.textContent = nextFolded ? "▸" : "▾";
+          });
+        });
+
+        Array.prototype.forEach.call(reportList.querySelectorAll(".nav-item"), function (btn) {
+          btn.addEventListener("click", function () {
+            selectReport(btn.dataset.id);
+          });
+        });
+      }
+
+      fetch("hub-data.json?v=" + Date.now())
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          reports = data || [];
+          renderList(reports, false);
+          var hash = window.location.hash.replace("#", "").trim();
+          if (hash === "all-spots") {
+            selectAllSpots();
             return;
           }
-        }
+          if (hash) {
+            var matched = reports.find(function (r) { return r.id === hash || r.week === hash; });
+            if (matched) {
+              var m = matched.month || (matched.date ? matched.date.slice(0, 7) : "기타");
+              foldedMonths[m] = false;
+              renderList(reports, false);
+              selectReport(matched.id);
+              return;
+            }
+          }
+          if (reports.length) selectReport(reports[0].id);
+        })
+        .catch(function () {
+          reportList.innerHTML = '<div class="empty">리포트 목록 로드 실패</div>';
+        });
 
-        // Default to latest report
-        if (reports.length > 0) {
-          selectReport(reports[0].id);
-        }
-      } catch (err) {
-        console.error('Failed to load hub data:', err);
-        document.getElementById('reportList').innerHTML = '<div class="p-4 text-xs text-rose-400 text-center">리포트 목록 로드 실패</div>';
-      }
-    }
-
-    function renderList(list) {
-      const container = document.getElementById('reportList');
-      document.getElementById('reportCount').innerText = `총 ${list.length}개 리포트`;
-
-      if (list.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-xs text-slate-500">검색 결과가 없습니다.</div>';
-        return;
-      }
-
-      container.innerHTML = list.map(item => `
-        <button onclick="selectReport('${item.id}')" id="item-${item.id}"
-          class="report-btn w-full text-left p-2.5 rounded-lg transition-all duration-150 group border border-transparent hover:bg-slate-800/80">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-slate-200 group-hover:text-white">${item.week || item.id}</span>
-            <span class="text-[10px] text-slate-500">${item.date || ''}</span>
-          </div>
-          <div class="text-xs text-slate-400 group-hover:text-slate-300 truncate mt-0.5">${item.title}</div>
-        </button>
-      `).join('');
-
-      if (currentReport) {
-        highlightItem(currentReport.id);
-      }
-    }
-
-    function selectReport(id) {
-      const target = reports.find(r => r.id === id);
-      if (!target) return;
-      currentReport = target;
-
-      // Update Topbar
-      document.getElementById('currentBadge').innerText = target.week || target.id;
-      document.getElementById('currentTitle').innerText = target.title;
-      document.getElementById('externalLink').href = target.path;
-
-      // Load into iframe (cache-busted for fresh theme/data)
-      document.getElementById('reportFrame').src = target.path + '?v=' + Date.now();
-
-      // Update URL hash without scroll
-      history.replaceState(null, null, '#' + target.id);
-
-      // Highlight active button
-      highlightItem(id);
-
-      // Close mobile sidebar if open
-      if (window.innerWidth < 768) {
-        toggleSidebar(false);
-      }
-    }
-
-    function selectAllSpots() {
-      currentReport = { id: 'all-spots', week: '📌 전체', title: '전체 나들이 · 맛집 추천 모아보기', path: 'all-spots.html' };
-      document.getElementById('currentBadge').innerText = '📌 전체';
-      document.getElementById('currentTitle').innerText = '전체 나들이 · 맛집 추천 모아보기';
-      document.getElementById('externalLink').href = 'all-spots.html';
-      document.getElementById('reportFrame').src = 'all-spots.html?v=' + Date.now();
-      history.replaceState(null, null, '#all-spots');
-      highlightItem('all-spots');
-      if (window.innerWidth < 768) {
-        toggleSidebar(false);
-      }
-    }
-
-    function highlightItem(id) {
-      document.querySelectorAll('.report-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600/15', 'border-indigo-500/30', 'text-indigo-400');
+      searchInput.addEventListener("input", function () {
+        var q = searchInput.value.trim().toLowerCase();
+        var filtered = reports.filter(function (r) {
+          return ((r.title || "") + " " + (r.id || "") + " " + (r.summary || "") + " " + (r.date || "")).toLowerCase().indexOf(q) !== -1;
+        });
+        renderList(filtered, q.length > 0);
       });
-      const activeBtn = document.getElementById('item-' + id);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-indigo-600/15', 'border-indigo-500/30');
-      }
-    }
-
-    function filterReports() {
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      const filtered = reports.filter(r => 
-        (r.title && r.title.toLowerCase().includes(q)) || 
-        (r.id && r.id.toLowerCase().includes(q)) ||
-        (r.summary && r.summary.toLowerCase().includes(q))
-      );
-      renderList(filtered);
-    }
-
-    function toggleSidebar(forceState) {
-      const sb = document.getElementById('sidebar');
-      const bd = document.getElementById('backdrop');
-      const isOpen = !sb.classList.contains('-translate-x-full');
-      const next = forceState !== undefined ? forceState : !isOpen;
-
-      if (next) {
-        sb.classList.remove('-translate-x-full');
-        bd.classList.remove('hidden');
-      } else {
-        sb.classList.add('-translate-x-full');
-        bd.classList.add('hidden');
-      }
-    }
-
-    function copyCurrentUrl() {
-      const url = window.location.href;
-      navigator.clipboard.writeText(url).then(() => {
-        showToast('공유 URL이 클립보드에 복사되었습니다!');
-      }).catch(() => {
-        showToast('복사에 실패했습니다.');
-      });
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.remove('opacity-0', 'translate-y-10');
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-10');
-      }, 2500);
-    }
-
-    // Shortcut Ctrl+K
-    window.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        document.getElementById('searchInput').focus();
-      }
-    });
-
-    function getHubTheme() {
-      return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
-    }
-
-    function syncIframeTheme() {
-      const frame = document.getElementById('reportFrame');
-      try {
-        if (frame && frame.contentWindow) {
-          frame.contentWindow.postMessage({ type: 'wc-theme', theme: getHubTheme() }, '*');
-        }
-      } catch (e) {}
-    }
-
-    function applyHubTheme(theme) {
-      const t = theme === 'light' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = t;
-      try { localStorage.setItem('theme', t); } catch (e) {}
-      const icon = document.getElementById('themeIcon');
-      const label = document.getElementById('themeLabel');
-      if (icon && label) {
-        if (t === 'light') {
-          icon.textContent = '🌙';
-          label.textContent = '다크';
-        } else {
-          icon.textContent = '☀️';
-          label.textContent = '라이트';
-        }
-      }
-      syncIframeTheme();
-    }
-
-    function toggleHubTheme() {
-      applyHubTheme(getHubTheme() === 'light' ? 'dark' : 'light');
-    }
-
-    document.getElementById('reportFrame').addEventListener('load', syncIframeTheme);
-    applyHubTheme(getHubTheme());
-
-    init();
+    })();
   </script>
 </body>
 </html>
