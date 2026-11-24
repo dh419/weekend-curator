@@ -52,6 +52,8 @@ jobs:
           HOME_ADDRESS: ${{ secrets.HOME_ADDRESS }}
           HOME_COORDS: ${{ secrets.HOME_COORDS }}
           FAMILY_PROFILE: ${{ secrets.FAMILY_PROFILE }}
+          GIRL_BIRTH_YEAR: ${{ secrets.GIRL_BIRTH_YEAR }}
+          BOY_BIRTH_YEAR: ${{ secrets.BOY_BIRTH_YEAR }}
         run: |
           python scripts/sync_from_gdrive.py
 

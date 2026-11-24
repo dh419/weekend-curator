@@ -109,11 +109,14 @@ def _build_place_candidates(query, region_hint=""):
     return candidates
 
 
-NON_SPOT_CATS = {"FD6", "CE7", "AG2", "CS2", "BK9", "PM9"}
-SUB_FACILITY_KEYWORDS = ("주차장", "충전소", "매표소", "화장실", "부동산", "공인중개사")
+NON_SPOT_CATS = {"FD6", "CE7", "AG2", "CS2", "BK9", "PM9", "HP8", "AC5"}
+SUB_FACILITY_KEYWORDS = (
+    "주차장", "충전소", "매표소", "화장실", "부동산", "공인중개사",
+    "요가", "필라테스", "학원", "의원", "한의원", "병원", "약국", "미용실", "네일",
+)
 
 
-def _pick_best_place(docs, is_spot=True):
+def _pick_best_place(docs, query_norm="", is_spot=True):
     region_prefixes = ("경기", "화성", "용인", "수원", "오산", "안성", "이천", "과천", "성남", "평택", "서울")
     scored = []
     for idx, d in enumerate(docs):
@@ -121,6 +124,7 @@ def _pick_best_place(docs, is_spot=True):
         in_region = any(p in addr for p in region_prefixes)
         cat = d.get("category_group_code") or ""
         pname = d.get("place_name") or ""
+        pname_norm = re.sub(r"\s+", "", pname).lower()
         penalty = 0
         if not in_region:
             penalty += 100
@@ -128,7 +132,9 @@ def _pick_best_place(docs, is_spot=True):
             if cat in NON_SPOT_CATS:
                 penalty += 50
             if any(k in pname for k in SUB_FACILITY_KEYWORDS):
-                penalty += 20
+                penalty += 40
+            if query_norm and pname_norm == query_norm:
+                penalty -= 15
         scored.append((penalty, idx, d))
     scored.sort(key=lambda x: (x[0], x[1]))
     return scored[0][2]
@@ -150,9 +156,14 @@ def search_kakao_place(api_key, query, region_hint="", is_spot=True):
             if r.status_code == 200:
                 docs = r.json().get("documents") or []
                 if docs:
-                    picked = _pick_best_place(docs, is_spot=is_spot)
-                    if is_spot and (picked.get("category_group_code") or "") in NON_SPOT_CATS:
-                        # Try next candidate if only non-spot businesses matched
+                    cand_norm = re.sub(r"\s+", "", cand).lower()
+                    picked = _pick_best_place(docs, query_norm=cand_norm, is_spot=is_spot)
+                    pname = picked.get("place_name") or ""
+                    if is_spot and (
+                        (picked.get("category_group_code") or "") in NON_SPOT_CATS
+                        or any(k in pname for k in SUB_FACILITY_KEYWORDS)
+                    ):
+                        # Try next candidate if only non-spot businesses or sub-facilities matched
                         continue
                     return picked
         except Exception as e:

@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import subprocess
 from datetime import datetime, timezone, timedelta
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -26,6 +27,47 @@ def get_target_weekend_dates(now_kst):
     return f"{sat.strftime('%m.%d')}~{sun.strftime('%m.%d')}"
 
 
+def resolve_child_ages(now_kst):
+    girl_by = os.environ.get('GIRL_BIRTH_YEAR', '').strip()
+    boy_by = os.environ.get('BOY_BIRTH_YEAR', '').strip()
+    girl_age = (now_kst.year - int(girl_by) + 1) if girl_by.isdigit() else 7
+    boy_age = (now_kst.year - int(boy_by) + 1) if boy_by.isdigit() else 3
+    return girl_age, boy_age
+
+
+def is_within_friday_grace_window(now_kst):
+    """Wait 1h 25m (16:00~17:25 KST) on Friday schedule runs for Gemini App upload."""
+    if os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch':
+        return False
+    hm = now_kst.hour * 60 + now_kst.minute
+    return now_kst.weekday() == 4 and (960 <= hm < 1045)
+
+
+def last_commit_epoch(filepath):
+    try:
+        out = subprocess.check_output(
+            ['git', 'log', '-1', '--format=%ct', '--', filepath],
+            cwd=REPO_ROOT,
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+        return int(out) if out else 0
+    except Exception:
+        return 0
+
+
+def pick_target_file(files, now_kst):
+    is_dispatch = os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch'
+    if is_dispatch:
+        return files[0]
+    min_date = (now_kst - timedelta(days=2)).strftime('%Y-%m-%d')
+    for f in files:
+        date_part = f['name'].replace('-weekend.json', '')
+        if date_part >= min_date:
+            return f
+    return None
+
+
 def main():
     sa_json = os.environ.get('GDRIVE_SA_KEY')
     if not sa_json:
@@ -47,7 +89,31 @@ def main():
     if not files:
         raise FileNotFoundError("No *-weekend.json found in dashboard_incoming/weekend-curator.")
 
-    target = files[0]
+    now_kst = datetime.now(KST)
+    target = pick_target_file(files, now_kst)
+    if not target:
+        if is_within_friday_grace_window(now_kst):
+            print("Waiting for this week's Gemini App upload (*-weekend.json) within grace window...")
+            return
+        raise FileNotFoundError("Missing this week's *-weekend.json in dashboard_incoming/weekend-curator.")
+
+    date_part = target['name'].replace('-weekend.json', '')
+    month_part = date_part[:7]
+    out_dir = os.path.join(DOCS_DIR, month_part)
+    out_file = os.path.join(out_dir, f"{date_part}.html")
+
+    if os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch' and os.path.exists(out_file):
+        mod_str = target.get('modifiedTime', '')
+        drive_epoch = 0
+        if mod_str:
+            try:
+                drive_epoch = int(datetime.fromisoformat(mod_str.replace('Z', '+00:00')).timestamp())
+            except Exception:
+                drive_epoch = 0
+        if drive_epoch and drive_epoch <= last_commit_epoch(out_file):
+            print(f"Weekly dashboard already up to date at {out_file}; skipping.")
+            return
+
     print(f"Fetching {target['name']} (ID: {target['id']})...")
     buf = io.BytesIO()
     downloader = MediaIoBaseDownload(buf, service.files().get_media(fileId=target['id']))
@@ -56,12 +122,7 @@ def main():
         _, done = downloader.next_chunk()
 
     data = json.loads(buf.getvalue().decode('utf-8'))
-    now_kst = datetime.now(KST)
-    date_part = target['name'].replace('-weekend.json', '')
-    month_part = date_part[:7]
-
-    girl_age = now_kst.year - 2020 + 1
-    boy_age = now_kst.year - 2024 + 1
+    girl_age, boy_age = resolve_child_ages(now_kst)
     weekend_label = get_target_weekend_dates(now_kst)
 
     if not data.get('homePlays'):
@@ -86,9 +147,7 @@ def main():
     if not re.search(r'<meta\s+name=["\']robots["\']', html, re.IGNORECASE):
         html = re.sub(r'(<head[^>]*>)', r'\1\n  <meta name="robots" content="noindex, nofollow" />', html, count=1, flags=re.IGNORECASE)
 
-    out_dir = os.path.join(DOCS_DIR, month_part)
     os.makedirs(out_dir, exist_ok=True)
-    out_file = os.path.join(out_dir, f"{date_part}.html")
     with open(out_file, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"Generated: {out_file}")

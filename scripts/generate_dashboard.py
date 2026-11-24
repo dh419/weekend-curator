@@ -29,8 +29,10 @@ def get_target_weekend_dates():
     return sat, sun, label
 
 def calculate_ages(year):
-    girl_age = year - 2020 + 1
-    boy_age = year - 2024 + 1
+    girl_by = os.environ.get("GIRL_BIRTH_YEAR", "").strip()
+    boy_by = os.environ.get("BOY_BIRTH_YEAR", "").strip()
+    girl_age = (year - int(girl_by) + 1) if girl_by.isdigit() else 7
+    boy_age = (year - int(boy_by) + 1) if boy_by.isdigit() else 3
     return girl_age, boy_age
 
 def generate_dashboard():
