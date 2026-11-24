@@ -3,6 +3,7 @@ import json
 import os
 import re
 import time
+from datetime import datetime, timedelta, timezone
 import requests
 
 KAKAO_LOCAL_KEYWORD_URL = "https://dapi.kakao.com/v2/local/search/keyword.json"
@@ -10,6 +11,8 @@ KAKAO_LOCAL_ADDRESS_URL = "https://dapi.kakao.com/v2/local/search/address.json"
 KAKAO_BLOG_SEARCH_URL = "https://dapi.kakao.com/v2/search/blog"
 KAKAO_WEB_SEARCH_URL = "https://dapi.kakao.com/v2/search/web"
 KAKAO_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/directions"
+KAKAO_FUTURE_DIRECTIONS_URL = "https://apis-navi.kakaomobility.com/v1/future/directions"
+KST = timezone(timedelta(hours=9))
 
 HOME_ADDRESS = os.environ.get("HOME_ADDRESS") or "동탄"
 
@@ -64,16 +67,50 @@ def resolve_home_coords(api_key):
     return DEFAULT_HOME_COORDS
 
 
-def search_kakao_place(api_key, query, region_hint=""):
+def _build_place_candidates(query, region_hint=""):
     candidates = []
+
+    def add(c):
+        c = c.strip()
+        if c and c not in candidates:
+            candidates.append(c)
+
     q_clean = clean_query(query)
-    if region_hint and region_hint not in q_clean:
-        candidates.append(f"{region_hint} {q_clean}")
-    candidates.append(q_clean)
-    # Also try removing trailing parentheses
     no_paren = re.sub(r"\([^)]*\)", "", q_clean).strip()
-    if no_paren and no_paren not in candidates:
-        candidates.append(no_paren)
+
+    # If composite title like "동탄호수공원 & 라크몽", prioritize the primary venue first
+    primary = re.split(r"\s*[&/·]\s*", no_paren)[0].strip() if no_paren else ""
+    if primary and primary != no_paren:
+        if region_hint and region_hint not in primary:
+            add(f"{region_hint} {primary}")
+        add(primary)
+
+    if region_hint and region_hint not in q_clean:
+        add(f"{region_hint} {q_clean}")
+    add(q_clean)
+    if no_paren:
+        add(no_paren)
+
+    # Strip event/exhibition/festival/year suffixes for venue fallback
+    stripped = re.sub(
+        r"\s+(?:\d+주년.*|20\d{2}.*|크리스마스.*|할로윈.*|겨울.*|가을.*|봄.*|여름.*|(?:특별|기획)?전시?.*|행사.*|축제.*|페스티벌.*|페스타.*)$",
+        "",
+        primary or no_paren,
+    ).strip()
+    if stripped:
+        if region_hint and region_hint not in stripped:
+            add(f"{region_hint} {stripped}")
+        add(stripped)
+
+    tokens = (primary or no_paren).split()
+    if len(tokens) >= 2:
+        add(tokens[0])
+
+    return candidates
+
+
+def search_kakao_place(api_key, query, region_hint=""):
+    candidates = _build_place_candidates(query, region_hint)
 
     for cand in candidates:
         if not cand:
@@ -99,30 +136,53 @@ def search_kakao_place(api_key, query, region_hint=""):
     return None
 
 
+def _next_saturday_noon_kst():
+    now_kst = datetime.now(KST)
+    days_until_sat = (5 - now_kst.weekday()) % 7
+    target = (now_kst + timedelta(days=days_until_sat)).replace(
+        hour=12, minute=0, second=0, microsecond=0
+    )
+    if target <= now_kst:
+        target += timedelta(days=7)
+    return target.strftime("%Y%m%d%H%M")
+
+
 def find_kakao_drive(api_key, origin_xy, dest_xy):
-    try:
-        r = requests.get(
+    dep_time = _next_saturday_noon_kst()
+    attempts = [
+        (
+            KAKAO_FUTURE_DIRECTIONS_URL,
+            {
+                "origin": f"{origin_xy[0]},{origin_xy[1]}",
+                "destination": f"{dest_xy[0]},{dest_xy[1]}",
+                "departure_time": dep_time,
+                "priority": "RECOMMEND",
+            },
+        ),
+        (
             KAKAO_DIRECTIONS_URL,
-            headers=kakao_headers(api_key),
-            params={
+            {
                 "origin": f"{origin_xy[0]},{origin_xy[1]}",
                 "destination": f"{dest_xy[0]},{dest_xy[1]}",
                 "priority": "RECOMMEND",
             },
-            timeout=8,
-        )
-        if r.status_code == 200:
-            routes = r.json().get("routes") or []
-            if routes and routes[0].get("result_code") == 0:
-                summary = routes[0].get("summary") or {}
-                dur_sec = summary.get("duration")
-                dist_m = summary.get("distance")
-                if dur_sec is not None and dist_m is not None:
-                    mins = max(1, int(round(dur_sec / 60.0)))
-                    km = round(dist_m / 1000.0, 1)
-                    return mins, km
-    except Exception as e:
-        print(f"[Kakao] directions error: {e}")
+        ),
+    ]
+    for url, params in attempts:
+        try:
+            r = requests.get(url, headers=kakao_headers(api_key), params=params, timeout=8)
+            if r.status_code == 200:
+                routes = r.json().get("routes") or []
+                if routes and routes[0].get("result_code") == 0:
+                    summary = routes[0].get("summary") or {}
+                    dur_sec = summary.get("duration")
+                    dist_m = summary.get("distance")
+                    if dur_sec is not None and dist_m is not None:
+                        mins = max(1, int(round(dur_sec / 60.0)))
+                        km = round(dist_m / 1000.0, 1)
+                        return mins, km
+        except Exception as e:
+            print(f"[Kakao] directions error ({url}): {e}")
     return None, None
 
 
