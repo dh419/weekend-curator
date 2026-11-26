@@ -7,22 +7,50 @@
     {
       "type": "outing",
       "day": "sat",
-      "driveMin": 22,
+      "driveMin": 29,
       "badgeType": "🌳 나들이 1",
       "badgeDay": "❄️ 토요일 실내",
       "title": "화성시어린이문화센터",
-      "drive": "🚗 자차 약 22분 (화성시 봉담읍)",
+      "drive": "🚗 자차 약 29분 (18.9km · 화성시 효행구)",
       "summary": "기온이 크게 떨어지는 초겨울 토요일에 따뜻하고 쾌적하게 즐길 수 있는 실내 키즈체험관·전시·공연 복합문화공간입니다.",
       "girl": "키즈체험관 직업·놀이 체험(48개월 이상 온라인 사전예약 필수) 및 아이누리극장 어린이 공연 관람",
       "boy": "48개월 미만 전시 관람(현장 발권) 및 안전하게 설계된 실내 유아 놀이 동선 체험",
       "tip": "수유실·가족화장실 완비, 엘리베이터를 이용해 유모차 이동이 편리합니다(화~일 09:30~18:30, 월요일 휴관).",
       "parking": "전용 주차장 135대 무료 개방(09:00~19:00). 주말 오전 예약 회차 20분 전 입차를 권장합니다.",
       "noodleTag": "🍜 이두형홍두깨칼국수",
-      "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 7분)",
+      "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 약 8분)",
       "noodleDesc": "넓은 전용 주차장을 갖추고 있으며, 맵지 않고 순한 수제 손칼국수와 만두전골을 온 가족이 부담 없이 즐길 수 있습니다.",
       "placeQuery": "화성시어린이문화센터",
       "foodQuery": "화성 봉담 이두형홍두깨칼국수",
       "siteUrl": "https://childrenjob.hscity.go.kr/",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/107708346",
+      "placeAddress": "경기 화성시 효행구 봉담읍 동화길 146",
+      "placePhone": "031-5183-3200",
+      "kakaoFoodUrl": "http://place.map.kakao.com/17746394",
+      "foodAddress": "경기 화성시 병점구 세자로 426",
+      "foodPhone": "031-224-0099",
+      "blogLinks": [
+        {
+          "title": "화성 아기랑 가볼만한 곳 ㅣ화성시 어린이 문화센터 다녀온 후기",
+          "url": "https://blog.naver.com/rlagusdk2102/224447342997",
+          "source": "아들랑구 육아기록 · 2026-10-20"
+        },
+        {
+          "title": "[아기데리고나혼자] 화성시어린이문화센터",
+          "url": "https://blog.naver.com/ddoddo_1124/224478006813",
+          "source": "또또가족의 기록 · 2026-11-15"
+        },
+        {
+          "title": "화성시 어린이 문화센터 3살 아기랑 다녀온 후기...아기랑 가볼만한 곳 • 🚗 예약 입장료 주차 정보",
+          "url": "https://blog.naver.com/tovdael/224390839326",
+          "source": "tov log. · 2026-08-26"
+        },
+        {
+          "title": "화성 아이와 가볼만한 곳 두돌 남자 아기랑 다녀온 어린이문화센터 세번째 재방문 후기",
+          "url": "https://blog.naver.com/family_daisy/224395934522",
+          "source": "치치포포 나들이 가자 · 2026-08-31"
+        }
+      ],
       "key": "화성시어린이문화센터",
       "envType": "indoor",
       "latestDate": "2026-11-20",
@@ -45,22 +73,50 @@
     {
       "type": "festival",
       "day": "sun",
-      "driveMin": 35,
+      "driveMin": 28,
       "badgeType": "🎉 축제 3",
       "badgeDay": "🎄 11.21 오픈",
       "title": "에버랜드 크리스마스 위시 2026",
-      "drive": "🚗 자차 약 35분 (용인시 처인구)",
+      "drive": "🚗 자차 약 28분 (21.2km · 용인시 처인구)",
       "summary": "11.21(토)부터 시작되는 크리스마스 시즌 축제! 10m 대형 트리와 퍼레이드, 판다월드를 즐길 수 있습니다.",
       "girl": "10m 대형 크리스마스 트리 포토존, 회전목마·어린이 어트랙션 및 퍼레이드 관람",
       "boy": "유모차 타고 판다월드·주토피아 구경 및 화려한 크리스마스 트리 장식 감상",
       "tip": "유아차·웨건 대여소(스마트예약 가능, 15kg 이하) 및 정문·글로벌페어 등 수유실이 다수 완비되어 있습니다(10:00~22:00).",
       "parking": "무료 1·2·3주차장(유모차 전용 칸 있는 무료 셔틀 운행) 또는 정문 유료주차장(소형 1일 15,000원) 선택 이용 가능.",
       "noodleTag": "🍜 포메인 에버랜드직영점",
-      "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보)",
+      "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보) (차로 약 11분)",
       "noodleDesc": "10:00~20:00(금·토 21:00) 운영. 고수와 매운 소스를 뺀 순한 소고기 쌀국수와 아기의자가 완비되어 있어 아이와 식사하기 좋습니다.",
       "placeQuery": "에버랜드",
       "foodQuery": "포메인 에버랜드직영점",
       "siteUrl": "https://www.everland.com/everland/event",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/784414359",
+      "placeAddress": "경기 용인시 처인구 포곡읍 에버랜드로 199",
+      "placePhone": "031-320-5000",
+      "kakaoFoodUrl": "http://place.map.kakao.com/689516001",
+      "foodAddress": "경기 용인시 처인구 포곡읍 에버랜드로 199",
+      "foodPhone": "031-373-9203",
+      "blogLinks": [
+        {
+          "title": "에버랜드 크리스마스 위시 주말, 퍼레이드 꿀팁 총정리",
+          "url": "https://blog.naver.com/info_manmulsang/224484762176",
+          "source": "알아본김에 · 2026-11-20"
+        },
+        {
+          "title": "[2026 크리스마스] 수원·용인 트리 명소 총정리! 스타필드 별마당 도....",
+          "url": "https://blog.naver.com/logix21c/224486815795",
+          "source": "★★ 기록은 기억을 지배한다 ★★ · 2026-11-22"
+        },
+        {
+          "title": "에버랜드 크리스마스 위시 2026, 자이언트 트리·퍼레이드·불꽃쇼 일정과 입장권·주차 총정리",
+          "url": "https://dannys-story.tistory.com/124",
+          "source": "danny의 세상사는 이야기 · 2026-11-19"
+        },
+        {
+          "title": "용인 2026 에버랜드 크리스마스 위시 일정 입장료 주차 불꽃쇼 용인 겨울축제",
+          "url": "https://blog.naver.com/dayandstay/224481492136",
+          "source": "데이앤스테이 · 2026-11-18"
+        }
+      ],
       "key": "에버랜드크리스마스위시2026",
       "envType": "outdoor",
       "latestDate": "2026-11-20",
@@ -87,18 +143,46 @@
       "badgeType": "🌳 나들이 2",
       "badgeDay": "☀️ 일요일 낮 추천",
       "title": "수원 광교호수공원",
-      "drive": "🚗 자차 약 25분 (수원시 영통구)",
+      "drive": "🚗 자차 약 25분 (14.4km · 수원시 영통구)",
       "summary": "바람이 잔잔하고 햇살이 좋은 일요일 낮(6℃)에 유모차로 완벽하게 산책하기 좋은 평탄한 수변 데크길과 놀이터입니다.",
       "girl": "신비한물넘이 옆 어린이 놀이터 활동 및 프라이부르크 전망대에서 호수 풍경 조망",
       "boy": "단차 없는 평탄한 호수 데크길 유모차 산책 및 오리·물새 관찰하기",
       "tip": "인접한 앨리웨이 광교 건물 내 수유실·기저귀교환대·유모차 엘리베이터를 연계해 이용하기 매우 편리합니다.",
       "parking": "광교호수공원 제1·2공영주차장(3시간 1,000원, 1일 최대 5,000원). 주말 낮 혼잡 시 제2주차장 또는 앨리웨이 지하주차장 추천.",
       "noodleTag": "🍜 영통백합칼국수 광교점",
-      "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 3분)",
+      "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 약 5분)",
       "noodleDesc": "앨리웨이 광교 어라운드라이프관 2층 위치(지하주차장 무료 지원). 시원하고 맑은 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.",
       "placeQuery": "수원 광교호수공원",
       "foodQuery": "영통백합칼국수 광교점",
       "siteUrl": "https://www.gglakepark.or.kr/",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/15099364",
+      "placeAddress": "경기 수원시 영통구 하동 1020",
+      "placePhone": "070-8800-2460",
+      "kakaoFoodUrl": "http://place.map.kakao.com/1641303184",
+      "foodAddress": "경기 수원시 영통구 광교호수공원로 80",
+      "foodPhone": "031-217-8324",
+      "blogLinks": [
+        {
+          "title": "수원 광교호수공원 나들이 아기랑 가기 좋은 카페 10곳 / 유모차 산....",
+          "url": "https://blog.naver.com/honestreview13/224407787370",
+          "source": "태하네 BLog · 2026-09-11"
+        },
+        {
+          "title": "광교 호수공원 맛집 더유로피언 브런치로 화덕피자 뇨끼 후기",
+          "url": "https://blog.naver.com/hjhj219/224483941910",
+          "source": "솔직담백 육아맘STORY · 2026-11-19"
+        },
+        {
+          "title": "2026 수원드론불꽃축제 수원컨벤션센터 광교호수공원 명당 아기랑 솔직후기",
+          "url": "https://blog.naver.com/flowerjyun/224411197913",
+          "source": "쥬니꽃 블로그 · 2026-09-14"
+        },
+        {
+          "title": "[맛집] 광교호수공원 맛집 영통백합칼국수 광교점 | 백합탕샤브샤브 파전 ....",
+          "url": "https://blog.naver.com/susune0601/224478707865",
+          "source": "susune daily · 2026-11-16"
+        }
+      ],
       "key": "수원광교호수공원",
       "envType": "outdoor",
       "latestDate": "2026-11-20",
@@ -121,11 +205,11 @@
     {
       "type": "outing",
       "day": "sat",
-      "driveMin": 12,
+      "driveMin": 10,
       "badgeType": "🌳 나들이 3",
       "badgeDay": "❄️ 토·일 실내외",
       "title": "동탄호수공원 & 라크몽",
-      "drive": "🚗 자차 약 12분 (화성시 송동)",
+      "drive": "🚗 자차 약 10분 (3.8km · 화성시 동탄구)",
       "summary": "집에서 가장 가까운 호수 평지 산책과 라크몽 실내 동물원(주렁주렁)을 한 번에 묶어 추위를 피할 수 있는 하이브리드 코스입니다.",
       "girl": "라크몽 4~5층 주렁주렁 실내 동물 체험 및 네이처스케이프+ 어드벤처 놀이",
       "boy": "호수공원 평지 유모차 산책 후 추워지면 라크몽 실내에서 안전하게 동물 관람",
@@ -137,6 +221,33 @@
       "placeQuery": "동탄 라크몽",
       "foodQuery": "소이연남 동탄라크몽점",
       "siteUrl": "https://lakmonofficial.cafe24.com/",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/1004761013",
+      "placeAddress": "경기 화성시 동탄구 동탄대로5길 21",
+      "kakaoFoodUrl": "http://place.map.kakao.com/985918666",
+      "foodAddress": "경기 화성시 동탄구 동탄대로5길 21",
+      "foodPhone": "070-4007-5130",
+      "blogLinks": [
+        {
+          "title": "동탄호수공원 | 루나쇼·피크닉 주차장 추천, 꿀팁 (위치/가격)",
+          "url": "https://blog.naver.com/nnnarrra/224437494183",
+          "source": "일상아 여행같아라 · 2026-10-10"
+        },
+        {
+          "title": "주말엔 4시간인데 평일 무제한 할인! 동탄 라크몽 주렁주렁 네이처....",
+          "url": "https://blog.naver.com/miniyuni1130/224478015923",
+          "source": "미니유니의 육아·여행·맛집 · 2026-11-18"
+        },
+        {
+          "title": "동탄호수공원 아기랑 가을 피크닉｜텐트·주차·배달 후기 & 루나쇼 10월 일정·저녁 8시 공연",
+          "url": "https://blog.naver.com/bbbooobbbooo22/224438992444",
+          "source": "우리 셋의 기록 · 2026-10-12"
+        },
+        {
+          "title": "<동탄 맛집> 화성 동탄호수공원 라크몽 레스토랑 포가타\"FOGATA\" Lunch Set + 아기랑 가기좋은 스테이크...",
+          "url": "https://blog.naver.com/hyunseo8484/224397701526",
+          "source": "떠우네 일상 Blog · 2026-09-01"
+        }
+      ],
       "key": "동탄호수공원&라크몽",
       "envType": "both",
       "latestDate": "2026-11-20",
@@ -159,22 +270,50 @@
     {
       "type": "festival",
       "day": "sun",
-      "driveMin": 28,
+      "driveMin": 34,
       "badgeType": "🎉 전시 2",
       "badgeDay": "🆕 11.20 오픈",
       "title": "경기상상캠퍼스 디오라마 특별전",
-      "drive": "🚗 자차 약 28분 (수원시 권선구)",
+      "drive": "🚗 자차 약 34분 (15.3km · 수원시 권선구)",
       "summary": "11.20(금) 개막한 전곡선사박물관 후원 선사시대 디오라마 특별전 《작은 세상, 커다란 이야기》(디자인1978 1층)입니다.",
       "girl": "선사시대 미니어처 디오라마 관찰 및 주말 공예·창작 체험 공간 탐방(참가비 2,000원)",
       "boy": "단차 없는 1층 실내 전시관 유모차 관람 후 햇살 좋은 오후 숲속 캠퍼스 산책",
       "tip": "디자인1978 1층 단차가 없어 유모차 진입이 용이하며 건물 내 수유실·화장실 이용 가능(10:00~18:00, 월요일 휴관).",
       "parking": "캠퍼스 내 넓은 지상 주차장을 보유하고 있어 주말 낮에도 비교적 주차 여유가 있는 편입니다.",
       "noodleTag": "🍜 다선칼국수 본점",
-      "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 8분)",
+      "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 약 9분)",
       "noodleDesc": "수원역 인근 위치. 슴슴하고 깊은 맑은 바지락칼국수와 보리밥을 제공하며, 점심 피크를 피해 11:30 이전이나 13시 이후 방문을 추천합니다.",
       "placeQuery": "수원 경기상상캠퍼스",
       "foodQuery": "수원역 다선칼국수 본점",
       "siteUrl": "https://sscampus.ggcf.kr/exhibitions/185",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/1982560219",
+      "placeAddress": "경기 수원시 권선구 서둔로 166",
+      "placePhone": "031-296-1980",
+      "kakaoFoodUrl": "http://place.map.kakao.com/319148235",
+      "foodAddress": "경기 수원시 팔달구 향교로 48",
+      "foodPhone": "031-253-7788",
+      "blogLinks": [
+        {
+          "title": "Ooooo",
+          "url": "https://blog.naver.com/arangjoeul/224475107600",
+          "source": "전화통화 신분확인.말을못해서 말을하지않는게아니다 · 2026-11-13"
+        },
+        {
+          "title": ".",
+          "url": "https://blog.naver.com/yjsjhs/224466614100",
+          "source": "전화통화 신분확인.말을못해서 말을하지않는게아니다 · 2026-11-06"
+        },
+        {
+          "title": "2026 경기상상캠퍼스 선사시대 디오라마 전시 <작은 세상, 커다란 이야기> | 수원 아이와 가기 좋은...",
+          "url": "https://blog.naver.com/sunlunar/224488704783",
+          "source": "다녀오겠뚜둥 :D · 2026-11-23"
+        },
+        {
+          "title": "🦋 2026 인천나비공원 곤충 디오라마 특별전! 입장료 무료·주차·아이와 관람 꿀팁 총정리",
+          "url": "https://blog.naver.com/hadakogu/224475819736",
+          "source": "하다코구네 · 2026-11-13"
+        }
+      ],
       "key": "경기상상캠퍼스디오라마특별전",
       "envType": "both",
       "latestDate": "2026-11-20",
@@ -197,22 +336,50 @@
     {
       "type": "festival",
       "day": "sat",
-      "driveMin": 22,
+      "driveMin": 21,
       "badgeType": "🎉 전시 1",
       "badgeDay": "❄️ 토요일 실내",
       "title": "경기도어린이박물관 15주년 행사",
-      "drive": "🚗 자차 약 22분 (용인시 기흥구)",
+      "drive": "🚗 자차 약 21분 (9.0km · 용인시 기흥구)",
       "summary": "개관 15주년 기념 교육체험 '열다섯, 같이 놀자!'와 11월 행사(11.9~11.25), 3층 신규 전시가 진행 중인 대표 실내 박물관입니다.",
       "girl": "3층 신규 상설전시 '우리는 지구별 친구들' 및 개관 15주년 체험 프로그램 참여",
       "boy": "1층 영유아 전용 자연놀이터 및 튼튼놀이터에서 안전한 실내 신체 놀이",
       "tip": "유아휴게실(수유실)·피크닉룸 완비. 개인 유모차만 이용 가능(대여 불가, 1층 보관소 운영)하며 온라인 사전예약 권장(10:00~17:30).",
       "parking": "박물관 전용 주차장 이용(뮤지엄숍 1만원 이상 구매 시 2시간 무료). 주말 만차 시 인근 상갈동 공영주차장 활용.",
       "noodleTag": "🍜 방자네바지락칼국수",
-      "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 10분)",
+      "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 약 11분)",
       "noodleDesc": "어정역 앞 가게 전용 주차장 완비. 맵지 않고 시원한 감태바지락칼국수가 아이들 입맛에도 잘 맞습니다.",
       "placeQuery": "경기도어린이박물관",
       "foodQuery": "용인 방자네바지락칼국수",
       "siteUrl": "https://gcm.ggcf.kr/events/141",
+      "kakaoPlaceUrl": "http://place.map.kakao.com/14747809",
+      "placeAddress": "경기 용인시 기흥구 상갈로 6",
+      "placePhone": "031-270-8600",
+      "kakaoFoodUrl": "http://place.map.kakao.com/10393041",
+      "foodAddress": "경기 용인시 기흥구 어정로 134-4",
+      "foodPhone": "031-286-8228",
+      "blogLinks": [
+        {
+          "title": "용인 아이와 어디 가지? 경기도어린이박물관 예약·주차·초등학생 ....",
+          "url": "https://blog.naver.com/wjrkxms/224424251090",
+          "source": "Ria's Daily · 2026-09-28"
+        },
+        {
+          "title": "경기도어린이박물관 아이와｜이번 주말 무료 ‘열다섯, 같이 놀자!....",
+          "url": "https://blog.naver.com/goodstar_silverstar/224415881649",
+          "source": "운동하는 쫄비맘 · 2026-09-18"
+        },
+        {
+          "title": "한글날 아이랑 나들이 갈만한 곳/ 경기도 외 서울,세종 중심 행사·체험·전시 9곳",
+          "url": "https://blog.naver.com/bkm0420/224435651892",
+          "source": "미둥이의 오늘도 한 뼘! · 2026-10-08"
+        },
+        {
+          "title": "[맛집] 칼국수러버의 용인주민 맛집 방자네바지락칼국수 솔직후기",
+          "url": "https://blog.naver.com/s2linkins2/224426433145",
+          "source": "뚱이와 빵이네_잘먹고 잘살기 · 2026-09-29"
+        }
+      ],
       "key": "경기도어린이박물관15주년행사",
       "envType": "indoor",
       "latestDate": "2026-11-20",

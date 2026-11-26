@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="robots" content="noindex, nofollow" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>11.21~11.22 주말 나들이 6선</title>
   <style>
     :root {
@@ -233,7 +233,64 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
     }
+    .extra-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.09);
+      border-color: #93c5fd;
+    }
+    .extra-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      margin-top: auto;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .blog-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #1e3a8a;
+    }
+    .blog-box strong { display: block; margin-bottom: 6px; color: #1d4ed8; }
+    .blog-sub { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bfdbfe; }
+    .blog-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .blog-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #0f172a;
+      font-size: 0.86rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .blog-link-item:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+    .blog-link-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .blog-link-meta { font-size: 0.76rem; color: var(--muted); flex-shrink: 0; }
+    .addr-meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
     .extra-card .spot-title { margin-bottom: 2px; }
     .extra-meta {
       font-size: 0.82rem;
@@ -294,6 +351,12 @@
     :root[data-theme="dark"] .close-btn { background: #1e293b !important; color: #f1f5f9 !important; }
     :root[data-theme="dark"] .spot-footer { color: #a5b4fc !important; }
     :root[data-theme="dark"] .mini-box { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    :root[data-theme="dark"] .extra-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .blog-box { background: rgba(59, 130, 246, 0.12) !important; border-color: rgba(96, 165, 250, 0.35) !important; color: #dbeafe !important; }
+    :root[data-theme="dark"] .blog-box strong { color: #93c5fd !important; }
+    :root[data-theme="dark"] .blog-sub { border-top-color: rgba(96, 165, 250, 0.3); }
+    :root[data-theme="dark"] .blog-link-item { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+    :root[data-theme="dark"] .blog-link-item:hover { border-color: #818cf8 !important; background: #1e293b !important; }
     :root[data-theme="dark"] .badge.play { background: rgba(14, 165, 233, 0.2); color: #38bdf8; }
     :root[data-theme="dark"] .badge.meal { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
   </style>
@@ -304,7 +367,7 @@
       <div class="sub">📍 동탄 출발 · 👧 은우(7세) &amp; 👦 우준(3세) 맞춤 대시보드 (11.21~11.22)</div>
       <h1>11.21~11.22 주말 나들이 6선</h1>
       <div class="weather-strip">
-        <span class="weather-pill">토(11.21) 맑음·초겨울추위 -5~2℃</span><span class="weather-pill">일(11.22) 맑음·낮 잔잔 -5~6℃</span><span class="weather-pill">미세먼지 주말 내내 좋음</span>
+        
       </div>
     </header>
 
@@ -314,7 +377,7 @@
       <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
       <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
       <button class="filter-btn" onclick="scrollToSection('home-play-section')">🏠 집안 놀이 (3)</button>
-      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (7)</button>
+      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (6)</button>
       <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
     </div>
 
@@ -323,199 +386,17 @@
     <section class="extra-section" id="home-play-section">
       <div class="section-head">
         <h2>🏠 추위·휴식 대비 집안 놀이 3종 추천</h2>
-        <span class="section-sub">은우(7세) &amp; 우준(3세) 함께 노는 저소음·저준비물 놀이</span>
+        <span class="section-sub">은우(7세) &amp; 우준(3세) 함께 노는 저소음·저준비물 놀이 (카드 클릭 시 후기/링크 보기)</span>
       </div>
-      <div class="extra-grid">
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge play">🏠 집안 놀이 1</span>
-            <span class="badge mild">🚗 신체·균형</span>
-          </div>
-          <div class="spot-title">거실 테이프 도로 &amp; 주차 미션</div>
-          <div class="extra-meta">준비물: 종이(마스킹)테이프, 장난감 자동차, 색종이 신호등</div>
-          <div class="mini-box">
-            <strong>👧 은우(7세) 포인트</strong>
-            직접 테이프로 교차로·회전구간·주차 칸 번호를 설계하고, "2번 칸에 후진 주차" 같은 미션 카드 놀이로 확장할 수 있어요.
-          </div>
-          <div class="mini-box">
-            <strong>👦 우준(3세) 포인트</strong>
-            바닥 선을 따라 기어가거나 자동차를 굴리고, 테이프 길 위를 발 맞춰 걸으며 대근육 균형 감각을 기르기 좋습니다.
-          </div>
-          <div class="mini-box">
-            <strong>💡 부모 팁</strong>
-            점핑 없이 기어다니고 걷는 놀이라 층간소음 걱정이 적고, 놀이 후 테이프만 떼어내면 정리가 1분 만에 끝납니다.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge play">🏠 집안 놀이 2</span>
-            <span class="badge mild">🏕️ 상상·역할</span>
-          </div>
-          <div class="spot-title">이불 동굴 캠핑 &amp; 손전등 그림자극</div>
-          <div class="extra-meta">준비물: 얇은 이불/담요, 의자·소파, 스마트폰 손전등, 인형</div>
-          <div class="mini-box">
-            <strong>👧 은우(7세) 포인트</strong>
-            동굴 입구 간판을 그려 붙이고, 손전등으로 동물 손그림자나 인형극 스토리를 직접 만들어 동생에게 들려주는 감독 역할을 좋아합니다.
-          </div>
-          <div class="mini-box">
-            <strong>👦 우준(3세) 포인트</strong>
-            어두운 텐트 공간의 아늑함에 집중력이 높아지며, 불빛에 비친 동물 모양 맞히기와 까꿍 놀이로 즐거워합니다.
-          </div>
-          <div class="mini-box">
-            <strong>💡 부모 팁</strong>
-            식탁 의자 두 개나 소파 등받이에 이불을 고정하면 안전하며, 안에서 간식 타임(과일·보리차)까지 묶으면 주말 오후 1시간이 순삭됩니다.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge play">🏠 집안 놀이 3</span>
-            <span class="badge mild">🎳 에너지 발산</span>
-          </div>
-          <div class="spot-title">종이컵 볼링 &amp; 수면양말 골인 게임</div>
-          <div class="extra-meta">준비물: 종이컵 10개(또는 빈 페트병), 말아 둔 수면양말, 빨래바구니</div>
-          <div class="mini-box">
-            <strong>👧 은우(7세) 포인트</strong>
-            종이컵에 점수(1~5점)를 적어 피라미드로 쌓고, 몇 개를 쓰러뜨렸는지 덧셈·점수판 기록까지 자연스럽게 놀이로 연결됩니다.
-          </div>
-          <div class="mini-box">
-            <strong>👦 우준(3세) 포인트</strong>
-            가벼운 양말 공을 던져 종이컵 탑을 무너뜨리는 쾌감이 크고, 다쳐도 전혀 아프지 않아 안전하게 에너지를 쏟을 수 있어요.
-          </div>
-          <div class="mini-box">
-            <strong>💡 부모 팁</strong>
-            거실 매트 위에서 진행하고 단단한 공 대신 말아 둔 양말을 사용하면 가구 파손과 소음 모두 방지할 수 있습니다.
-          </div>
-        </article>
-      </div>
+      <div class="extra-grid" id="homePlayGrid"></div>
     </section>
 
     <section class="extra-section" id="kids-meal-section">
       <div class="section-head">
-        <h2>🍳 토·일 애들 먹일 비매운 요리 7종 추천</h2>
-        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0%)</span>
+        <h2>🍳 토·일 애들 먹일 비매운 요리 6종 추천</h2>
+        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0% · 카드 클릭 시 후기/링크 보기)</span>
       </div>
-      <div class="extra-grid">
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🍲 토요일 추천</span>
-            <span class="badge mild">🌶️ 맵기 0% · 따뜻한국물</span>
-          </div>
-          <div class="spot-title">맑은 소고기 무 떡만둣국</div>
-          <div class="extra-meta">⏱️ 약 20분 · 재료: 소고기(양지/국거리), 무, 떡국떡, 물만두, 계란, 국간장</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 나박 썬 무와 소고기를 참기름에 살짝 볶다 물을 부어 10분 끓입니다. ② 떡국떡과 한입 크기 물만두를 넣고 국간장·소금으로 슴슴하게 간합니다. ③ 계란물을 둘러 익힌 뒤 김가루를 올려 완성!
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            후추·고춧가루 없이 맑고 구수한 국물이라 추운 토요일에 딱입니다. 우준이용 떡은 먹기 전에 가위로 반 잘라 주면 목 걸림 없이 안전해요.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🍙 일요일 점심 추천</span>
-            <span class="badge mild">🧀 맵기 0% · 촉촉바삭</span>
-          </div>
-          <div class="spot-title">치즈 감자채전 &amp; 햄야채 주먹밥</div>
-          <div class="extra-meta">⏱️ 약 20분 · 재료: 감자 2개, 피자치즈, 소금, 밥, 다진 당근·애호박·햄, 참기름</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 얇게 채 썬 감자(전분 물기 그대로)에 소금 한 꼬집을 섞어 팬에 얇게 펼칩니다. ② 앞뒤로 노릇하게 굽다 치즈를 올려 녹입니다. ③ 잘게 다져 볶은 햄·야채를 밥과 참기름에 비벼 동그랗게 뭉칩니다.
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            케첩 대신 치즈의 고소함으로 간을 맞추면 맵지 않고 담백합니다. 주먹밥은 은우가 직접 동그랗게 빚는 요리 놀이로 참여시키면 편식도 줄어요.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🍗 주말 저녁 특식</span>
-            <span class="badge mild">🍯 맵기 0% · 단짠단백</span>
-          </div>
-          <div class="spot-title">순한 버터간장 닭안심 계란덮밥</div>
-          <div class="extra-meta">⏱️ 약 15분 · 재료: 닭안심, 양파, 계란 2개, 진간장, 올리고당(설탕), 버터 1조각</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 한입 크기로 자른 닭안심과 채 썬 양파를 팬에 볶습니다. ② 물 5큰술·간장 2큰술·올리고당 1.5큰술을 넣고 약불로 졸입니다. ③ 푼 계란과 버터를 두르고 반숙 느낌일 때 따뜻한 밥 위에 얹습니다.
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            퍽퍽하지 않은 닭안심과 부드러운 계란, 버터 간장의 달콤짭짤한 조합이라 매운 걸 못 먹는 아이들도 밥 한 그릇을 금방 비웁니다.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🍜 일요일 점심 추천</span>
-            <span class="badge mild">🥛 맵기 0% · 부드러운면</span>
-          </div>
-          <div class="spot-title">순한 우유 크림 우동 (또는 노랑 카레우동)</div>
-          <div class="extra-meta">⏱️ 약 15분 · 재료: 우동면 2인분, 우유 300ml, 슬라이스치즈 1장, 베이컨/새우, 양파</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 팬에 다진 양파와 베이컨(또는 칵테일새우)을 버터에 볶습니다. ② 우유와 물(반컵), 데친 우동면을 넣고 끓이다 치즈 1장(또는 순한 카레가루 1스푼)을 녹입니다. ③ 소금 한 꼬집으로 간을 맞춰 따뜻하게 담아냅니다.
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            국수류를 좋아하는 아이들에게 멸치/바지락 육수 외에 색다른 별미가 됩니다. 우준이용 면은 가위로 짧게 잘라 숟가락으로 떠먹기 좋게 해주세요.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🥣 주말 한그릇</span>
-            <span class="badge mild">🥚 맵기 0% · 고단백소프트</span>
-          </div>
-          <div class="spot-title">촉촉 두부 소보로 계란 덮밥</div>
-          <div class="extra-meta">⏱️ 약 15분 · 재료: 두부 반 모, 다진 소고기(또는 돼지고기), 계란 2개, 간장, 올리고당</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 물기를 뺀 두부를 으깨어 다진 고기와 함께 팬에서 수분이 날아가도록 볶습니다. ② 간장 1.5큰술·올리고당 1큰술로 달짝지근하게 밑간합니다. ③ 따로 만든 포슬포슬 계란 스크램블과 함께 밥 위에 반반 올려 완성!
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            두부와 계란 덕분에 식감이 매우 부드러워 3세 우준이도 씹기 편하고, 7세 은우도 김가루를 솔솔 뿌려 비벼 먹기 좋아합니다.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🐟 주말 저녁 추천</span>
-            <span class="badge mild">🧈 맵기 0% · 순살영양식</span>
-          </div>
-          <div class="spot-title">순살 삼치·연어 버터구이 &amp; 뚝배기 계란찜</div>
-          <div class="extra-meta">⏱️ 약 20분 · 재료: 가시 제거 순살 삼치(또는 연어), 버터, 계란 3개, 다시마물, 대파</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 순살 생선에 키친타월로 물기를 닦고 소금 한 꼬집·버터를 올려 에어프라이어(180℃ 12분) 또는 팬에 노릇하게 굽습니다. ② 계란 3개에 다시마물(동량)과 소금 약간을 풀어 약불로 저어가며 계란찜을 만듭니다. ③ 따뜻한 흰밥과 함께 차려냅니다.
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            가시 발라낸 순살 생선과 포슬포슬한 계란찜 조합은 매운 걸 못 먹는 아이들의 대표 밥도둑입니다. 구운 김을 곁들이면 한 끼가 뚝딱 해결돼요.
-          </div>
-        </article>
-
-        <article class="extra-card">
-          <div class="badges">
-            <span class="badge meal">🎃 주말 간식·브런치</span>
-            <span class="badge mild">🥖 맵기 0% · 달콤따뜻</span>
-          </div>
-          <div class="spot-title">단호박(고구마) 크림 스프 &amp; 버터 식빵 스틱</div>
-          <div class="extra-meta">⏱️ 약 15분 · 재료: 찐 단호박(또는 고구마) 1/2개, 우유 250ml, 버터, 식빵 2장</div>
-          <div class="mini-box">
-            <strong>👩‍🍳 3단계 초간단 레시피</strong>
-            ① 껍질 벗겨 찐 단호박(또는 고구마)과 우유를 믹서로 곱게 갈아 냄비에 약불로 끓입니다. ② 버터 반 큰술과 소금 한 꼬집으로 고소함을 더합니다. ③ 길쭉하게 자른 식빵에 버터를 살짝 발라 팬/에어프라이어에 바삭하게 구워 곁들입니다.
-          </div>
-          <div class="mini-box">
-            <strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>
-            자연스러운 단맛이라 설탕 없이도 아이들이 잘 먹고, 바삭한 식빵 스틱을 스프에 찍어 먹는 재미가 있어 오후 간식이나 가벼운 아침으로 좋습니다.
-          </div>
-        </article>
-      </div>
+      <div class="extra-grid" id="kidsMealGrid"></div>
     </section>
   </div>
 
@@ -526,6 +407,7 @@
           <div class="badges" id="mBadges"></div>
           <h2 id="mTitle" style="font-size:1.35rem;"></h2>
           <div id="mDrive" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+          <div id="mPlaceAddr" class="addr-meta" style="display:none;"></div>
         </div>
         <button class="close-btn" onclick="closeModal()">✕</button>
       </div>
@@ -548,11 +430,46 @@
       <div class="noodle-detail">
         <strong id="mNoodleName" style="color:#92400e; display:block; margin-bottom:4px;"></strong>
         <p id="mNoodleDesc"></p>
+        <div id="mFoodAddr" class="addr-meta" style="display:none;"></div>
+      </div>
+      <div class="blog-box" id="mBlogBox" style="display:none;">
+        <strong>📝 카카오 블로그 후기 핵심 요약</strong>
+        <p id="mBlogSummary"></p>
+        <div id="mNoodleBlogWrap" class="blog-sub" style="display:none;">
+          <strong>🍜 국수집 후기 요약</strong>
+          <p id="mNoodleBlogSummary"></p>
+        </div>
+        <div id="mBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 후기 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="mBlogLinks"></div>
+        </div>
       </div>
       <div class="btn-row">
-        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener">🗺️ 장소 지도</a>
-        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener">🍜 국수집 지도</a>
-        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener">🌐 공식 누리집</a>
+        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener noreferrer">🗺️ 장소 지도</a>
+        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener noreferrer">🍜 국수집 지도</a>
+        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener noreferrer">🌐 공식 누리집</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="extraModalBackdrop" onclick="closeExtraModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="badges" id="emBadges"></div>
+          <h2 id="emTitle" style="font-size:1.3rem;"></h2>
+          <div id="emMeta" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+        </div>
+        <button class="close-btn" onclick="closeExtraModal()">✕</button>
+      </div>
+      <div id="emBody"></div>
+      <div class="blog-box" id="emBlogBox" style="display:none; margin-bottom:0;">
+        <strong>📝 블로그 후기 · 노하우 핵심 요약</strong>
+        <p id="emBlogSummary"></p>
+        <div id="emBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 참고 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="emBlogLinks"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -584,7 +501,9 @@
   </div>
 
   <script>
-    const spots = [{"type": "outing", "day": "sat", "driveMin": 22, "badgeType": "🌳 나들이 1", "badgeDay": "❄️ 토요일 실내", "title": "화성시어린이문화센터", "drive": "🚗 자차 약 22분 (화성시 봉담읍)", "summary": "기온이 크게 떨어지는 초겨울 토요일에 따뜻하고 쾌적하게 즐길 수 있는 실내 키즈체험관·전시·공연 복합문화공간입니다.", "girl": "키즈체험관 직업·놀이 체험(48개월 이상 온라인 사전예약 필수) 및 아이누리극장 어린이 공연 관람", "boy": "48개월 미만 전시 관람(현장 발권) 및 안전하게 설계된 실내 유아 놀이 동선 체험", "tip": "수유실·가족화장실 완비, 엘리베이터를 이용해 유모차 이동이 편리합니다(화~일 09:30~18:30, 월요일 휴관).", "parking": "전용 주차장 135대 무료 개방(09:00~19:00). 주말 오전 예약 회차 20분 전 입차를 권장합니다.", "noodleTag": "🍜 이두형홍두깨칼국수", "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 7분)", "noodleDesc": "넓은 전용 주차장을 갖추고 있으며, 맵지 않고 순한 수제 손칼국수와 만두전골을 온 가족이 부담 없이 즐길 수 있습니다.", "placeQuery": "화성시어린이문화센터", "foodQuery": "화성 봉담 이두형홍두깨칼국수", "siteUrl": "https://childrenjob.hscity.go.kr/"}, {"type": "outing", "day": "sun", "driveMin": 25, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 일요일 낮 추천", "title": "수원 광교호수공원", "drive": "🚗 자차 약 25분 (수원시 영통구)", "summary": "바람이 잔잔하고 햇살이 좋은 일요일 낮(6℃)에 유모차로 완벽하게 산책하기 좋은 평탄한 수변 데크길과 놀이터입니다.", "girl": "신비한물넘이 옆 어린이 놀이터 활동 및 프라이부르크 전망대에서 호수 풍경 조망", "boy": "단차 없는 평탄한 호수 데크길 유모차 산책 및 오리·물새 관찰하기", "tip": "인접한 앨리웨이 광교 건물 내 수유실·기저귀교환대·유모차 엘리베이터를 연계해 이용하기 매우 편리합니다.", "parking": "광교호수공원 제1·2공영주차장(3시간 1,000원, 1일 최대 5,000원). 주말 낮 혼잡 시 제2주차장 또는 앨리웨이 지하주차장 추천.", "noodleTag": "🍜 영통백합칼국수 광교점", "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 3분)", "noodleDesc": "앨리웨이 광교 어라운드라이프관 2층 위치(지하주차장 무료 지원). 시원하고 맑은 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.", "placeQuery": "수원 광교호수공원", "foodQuery": "영통백합칼국수 광교점", "siteUrl": "https://www.gglakepark.or.kr/"}, {"type": "outing", "day": "sat", "driveMin": 12, "badgeType": "🌳 나들이 3", "badgeDay": "❄️ 토·일 실내외", "title": "동탄호수공원 & 라크몽", "drive": "🚗 자차 약 12분 (화성시 송동)", "summary": "집에서 가장 가까운 호수 평지 산책과 라크몽 실내 동물원(주렁주렁)을 한 번에 묶어 추위를 피할 수 있는 하이브리드 코스입니다.", "girl": "라크몽 4~5층 주렁주렁 실내 동물 체험 및 네이처스케이프+ 어드벤처 놀이", "boy": "호수공원 평지 유모차 산책 후 추워지면 라크몽 실내에서 안전하게 동물 관람", "tip": "라크몽 내부에 수유실·기저귀교환대·가족화장실이 잘 갖춰져 있어 영유아 동반 시 매우 쾌적합니다(10:00~22:00).", "parking": "라크몽 지하 2~3층 주차장 이용(매장·식당 이용 시 무료 정산). 주말에는 지하 3층이 비교적 여유롭습니다.", "noodleTag": "🍜 소이연남 동탄라크몽점", "noodleName": "🍜 연계 국수집: 소이연남 동탄라크몽점 (원내 도보 1분)", "noodleDesc": "라크몽 1층 위치. 아이들도 잘 먹는 순한 소고기 쌀국수와 아기의자가 구비되어 있어 실내 동선으로 바로 이동하기 편리합니다.", "placeQuery": "동탄 라크몽", "foodQuery": "소이연남 동탄라크몽점", "siteUrl": "https://lakmonofficial.cafe24.com/"}, {"type": "festival", "day": "sat", "driveMin": 22, "badgeType": "🎉 전시 1", "badgeDay": "❄️ 토요일 실내", "title": "경기도어린이박물관 15주년 행사", "drive": "🚗 자차 약 22분 (용인시 기흥구)", "summary": "개관 15주년 기념 교육체험 '열다섯, 같이 놀자!'와 11월 행사(11.9~11.25), 3층 신규 전시가 진행 중인 대표 실내 박물관입니다.", "girl": "3층 신규 상설전시 '우리는 지구별 친구들' 및 개관 15주년 체험 프로그램 참여", "boy": "1층 영유아 전용 자연놀이터 및 튼튼놀이터에서 안전한 실내 신체 놀이", "tip": "유아휴게실(수유실)·피크닉룸 완비. 개인 유모차만 이용 가능(대여 불가, 1층 보관소 운영)하며 온라인 사전예약 권장(10:00~17:30).", "parking": "박물관 전용 주차장 이용(뮤지엄숍 1만원 이상 구매 시 2시간 무료). 주말 만차 시 인근 상갈동 공영주차장 활용.", "noodleTag": "🍜 방자네바지락칼국수", "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 10분)", "noodleDesc": "어정역 앞 가게 전용 주차장 완비. 맵지 않고 시원한 감태바지락칼국수가 아이들 입맛에도 잘 맞습니다.", "placeQuery": "경기도어린이박물관", "foodQuery": "용인 방자네바지락칼국수", "siteUrl": "https://gcm.ggcf.kr/events/141"}, {"type": "festival", "day": "sun", "driveMin": 28, "badgeType": "🎉 전시 2", "badgeDay": "🆕 11.20 오픈", "title": "경기상상캠퍼스 디오라마 특별전", "drive": "🚗 자차 약 28분 (수원시 권선구)", "summary": "11.20(금) 개막한 전곡선사박물관 후원 선사시대 디오라마 특별전 《작은 세상, 커다란 이야기》(디자인1978 1층)입니다.", "girl": "선사시대 미니어처 디오라마 관찰 및 주말 공예·창작 체험 공간 탐방(참가비 2,000원)", "boy": "단차 없는 1층 실내 전시관 유모차 관람 후 햇살 좋은 오후 숲속 캠퍼스 산책", "tip": "디자인1978 1층 단차가 없어 유모차 진입이 용이하며 건물 내 수유실·화장실 이용 가능(10:00~18:00, 월요일 휴관).", "parking": "캠퍼스 내 넓은 지상 주차장을 보유하고 있어 주말 낮에도 비교적 주차 여유가 있는 편입니다.", "noodleTag": "🍜 다선칼국수 본점", "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 8분)", "noodleDesc": "수원역 인근 위치. 슴슴하고 깊은 맑은 바지락칼국수와 보리밥을 제공하며, 점심 피크를 피해 11:30 이전이나 13시 이후 방문을 추천합니다.", "placeQuery": "수원 경기상상캠퍼스", "foodQuery": "수원역 다선칼국수 본점", "siteUrl": "https://sscampus.ggcf.kr/exhibitions/185"}, {"type": "festival", "day": "sun", "driveMin": 35, "badgeType": "🎉 축제 3", "badgeDay": "🎄 11.21 오픈", "title": "에버랜드 크리스마스 위시 2026", "drive": "🚗 자차 약 35분 (용인시 처인구)", "summary": "11.21(토)부터 시작되는 크리스마스 시즌 축제! 10m 대형 트리와 퍼레이드, 판다월드를 즐길 수 있습니다.", "girl": "10m 대형 크리스마스 트리 포토존, 회전목마·어린이 어트랙션 및 퍼레이드 관람", "boy": "유모차 타고 판다월드·주토피아 구경 및 화려한 크리스마스 트리 장식 감상", "tip": "유아차·웨건 대여소(스마트예약 가능, 15kg 이하) 및 정문·글로벌페어 등 수유실이 다수 완비되어 있습니다(10:00~22:00).", "parking": "무료 1·2·3주차장(유모차 전용 칸 있는 무료 셔틀 운행) 또는 정문 유료주차장(소형 1일 15,000원) 선택 이용 가능.", "noodleTag": "🍜 포메인 에버랜드직영점", "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보)", "noodleDesc": "10:00~20:00(금·토 21:00) 운영. 고수와 매운 소스를 뺀 순한 소고기 쌀국수와 아기의자가 완비되어 있어 아이와 식사하기 좋습니다.", "placeQuery": "에버랜드", "foodQuery": "포메인 에버랜드직영점", "siteUrl": "https://www.everland.com/everland/event"}];
+    const spots = [{"type": "outing", "day": "sat", "driveMin": 29, "badgeType": "🌳 나들이 1", "badgeDay": "❄️ 토요일 실내", "title": "화성시어린이문화센터", "drive": "🚗 자차 약 29분 (18.9km · 화성시 효행구)", "summary": "기온이 크게 떨어지는 초겨울 토요일에 따뜻하고 쾌적하게 즐길 수 있는 실내 키즈체험관·전시·공연 복합문화공간입니다.", "girl": "키즈체험관 직업·놀이 체험(48개월 이상 온라인 사전예약 필수) 및 아이누리극장 어린이 공연 관람", "boy": "48개월 미만 전시 관람(현장 발권) 및 안전하게 설계된 실내 유아 놀이 동선 체험", "tip": "수유실·가족화장실 완비, 엘리베이터를 이용해 유모차 이동이 편리합니다(화~일 09:30~18:30, 월요일 휴관).", "parking": "전용 주차장 135대 무료 개방(09:00~19:00). 주말 오전 예약 회차 20분 전 입차를 권장합니다.", "noodleTag": "🍜 이두형홍두깨칼국수", "noodleName": "🍜 연계 국수집: 이두형홍두깨칼국수 (차로 약 8분)", "noodleDesc": "넓은 전용 주차장을 갖추고 있으며, 맵지 않고 순한 수제 손칼국수와 만두전골을 온 가족이 부담 없이 즐길 수 있습니다.", "placeQuery": "화성시어린이문화센터", "foodQuery": "화성 봉담 이두형홍두깨칼국수", "siteUrl": "https://childrenjob.hscity.go.kr/", "kakaoPlaceUrl": "http://place.map.kakao.com/107708346", "placeAddress": "경기 화성시 효행구 봉담읍 동화길 146", "placePhone": "031-5183-3200", "kakaoFoodUrl": "http://place.map.kakao.com/17746394", "foodAddress": "경기 화성시 병점구 세자로 426", "foodPhone": "031-224-0099", "blogLinks": [{"title": "화성 아기랑 가볼만한 곳 ㅣ화성시 어린이 문화센터 다녀온 후기", "url": "https://blog.naver.com/rlagusdk2102/224447342997", "source": "아들랑구 육아기록 · 2026-10-20"}, {"title": "[아기데리고나혼자] 화성시어린이문화센터", "url": "https://blog.naver.com/ddoddo_1124/224478006813", "source": "또또가족의 기록 · 2026-11-15"}, {"title": "화성시 어린이 문화센터 3살 아기랑 다녀온 후기...아기랑 가볼만한 곳 • 🚗 예약 입장료 주차 정보", "url": "https://blog.naver.com/tovdael/224390839326", "source": "tov log. · 2026-08-26"}, {"title": "화성 아이와 가볼만한 곳 두돌 남자 아기랑 다녀온 어린이문화센터 세번째 재방문 후기", "url": "https://blog.naver.com/family_daisy/224395934522", "source": "치치포포 나들이 가자 · 2026-08-31"}]}, {"type": "outing", "day": "sun", "driveMin": 25, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 일요일 낮 추천", "title": "수원 광교호수공원", "drive": "🚗 자차 약 25분 (14.4km · 수원시 영통구)", "summary": "바람이 잔잔하고 햇살이 좋은 일요일 낮(6℃)에 유모차로 완벽하게 산책하기 좋은 평탄한 수변 데크길과 놀이터입니다.", "girl": "신비한물넘이 옆 어린이 놀이터 활동 및 프라이부르크 전망대에서 호수 풍경 조망", "boy": "단차 없는 평탄한 호수 데크길 유모차 산책 및 오리·물새 관찰하기", "tip": "인접한 앨리웨이 광교 건물 내 수유실·기저귀교환대·유모차 엘리베이터를 연계해 이용하기 매우 편리합니다.", "parking": "광교호수공원 제1·2공영주차장(3시간 1,000원, 1일 최대 5,000원). 주말 낮 혼잡 시 제2주차장 또는 앨리웨이 지하주차장 추천.", "noodleTag": "🍜 영통백합칼국수 광교점", "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 약 5분)", "noodleDesc": "앨리웨이 광교 어라운드라이프관 2층 위치(지하주차장 무료 지원). 시원하고 맑은 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.", "placeQuery": "수원 광교호수공원", "foodQuery": "영통백합칼국수 광교점", "siteUrl": "https://www.gglakepark.or.kr/", "kakaoPlaceUrl": "http://place.map.kakao.com/15099364", "placeAddress": "경기 수원시 영통구 하동 1020", "placePhone": "070-8800-2460", "kakaoFoodUrl": "http://place.map.kakao.com/1641303184", "foodAddress": "경기 수원시 영통구 광교호수공원로 80", "foodPhone": "031-217-8324", "blogLinks": [{"title": "수원 광교호수공원 나들이 아기랑 가기 좋은 카페 10곳 / 유모차 산....", "url": "https://blog.naver.com/honestreview13/224407787370", "source": "태하네 BLog · 2026-09-11"}, {"title": "광교 호수공원 맛집 더유로피언 브런치로 화덕피자 뇨끼 후기", "url": "https://blog.naver.com/hjhj219/224483941910", "source": "솔직담백 육아맘STORY · 2026-11-19"}, {"title": "2026 수원드론불꽃축제 수원컨벤션센터 광교호수공원 명당 아기랑 솔직후기", "url": "https://blog.naver.com/flowerjyun/224411197913", "source": "쥬니꽃 블로그 · 2026-09-14"}, {"title": "[맛집] 광교호수공원 맛집 영통백합칼국수 광교점 | 백합탕샤브샤브 파전 ....", "url": "https://blog.naver.com/susune0601/224478707865", "source": "susune daily · 2026-11-16"}]}, {"type": "outing", "day": "sat", "driveMin": 10, "badgeType": "🌳 나들이 3", "badgeDay": "❄️ 토·일 실내외", "title": "동탄호수공원 & 라크몽", "drive": "🚗 자차 약 10분 (3.8km · 화성시 동탄구)", "summary": "집에서 가장 가까운 호수 평지 산책과 라크몽 실내 동물원(주렁주렁)을 한 번에 묶어 추위를 피할 수 있는 하이브리드 코스입니다.", "girl": "라크몽 4~5층 주렁주렁 실내 동물 체험 및 네이처스케이프+ 어드벤처 놀이", "boy": "호수공원 평지 유모차 산책 후 추워지면 라크몽 실내에서 안전하게 동물 관람", "tip": "라크몽 내부에 수유실·기저귀교환대·가족화장실이 잘 갖춰져 있어 영유아 동반 시 매우 쾌적합니다(10:00~22:00).", "parking": "라크몽 지하 2~3층 주차장 이용(매장·식당 이용 시 무료 정산). 주말에는 지하 3층이 비교적 여유롭습니다.", "noodleTag": "🍜 소이연남 동탄라크몽점", "noodleName": "🍜 연계 국수집: 소이연남 동탄라크몽점 (원내 도보 1분)", "noodleDesc": "라크몽 1층 위치. 아이들도 잘 먹는 순한 소고기 쌀국수와 아기의자가 구비되어 있어 실내 동선으로 바로 이동하기 편리합니다.", "placeQuery": "동탄 라크몽", "foodQuery": "소이연남 동탄라크몽점", "siteUrl": "https://lakmonofficial.cafe24.com/", "kakaoPlaceUrl": "http://place.map.kakao.com/1004761013", "placeAddress": "경기 화성시 동탄구 동탄대로5길 21", "kakaoFoodUrl": "http://place.map.kakao.com/985918666", "foodAddress": "경기 화성시 동탄구 동탄대로5길 21", "foodPhone": "070-4007-5130", "blogLinks": [{"title": "동탄호수공원 | 루나쇼·피크닉 주차장 추천, 꿀팁 (위치/가격)", "url": "https://blog.naver.com/nnnarrra/224437494183", "source": "일상아 여행같아라 · 2026-10-10"}, {"title": "주말엔 4시간인데 평일 무제한 할인! 동탄 라크몽 주렁주렁 네이처....", "url": "https://blog.naver.com/miniyuni1130/224478015923", "source": "미니유니의 육아·여행·맛집 · 2026-11-18"}, {"title": "동탄호수공원 아기랑 가을 피크닉｜텐트·주차·배달 후기 & 루나쇼 10월 일정·저녁 8시 공연", "url": "https://blog.naver.com/bbbooobbbooo22/224438992444", "source": "우리 셋의 기록 · 2026-10-12"}, {"title": "<동탄 맛집> 화성 동탄호수공원 라크몽 레스토랑 포가타\"FOGATA\" Lunch Set + 아기랑 가기좋은 스테이크...", "url": "https://blog.naver.com/hyunseo8484/224397701526", "source": "떠우네 일상 Blog · 2026-09-01"}]}, {"type": "festival", "day": "sat", "driveMin": 21, "badgeType": "🎉 전시 1", "badgeDay": "❄️ 토요일 실내", "title": "경기도어린이박물관 15주년 행사", "drive": "🚗 자차 약 21분 (9.0km · 용인시 기흥구)", "summary": "개관 15주년 기념 교육체험 '열다섯, 같이 놀자!'와 11월 행사(11.9~11.25), 3층 신규 전시가 진행 중인 대표 실내 박물관입니다.", "girl": "3층 신규 상설전시 '우리는 지구별 친구들' 및 개관 15주년 체험 프로그램 참여", "boy": "1층 영유아 전용 자연놀이터 및 튼튼놀이터에서 안전한 실내 신체 놀이", "tip": "유아휴게실(수유실)·피크닉룸 완비. 개인 유모차만 이용 가능(대여 불가, 1층 보관소 운영)하며 온라인 사전예약 권장(10:00~17:30).", "parking": "박물관 전용 주차장 이용(뮤지엄숍 1만원 이상 구매 시 2시간 무료). 주말 만차 시 인근 상갈동 공영주차장 활용.", "noodleTag": "🍜 방자네바지락칼국수", "noodleName": "🍜 연계 국수집: 방자네바지락칼국수 (차로 약 11분)", "noodleDesc": "어정역 앞 가게 전용 주차장 완비. 맵지 않고 시원한 감태바지락칼국수가 아이들 입맛에도 잘 맞습니다.", "placeQuery": "경기도어린이박물관", "foodQuery": "용인 방자네바지락칼국수", "siteUrl": "https://gcm.ggcf.kr/events/141", "kakaoPlaceUrl": "http://place.map.kakao.com/14747809", "placeAddress": "경기 용인시 기흥구 상갈로 6", "placePhone": "031-270-8600", "kakaoFoodUrl": "http://place.map.kakao.com/10393041", "foodAddress": "경기 용인시 기흥구 어정로 134-4", "foodPhone": "031-286-8228", "blogLinks": [{"title": "용인 아이와 어디 가지? 경기도어린이박물관 예약·주차·초등학생 ....", "url": "https://blog.naver.com/wjrkxms/224424251090", "source": "Ria's Daily · 2026-09-28"}, {"title": "경기도어린이박물관 아이와｜이번 주말 무료 ‘열다섯, 같이 놀자!....", "url": "https://blog.naver.com/goodstar_silverstar/224415881649", "source": "운동하는 쫄비맘 · 2026-09-18"}, {"title": "한글날 아이랑 나들이 갈만한 곳/ 경기도 외 서울,세종 중심 행사·체험·전시 9곳", "url": "https://blog.naver.com/bkm0420/224435651892", "source": "미둥이의 오늘도 한 뼘! · 2026-10-08"}, {"title": "[맛집] 칼국수러버의 용인주민 맛집 방자네바지락칼국수 솔직후기", "url": "https://blog.naver.com/s2linkins2/224426433145", "source": "뚱이와 빵이네_잘먹고 잘살기 · 2026-09-29"}]}, {"type": "festival", "day": "sun", "driveMin": 34, "badgeType": "🎉 전시 2", "badgeDay": "🆕 11.20 오픈", "title": "경기상상캠퍼스 디오라마 특별전", "drive": "🚗 자차 약 34분 (15.3km · 수원시 권선구)", "summary": "11.20(금) 개막한 전곡선사박물관 후원 선사시대 디오라마 특별전 《작은 세상, 커다란 이야기》(디자인1978 1층)입니다.", "girl": "선사시대 미니어처 디오라마 관찰 및 주말 공예·창작 체험 공간 탐방(참가비 2,000원)", "boy": "단차 없는 1층 실내 전시관 유모차 관람 후 햇살 좋은 오후 숲속 캠퍼스 산책", "tip": "디자인1978 1층 단차가 없어 유모차 진입이 용이하며 건물 내 수유실·화장실 이용 가능(10:00~18:00, 월요일 휴관).", "parking": "캠퍼스 내 넓은 지상 주차장을 보유하고 있어 주말 낮에도 비교적 주차 여유가 있는 편입니다.", "noodleTag": "🍜 다선칼국수 본점", "noodleName": "🍜 연계 국수집: 다선칼국수 본점 (차로 약 9분)", "noodleDesc": "수원역 인근 위치. 슴슴하고 깊은 맑은 바지락칼국수와 보리밥을 제공하며, 점심 피크를 피해 11:30 이전이나 13시 이후 방문을 추천합니다.", "placeQuery": "수원 경기상상캠퍼스", "foodQuery": "수원역 다선칼국수 본점", "siteUrl": "https://sscampus.ggcf.kr/exhibitions/185", "kakaoPlaceUrl": "http://place.map.kakao.com/1982560219", "placeAddress": "경기 수원시 권선구 서둔로 166", "placePhone": "031-296-1980", "kakaoFoodUrl": "http://place.map.kakao.com/319148235", "foodAddress": "경기 수원시 팔달구 향교로 48", "foodPhone": "031-253-7788", "blogLinks": [{"title": "Ooooo", "url": "https://blog.naver.com/arangjoeul/224475107600", "source": "전화통화 신분확인.말을못해서 말을하지않는게아니다 · 2026-11-13"}, {"title": ".", "url": "https://blog.naver.com/yjsjhs/224466614100", "source": "전화통화 신분확인.말을못해서 말을하지않는게아니다 · 2026-11-06"}, {"title": "2026 경기상상캠퍼스 선사시대 디오라마 전시 <작은 세상, 커다란 이야기> | 수원 아이와 가기 좋은...", "url": "https://blog.naver.com/sunlunar/224488704783", "source": "다녀오겠뚜둥 :D · 2026-11-23"}, {"title": "🦋 2026 인천나비공원 곤충 디오라마 특별전! 입장료 무료·주차·아이와 관람 꿀팁 총정리", "url": "https://blog.naver.com/hadakogu/224475819736", "source": "하다코구네 · 2026-11-13"}]}, {"type": "festival", "day": "sun", "driveMin": 28, "badgeType": "🎉 축제 3", "badgeDay": "🎄 11.21 오픈", "title": "에버랜드 크리스마스 위시 2026", "drive": "🚗 자차 약 28분 (21.2km · 용인시 처인구)", "summary": "11.21(토)부터 시작되는 크리스마스 시즌 축제! 10m 대형 트리와 퍼레이드, 판다월드를 즐길 수 있습니다.", "girl": "10m 대형 크리스마스 트리 포토존, 회전목마·어린이 어트랙션 및 퍼레이드 관람", "boy": "유모차 타고 판다월드·주토피아 구경 및 화려한 크리스마스 트리 장식 감상", "tip": "유아차·웨건 대여소(스마트예약 가능, 15kg 이하) 및 정문·글로벌페어 등 수유실이 다수 완비되어 있습니다(10:00~22:00).", "parking": "무료 1·2·3주차장(유모차 전용 칸 있는 무료 셔틀 운행) 또는 정문 유료주차장(소형 1일 15,000원) 선택 이용 가능.", "noodleTag": "🍜 포메인 에버랜드직영점", "noodleName": "🍜 연계 국수집: 포메인 에버랜드직영점 (원내 도보) (차로 약 11분)", "noodleDesc": "10:00~20:00(금·토 21:00) 운영. 고수와 매운 소스를 뺀 순한 소고기 쌀국수와 아기의자가 완비되어 있어 아이와 식사하기 좋습니다.", "placeQuery": "에버랜드", "foodQuery": "포메인 에버랜드직영점", "siteUrl": "https://www.everland.com/everland/event", "kakaoPlaceUrl": "http://place.map.kakao.com/784414359", "placeAddress": "경기 용인시 처인구 포곡읍 에버랜드로 199", "placePhone": "031-320-5000", "kakaoFoodUrl": "http://place.map.kakao.com/689516001", "foodAddress": "경기 용인시 처인구 포곡읍 에버랜드로 199", "foodPhone": "031-373-9203", "blogLinks": [{"title": "에버랜드 크리스마스 위시 주말, 퍼레이드 꿀팁 총정리", "url": "https://blog.naver.com/info_manmulsang/224484762176", "source": "알아본김에 · 2026-11-20"}, {"title": "[2026 크리스마스] 수원·용인 트리 명소 총정리! 스타필드 별마당 도....", "url": "https://blog.naver.com/logix21c/224486815795", "source": "★★ 기록은 기억을 지배한다 ★★ · 2026-11-22"}, {"title": "에버랜드 크리스마스 위시 2026, 자이언트 트리·퍼레이드·불꽃쇼 일정과 입장권·주차 총정리", "url": "https://dannys-story.tistory.com/124", "source": "danny의 세상사는 이야기 · 2026-11-19"}, {"title": "용인 2026 에버랜드 크리스마스 위시 일정 입장료 주차 불꽃쇼 용인 겨울축제", "url": "https://blog.naver.com/dayandstay/224481492136", "source": "데이앤스테이 · 2026-11-18"}]}];
+    const homePlays = [{"tag": "🚗 신체·균형", "title": "거실 테이프 도로 & 주차 미션", "prep": "준비물: 종이(마스킹)테이프, 장난감 자동차, 색종이 신호등", "girl": "직접 테이프로 교차로·회전구간·주차 칸 번호를 설계하고, '2번 칸에 후진 주차' 같은 미션 카드 놀이로 확장할 수 있어요.", "boy": "바닥 선을 따라 기어가거나 자동차를 굴리고, 테이프 길 위를 발 맞춰 걸으며 대근육 균형 감각을 기르기 좋습니다.", "tip": "점핑 없이 기어다니고 걷는 놀이라 층간소음 걱정이 적고, 놀이 후 테이프만 떼어내면 정리가 1분 만에 끝납니다.", "blogLinks": [{"title": "집콕 가정보육 구원투수! 아이집 자동차 도로 교통놀이 테이프 솔직 후기 (놀이법 & 바닥 끈적이 제거 팁)", "url": "https://blog.naver.com/kbk1596/224457583960", "source": "애드머니나나 · 2026-10-29"}, {"title": "겨울 베란다 아이 놀이방 추위 걱정 끝 가카 자동차 도로놀이 러그 카페트 내돈내산 후기", "url": "https://blog.naver.com/hamsmom-/224469122683", "source": "하유리네 힘콩육아 · 2026-11-08"}]}, {"tag": "🏕️ 상상·역할", "title": "이불 동굴 캠핑 & 손전등 그림자극", "prep": "준비물: 얇은 이불/담요, 의자·소파, 스마트폰 손전등, 인형", "girl": "동굴 입구 간판을 그려 붙이고, 손전등으로 동물 손그림자나 인형극 스토리를 직접 만들어 동생에게 들려주는 감독 역할을 좋아합니다.", "boy": "어두운 텐트 공간의 아늑함에 집중력이 높아지며, 불빛에 비친 동물 모양 맞히기와 까꿍 놀이로 즐거워합니다.", "tip": "식탁 의자 두 개나 소파 등받이에 이불을 고정하면 안전하며, 안에서 간식 타임(과일·보리차)까지 묶으면 주말 오후 1시간이 순삭됩니다.", "blogLinks": [{"title": "아이랑 집에서 놀기 유아 실내놀이 아이디어 준비물 없이 하는 놀이부터 층간소음 걱정 없는 몸놀이까지", "url": "https://blog.naver.com/qhfka4785/224466643221", "source": "오늘하루즐겁게 · 2026-11-06"}, {"title": "심플룸 인디언 아기 텐트 놀이텐트 쌍둥이 아빠 후기", "url": "https://blog.naver.com/tech_researcher_log/224409970610", "source": "꿀팁스쿨 · 2026-09-13"}]}, {"tag": "🎳 에너지 발산", "title": "종이컵 볼링 & 수면양말 골인 게임", "prep": "준비물: 종이컵 10개(또는 빈 페트병), 말아 둔 수면양말, 빨래바구니", "girl": "종이컵에 점수(1~5점)를 적어 피라미드로 쌓고, 몇 개를 쓰러뜨렸는지 덧셈·점수판 기록까지 자연스럽게 놀이로 연결됩니다.", "boy": "가벼운 양말 공을 던져 종이컵 탑을 무너뜨리는 쾌감이 크고, 다쳐도 전혀 아프지 않아 안전하게 에너지를 쏟을 수 있어요.", "tip": "거실 매트 위에서 진행하고 단단한 공 대신 말아 둔 양말을 사용하면 가구 파손과 소음 모두 방지할 수 있습니다.", "blogLinks": [{"title": "[집콕 신체놀이] 종이컵과 마스킹 테이프로 끝내는 초간단 거실 실내 놀이 BEST 5 (층간소음 제로!)", "url": "https://blog.naver.com/tanonote/224472191447", "source": "타노 · 2026-11-10"}, {"title": "겨울 아이랑 가기 좋은 시흥 팜팜랜드 후기｜눈썰매·빙어잡기·평상 명당 꿀팁 총정리", "url": "https://blog.naver.com/iloveyulstory/224136249020", "source": "YULSTORY · 2026-01-06"}]}];
+    const kidsMeals = [{"dayBadge": "🍲 토요일 추천", "mildBadge": "🌶️ 맵기 0% · 따뜻한국물", "title": "맑은 소고기 무 떡만둣국", "meta": "⏱️ 약 20분 · 재료: 소고기(양지/국거리), 무, 떡국떡, 물만두, 계란, 국간장", "recipe": "① 나박 썬 무와 소고기를 참기름에 살짝 볶다 물을 부어 10분 끓입니다. ② 떡국떡과 한입 크기 물만두를 넣고 국간장·소금으로 슴슴하게 간합니다. ③ 계란물을 둘러 익힌 뒤 김가루를 올려 완성!", "tip": "후추·고춧가루 없이 맑고 구수한 국물이라 추운 주말에 딱입니다. 동생용 떡은 먹기 전에 가위로 반 잘라 주면 목 걸림 없이 안전해요.", "blogLinks": [{"title": "22개월 아기 뭐 먹이지? 실패 없는 저염 유아식 식단공유 & 아기반찬레시피모음", "url": "https://blog.naver.com/meal_1209/224461853663", "source": "대충 해먹는 집 · 2026-11-02"}, {"title": "두돌 세돌 유아식 식단표 모음｜편식 잡는 뚝딱 아기반찬 레시피 & 일주일 식판식 👶🥣", "url": "https://blog.naver.com/seoulbubu_/224469135963", "source": "서울부부 육아일기｜31개월 아기발달·육아정보·살림 · 2026-11-08"}]}, {"dayBadge": "🍙 일요일 점심 추천", "mildBadge": "🧀 맵기 0% · 촉촉바삭", "title": "치즈 감자채전 & 햄야채 주먹밥", "meta": "⏱️ 약 20분 · 재료: 감자 2개, 피자치즈, 소금, 밥, 다진 당근·애호박·햄, 참기름", "recipe": "① 얇게 채 썬 감자(전분 물기 그대로)에 소금 한 꼬집을 섞어 팬에 얇게 펼칩니다. ② 앞뒤로 노릇하게 굽다 치즈를 올려 녹입니다. ③ 잘게 다져 볶은 햄·야채를 밥과 참기름에 비벼 동그랗게 뭉칩니다.", "tip": "케첩 대신 치즈의 고소함으로 간을 맞추면 맵지 않고 담백합니다. 주먹밥은 첫째가 직접 동그랗게 빚는 요리 놀이로 참여시키면 편식도 줄어요.", "blogLinks": [{"title": "4세 유아식 아침 메뉴 7가지, 매일 돌려먹는 간단한 일주일 아침 식단", "url": "https://blog.naver.com/gorkang/224478048823", "source": "과체중 아기의 건강 성장 유아식 · 2026-11-15"}, {"title": "11개월 유아식 메뉴 모음｜돌지난 먹짱아기의 밥반찬부터 한 그릇 식단과 내돈내산 재료 공유", "url": "https://blog.naver.com/whgusrudqkqh/224464562272", "source": "Burning in water, Drawing in flame · 2026-11-04"}]}, {"dayBadge": "🍗 주말 저녁 특식", "mildBadge": "🍯 맵기 0% · 단짠단백", "title": "순한 버터간장 닭안심 계란덮밥", "meta": "⏱️ 약 15분 · 재료: 닭안심, 양파, 계란 2개, 진간장, 올리고당(설탕), 버터 1조각", "recipe": "① 한입 크기로 자른 닭안심과 채 썬 양파를 팬에 볶습니다. ② 물 5큰술·간장 2큰술·올리고당 1.5큰술을 넣고 약불로 졸입니다. ③ 푼 계란과 버터를 두르고 반숙 느낌일 때 따뜻한 밥 위에 얹습니다.", "tip": "퍽퍽하지 않은 닭안심과 부드러운 계란, 버터 간장의 달콤짭짤한 조합이라 매운 걸 못 먹는 아이들도 밥 한 그릇을 금방 비웁니다.", "blogLinks": [{"title": "[육아] 12개월 무염유아식 시작 반찬 한그릇 간단 레시피 추천 (쉽게하는 방법)", "url": "https://blog.naver.com/aks_enen1/224398927884", "source": "mman BLOG · 2026-09-02"}, {"title": "15개월 유아식 닭안심 요리, 닭안심 야채 계란볶음 레시피 (힘줄 제거 팁) | 초보 엄마의 기록", "url": "https://blog.naver.com/heather_meal/224389325869", "source": "헤더키친 · 2026-08-25"}]}, {"dayBadge": "🍜 일요일 점심 추천", "mildBadge": "🥛 맵기 0% · 부드러운면", "title": "순한 우유 크림 우동 (또는 노랑 카레우동)", "meta": "⏱️ 약 15분 · 재료: 우동면 2인분, 우유 300ml, 슬라이스치즈 1장, 베이컨/새우, 양파", "recipe": "① 팬에 다진 양파와 베이컨(또는 칵테일새우)을 버터에 볶습니다. ② 우유와 물(반컵), 데친 우동면을 넣고 끓이다 치즈 1장(또는 순한 카레가루 1스푼)을 녹입니다. ③ 소금 한 꼬집으로 간을 맞춰 따뜻하게 담아냅니다.", "tip": "국수류를 좋아하는 아이들에게 멸치/바지락 육수 외에 색다른 별미가 됩니다. 동생용 면은 가위로 짧게 잘라 숟가락으로 떠먹기 좋게 해주세요.", "blogLinks": [{"title": "16개월 유아식 모음｜실제로 먹인 아기 밥 기록 (Feat. 대량생산이 답이다ㅋㅋ)", "url": "https://blog.naver.com/pjs24699/224413777232", "source": "빵빵이랑 콩콩이랑 · 2026-09-16"}, {"title": "한그릇 유아식 크림우동 만들기 두돌 아기 완밥 메뉴 추천", "url": "https://blog.naver.com/leejiiyoung/224342193172", "source": "입짧은 아이 완밥러 만든 유아식 · 2026-07-10"}]}, {"dayBadge": "🥣 주말 한그릇", "mildBadge": "🥚 맵기 0% · 고단백소프트", "title": "촉촉 두부 소보로 계란 덮밥", "meta": "⏱️ 약 15분 · 재료: 두부 반 모, 다진 소고기(또는 돼지고기), 계란 2개, 간장, 올리고당", "recipe": "① 물기를 뺀 두부를 으깨어 다진 고기와 함께 팬에서 수분이 날아가도록 볶습니다. ② 간장 1.5큰술·올리고당 1큰술로 달짝지근하게 밑간합니다. ③ 따로 만든 포슬포슬 계란 스크램블과 함께 밥 위에 반반 올려 완성!", "tip": "두부와 계란 덕분에 식감이 매우 부드러워 동생도 씹기 편하고, 첫째도 김가루를 솔솔 뿌려 비벼 먹기 좋아합니다.", "blogLinks": [{"title": "아기 소고기 두부 덮밥 만들기｜간단한 한그릇 유아식 레시피", "url": "https://blog.naver.com/eunseo_59/224442275172", "source": "보통엄마의 똑딱육아 · 2026-10-15"}, {"title": "[유아식] 12개월 아기 여행 식단 추천 | 돌아기 1박2일 유아식 식단", "url": "https://blog.naver.com/0930_s2/224475568175", "source": "Remember that moment by photo · 2026-11-13"}]}, {"dayBadge": "🐟 주말 저녁 추천", "mildBadge": "🧈 맵기 0% · 순살영양식", "title": "순살 삼치·연어 버터구이 & 뚝배기 계란찜", "meta": "⏱️ 약 20분 · 재료: 가시 제거 순살 삼치(또는 연어), 버터, 계란 3개, 다시마물, 대파", "recipe": "① 순살 생선의 물기를 닦고 소금 한 꼬집·버터를 올려 에어프라이어(180℃ 12분) 또는 팬에 노릇하게 굽습니다. ② 계란 3개에 다시마물(동량)과 소금 약간을 풀어 약불로 저어가며 계란찜을 만듭니다. ③ 따뜻한 흰밥과 함께 차려냅니다.", "tip": "가시 발라낸 순살 생선과 포슬포슬한 계란찜 조합은 매운 걸 못 먹는 아이들의 대표 밥도둑입니다. 구운 김을 곁들이면 한 끼가 뚝딱 해결돼요.", "blogLinks": [{"title": "간단 유아식 레시피 친환경 유아식판 젤리맘 얌얌비쥬 에코젠", "url": "https://blog.naver.com/kkang__s2/224449553551", "source": "바쁘다 바빠, 깡이네 육아일기 ✏️ · 2026-10-21"}, {"title": "일주일 유아식 식단 짜는법 소고기 닭고기 생선 아기 유아식반찬", "url": "https://blog.naver.com/zooty7979/224482013960", "source": "달달한 오늘, 러블리라이프❤️ · 2026-11-18"}]}];
 
     function renderGrid(filter = 'all') {
       const grid = document.getElementById('grid');
@@ -621,28 +540,162 @@
       renderGrid(filter);
     }
 
+    function escHtml(v) {
+      return String(v || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(u) {
+      const s = String(u || '').trim();
+      return /^https?:\/\//i.test(s) ? s : '#';
+    }
+
+    function renderBlogLinksHtml(links) {
+      if (!Array.isArray(links) || !links.length) return '';
+      return links.map(l => `
+        <a class="blog-link-item" href="${escHtml(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">
+          <span class="blog-link-title">${escHtml(l.title || '블로그 후기 보기')}</span>
+          <span class="blog-link-meta">${escHtml(l.source || '바로가기')} ↗</span>
+        </a>
+      `).join('');
+    }
+
     function openModal(idx) {
       const s = spots[idx];
       document.getElementById('mBadges').innerHTML = `
-        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${s.badgeType}</span>
-        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${s.badgeDay}</span>
+        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${escHtml(s.badgeType)}</span>
+        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${escHtml(s.badgeDay)}</span>
       `;
       document.getElementById('mTitle').textContent = s.title;
       document.getElementById('mDrive').textContent = s.drive;
+
+      const placeAddrEl = document.getElementById('mPlaceAddr');
+      const addrParts = [s.placeAddress, s.placePhone].filter(Boolean);
+      if (addrParts.length) {
+        placeAddrEl.textContent = '📍 ' + addrParts.join(' · ☎️ ');
+        placeAddrEl.style.display = 'block';
+      } else {
+        placeAddrEl.style.display = 'none';
+      }
+
       document.getElementById('mGirl').textContent = s.girl;
       document.getElementById('mBoy').textContent = s.boy;
       document.getElementById('mTip').textContent = s.tip;
       document.getElementById('mParking').textContent = s.parking || '전용 주차장 완비 (주차 편의 우수)';
       document.getElementById('mNoodleName').textContent = s.noodleName;
       document.getElementById('mNoodleDesc').textContent = s.noodleDesc;
-      document.getElementById('mPlaceLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery);
-      document.getElementById('mFoodLink').href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery);
-      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery));
+
+      const foodAddrEl = document.getElementById('mFoodAddr');
+      const fAddrParts = [s.foodAddress, s.foodPhone].filter(Boolean);
+      if (fAddrParts.length) {
+        foodAddrEl.textContent = '📍 ' + fAddrParts.join(' · ☎️ ');
+        foodAddrEl.style.display = 'block';
+      } else {
+        foodAddrEl.style.display = 'none';
+      }
+
+      const blogBox = document.getElementById('mBlogBox');
+      const bSum = (s.blogSummary || '').trim();
+      const nbSum = (s.noodleBlogSummary || '').trim();
+      const bLinks = Array.isArray(s.blogLinks) ? s.blogLinks : [];
+      if (bSum || nbSum || bLinks.length) {
+        document.getElementById('mBlogSummary').textContent = bSum || '방문 전 아래 블로그 후기 링크에서 최신 주차·동선 정보를 확인하세요.';
+        const nbWrap = document.getElementById('mNoodleBlogWrap');
+        if (nbSum) {
+          document.getElementById('mNoodleBlogSummary').textContent = nbSum;
+          nbWrap.style.display = 'block';
+        } else {
+          nbWrap.style.display = 'none';
+        }
+        const blWrap = document.getElementById('mBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('mBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        blogBox.style.display = 'block';
+      } else {
+        blogBox.style.display = 'none';
+      }
+
+      const placeLinkEl = document.getElementById('mPlaceLink');
+      const foodLinkEl = document.getElementById('mFoodLink');
+      if (s.kakaoPlaceUrl && /^https?:\/\//i.test(s.kakaoPlaceUrl)) {
+        placeLinkEl.href = s.kakaoPlaceUrl;
+        placeLinkEl.textContent = '🗺️ 카카오맵 장소';
+      } else {
+        placeLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title);
+        placeLinkEl.textContent = '🗺️ 장소 지도';
+      }
+      if (s.kakaoFoodUrl && /^https?:\/\//i.test(s.kakaoFoodUrl)) {
+        foodLinkEl.href = s.kakaoFoodUrl;
+        foodLinkEl.textContent = '🍜 카카오맵 국수집';
+      } else {
+        foodLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery || s.noodleTag || '');
+        foodLinkEl.textContent = '🍜 국수집 지도';
+      }
+      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title));
       document.getElementById('modalBackdrop').classList.add('open');
     }
 
     function closeModal() {
       document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    function openExtraModal(kind, idx) {
+      const item = kind === 'play' ? homePlays[idx] : kidsMeals[idx];
+      if (!item) return;
+      const badgesEl = document.getElementById('emBadges');
+      const titleEl = document.getElementById('emTitle');
+      const metaEl = document.getElementById('emMeta');
+      const bodyEl = document.getElementById('emBody');
+
+      if (kind === 'play') {
+        badgesEl.innerHTML = `<span class="badge play">🏠 집안 놀이 ${idx + 1}</span><span class="badge mild">${escHtml(item.tag || '실내 놀이')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.prep || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👧 은우(7세) 포인트</strong><p>${escHtml(item.girl || '')}</p></div>
+          <div class="detail-box"><strong>👦 우준(3세) 포인트</strong><p>${escHtml(item.boy || '')}</p></div>
+          <div class="detail-box"><strong>💡 부모 팁</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      } else {
+        badgesEl.innerHTML = `<span class="badge meal">${escHtml(item.dayBadge || '🍲 주말 추천')}</span><span class="badge mild">${escHtml(item.mildBadge || '🌶️ 맵기 0%')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.meta || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👩‍🍳 3단계 초간단 레시피</strong><p>${escHtml(item.recipe || '')}</p></div>
+          <div class="detail-box"><strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      }
+
+      const bBox = document.getElementById('emBlogBox');
+      const bSum = (item.blogSummary || '').trim();
+      const bLinks = Array.isArray(item.blogLinks) ? item.blogLinks : [];
+      if (bSum || bLinks.length) {
+        document.getElementById('emBlogSummary').textContent = bSum || '아래 참고 블로그에서 실전 사진·세부 팁을 직접 확인해 보세요.';
+        const blWrap = document.getElementById('emBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('emBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        bBox.style.display = 'block';
+      } else {
+        bBox.style.display = 'none';
+      }
+
+      document.getElementById('extraModalBackdrop').classList.add('open');
+    }
+
+    function closeExtraModal() {
+      document.getElementById('extraModalBackdrop').classList.remove('open');
     }
 
     function openChecklist() {
@@ -658,7 +711,58 @@
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function renderExtras() {
+      const playGrid = document.getElementById('homePlayGrid');
+      if (playGrid && Array.isArray(homePlays)) {
+        playGrid.innerHTML = homePlays.map((p, idx) => {
+          const linkCount = Array.isArray(p.blogLinks) ? p.blogLinks.length : 0;
+          const footerLabel = (p.blogSummary || linkCount) ? `📝 후기 요약${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '놀이 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('play', ${idx})">
+            <div class="badges">
+              <span class="badge play">🏠 집안 놀이 ${idx + 1}</span>
+              <span class="badge mild">${escHtml(p.tag || '실내 놀이')}</span>
+            </div>
+            <div class="spot-title">${escHtml(p.title)}</div>
+            <div class="extra-meta">${escHtml(p.prep || '')}</div>
+            <div class="mini-box"><strong>👧 은우(7세) 포인트</strong>${escHtml(p.girl || '')}</div>
+            <div class="mini-box"><strong>👦 우준(3세) 포인트</strong>${escHtml(p.boy || '')}</div>
+            <div class="mini-box"><strong>💡 부모 팁</strong>${escHtml(p.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
+      }
+      const mealGrid = document.getElementById('kidsMealGrid');
+      if (mealGrid && Array.isArray(kidsMeals)) {
+        mealGrid.innerHTML = kidsMeals.map((m, idx) => {
+          const linkCount = Array.isArray(m.blogLinks) ? m.blogLinks.length : 0;
+          const footerLabel = (m.blogSummary || linkCount) ? `📝 레시피 후기${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '레시피 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('meal', ${idx})">
+            <div class="badges">
+              <span class="badge meal">${escHtml(m.dayBadge || '🍲 주말 추천')}</span>
+              <span class="badge mild">${escHtml(m.mildBadge || '🌶️ 맵기 0%')}</span>
+            </div>
+            <div class="spot-title">${escHtml(m.title)}</div>
+            <div class="extra-meta">${escHtml(m.meta || '')}</div>
+            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${escHtml(m.recipe || '')}</div>
+            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>${escHtml(m.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeExtraModal();
+        closeChecklist();
+      }
+    });
+
     renderGrid();
+    renderExtras();
     /*__WC_DARK_JS__*/
     function applyWcTheme(t) {
       document.documentElement.dataset.theme = (t === 'dark') ? 'dark' : 'light';
