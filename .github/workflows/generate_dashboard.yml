@@ -2,9 +2,9 @@ name: Generate and Publish Weekly Dashboard
 
 on:
   schedule:
-    # 매주 금요일 오후 16:00 ~ 17:30 KST (UTC 금요일 07:00 ~ 08:30) 10분 주기 체크
-    - cron: '*/10 7 * * 5'
-    - cron: '0,10,20,30 8 * * 5'
+    # 매주 금요일 오후 16:07 ~ 17:37 KST (UTC 금요일 07:07 ~ 08:37) 비정각 오프셋 15분 주기 체크
+    - cron: '7,22,37,52 7 * * 5'
+    - cron: '7,22,37 8 * * 5'
   workflow_dispatch:
     inputs:
       model:
@@ -23,6 +23,10 @@ on:
         required: false
         default: '1024'
         type: string
+
+concurrency:
+  group: weekend-curator-publish
+  cancel-in-progress: false
 
 jobs:
   generate-and-publish:

@@ -343,6 +343,50 @@ def filter_relevant_blogs(blogs, *anchor_texts):
     return filtered
 
 
+
+def _extract_dish_core(title):
+    """Strip adjectives and split combined dishes to get a crisp recipe search query."""
+    primary = re.split(r"[&·,+/]", title or "")[0]
+    primary = re.sub(r"\([^)]*\)", " ", primary)
+    adjs = ("맑은", "순한", "부드러운", "달콤한", "고소한", "따뜻한", "든든한", "간단한", "바삭한", "촉촉한", "매운맛 없는", "비매운", "아이")
+    for a in adjs:
+        primary = re.sub(rf"(?:^|\s){re.escape(a)}(?=\s|$)", " ", primary)
+    return re.sub(r"\s+", " ", primary).strip() or (title or "").strip()
+
+
+def filter_relevant_recipes(blogs, dish_title):
+    """Filter out infant/baby-food posts and require the actual dish name in the blog title."""
+    baby_block_re = re.compile(
+        r"(이유식|무염|완료기|후기이유식|중기이유식|초기이유식|돌아기|돌지난|식단표|식단공유|식판식|식단\s*모음|유아식\s*모음|유아식\s*메뉴|\d+\s*개월)",
+        re.IGNORECASE,
+    )
+    core = _extract_dish_core(dish_title)
+    dish_tokens = [t for t in re.sub(r"[^가-힣a-zA-Z0-9 ]", " ", core).split() if len(t) >= 2]
+    # The final noun in a Korean dish name is usually the dish type (e.g. 떡만둣국, 감자채전, 계란덮밥, 계란칼국수, 잔치국수, 우동)
+    head_noun = dish_tokens[-1] if dish_tokens else ""
+    sub_nouns = [head_noun] if head_noun else []
+    if len(head_noun) >= 4:
+        sub_nouns.append(head_noun[-3:])
+        sub_nouns.append(head_noun[-2:])
+
+    scored = []
+    for b in blogs:
+        t_raw = b.get("title", "")
+        hay_raw = f"{t_raw} {b.get('snippet', '')}"
+        if baby_block_re.search(hay_raw):
+            continue
+        t_compact = re.sub(r"\s+", "", t_raw).lower()
+        # Require the main dish noun (or at least 2 dish tokens) in the title itself
+        hit_head = any(sn.lower() in t_compact for sn in sub_nouns if len(sn) >= 2)
+        token_hits = sum(1 for tok in dish_tokens if tok.lower() in t_compact)
+        if hit_head or token_hits >= 2:
+            # Prefer posts with '레시피' or '만들기' and more token hits
+            bonus = (2 if any(k in t_compact for k in ("레시피", "만들기", "끓이기", "굽기")) else 0)
+            scored.append((token_hits + bonus, b))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [b for _, b in scored]
+
+
 def search_kakao_web(api_key, query, size=3):
     results = []
     try:
@@ -520,10 +564,21 @@ def collect_kakao_context(data, kakao_key, naver_id="", naver_secret=""):
     meals_ctx = []
     for idx, km_item in enumerate(data.get("kidsMeals") or []):
         title = km_item.get("title") or ""
-        short_kw = re.sub(r"\([^)]*\)|[&·,]", " ", title).strip()
-        blogs = search_kakao_blogs(kakao_key, f"{short_kw} 아기 유아식 레시피", size=3)
-        if not blogs:
-            blogs = search_kakao_blogs(kakao_key, f"{short_kw} 아이 반찬 만들기", size=3)
+        core_dish = _extract_dish_core(title)
+        n_blogs = search_naver_blogs(naver_id, naver_secret, f"{core_dish} 황금레시피 만들기", display=6)
+        k_blogs = search_kakao_blogs(kakao_key, f"{core_dish} 레시피 만들기", size=5)
+        blogs = filter_relevant_recipes(n_blogs + k_blogs, title)
+        if len(blogs) < 2:
+            n_fb = search_naver_blogs(naver_id, naver_secret, f"{core_dish} 레시피", display=6)
+            k_fb = search_kakao_blogs(kakao_key, f"{core_dish} 만들기", size=5)
+            blogs = filter_relevant_recipes(n_blogs + k_blogs + n_fb + k_fb, title)
+        seen_m = set()
+        dedup_blogs = []
+        for b in blogs:
+            if b["url"] not in seen_m:
+                seen_m.add(b["url"])
+                dedup_blogs.append(b)
+        blogs = dedup_blogs
         km_item["blogLinks"] = [
             {"title": b["title"], "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")}
             for b in blogs[:2]
