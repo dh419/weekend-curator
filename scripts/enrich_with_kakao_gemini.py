@@ -287,6 +287,62 @@ def search_naver_blogs(naver_id, naver_secret, query, display=3):
     return results
 
 
+
+def _extract_anchor_tokens(text):
+    """Extract core Korean/alphanumeric venue tokens for blog relevance filtering."""
+    raw = re.sub(r"\([^)]*\)", " ", text or "")
+    raw = re.sub(r"[^가-힣a-zA-Z0-9 ]", " ", raw)
+    stop = {
+        "경기도", "경기", "수원시", "수원", "용인시", "용인", "화성시", "화성", "성남시", "성남",
+        "분당구", "분당", "의왕시", "의왕", "이천시", "이천", "오산시", "오산", "안성시", "안성",
+        "과천시", "과천", "평택시", "평택", "처인구", "기흥구", "영통구", "권선구", "동탄",
+        "본점", "직영점", "지점", "특별전", "전시", "틈새전시", "축제", "행사", "일루미네이션",
+        "주년", "개관", "30주년", "15주년", "2026", "2027", "주말", "나들이"
+    }
+    tokens = []
+    for tok in raw.split():
+        if len(tok) < 2 or tok in stop:
+            continue
+        # Skip administrative neighborhood suffixes (e.g. 서천동, 모가면, 봉담읍)
+        if re.match(r"^[가-힣]{2,4}(동|읍|면|리|로|길)$", tok):
+            continue
+        core = re.sub(r"(본점|직영점|광교점|동탄점|분당.*점|의왕.*점|수원.*점|용인.*점)$", "", tok)
+        if len(core) >= 2:
+            tokens.append(core)
+        elif len(tok) >= 2:
+            tokens.append(tok)
+    return tokens
+
+
+def filter_relevant_blogs(blogs, *anchor_texts):
+    """Keep only blog results whose title or snippet mentions the target venue/restaurant."""
+    tokens = []
+    for t in anchor_texts:
+        for tok in _extract_anchor_tokens(t):
+            if tok not in tokens:
+                tokens.append(tok)
+    if not tokens:
+        return blogs
+    # Also include compact forms (spaces removed) for multi-word names like '시몬스 테라스' -> '시몬스테라스'
+    compact_anchors = []
+    for t in anchor_texts:
+        c = re.sub(r"[^가-힣a-zA-Z0-9]", "", t or "")
+        if len(c) >= 3:
+            compact_anchors.append(c)
+
+    distant_regions = ("김해", "부산", "대구", "울산", "광주", "대전", "세종", "제주", "강릉", "속초", "전주", "여수", "포항", "창원", "경주", "목포", "진영역")
+    anchor_joined = " ".join(anchor_texts)
+    filtered = []
+    for b in blogs:
+        hay_raw = f"{b.get('title', '')} {b.get('snippet', '')}"
+        if any(dr in hay_raw and dr not in anchor_joined for dr in distant_regions):
+            continue
+        hay = re.sub(r"\s+", "", hay_raw).lower()
+        if any(tok.lower() in hay for tok in tokens) or any(ca.lower() in hay for ca in compact_anchors):
+            filtered.append(b)
+    return filtered
+
+
 def search_kakao_web(api_key, query, size=3):
     results = []
     try:
@@ -373,37 +429,52 @@ def collect_kakao_context(data, kakao_key, naver_id="", naver_secret=""):
                     if base_noodle:
                         sp["noodleName"] = f"{base_noodle} (차로 약 {f_min}분)"
 
-        # Blog searches for place/festival and noodle restaurant (Kakao + Naver)
-        place_blog_q = f"{title} 아기 유모차 주차 후기" if sp.get("type") != "festival" else f"{title} 후기 주차 일정"
-        place_blogs = search_kakao_blogs(kakao_key, place_blog_q, size=4)
-        if not place_blogs:
-            place_blogs = search_kakao_blogs(kakao_key, title, size=4)
-        naver_place_blogs = search_naver_blogs(naver_id, naver_secret, place_blog_q, display=3)
+        # Blog searches for place/festival and noodle restaurant (Kakao + Naver) with relevance guard
+        core_place_q = (place_q or title).strip()
+        title_first = (title.split()[0] if title.split() else "")
+        if title_first and len(title_first) >= 2 and title_first not in core_place_q and core_place_q in title:
+            core_place_q = f"{title_first} {core_place_q}"
+        place_blog_q = f"{core_place_q} 아기 유모차 주차 후기" if sp.get("type") != "festival" else f"{core_place_q} 후기 주차 일정"
+        place_blogs = filter_relevant_blogs(search_kakao_blogs(kakao_key, place_blog_q, size=5), core_place_q, title)
+        if len(place_blogs) < 2:
+            place_blogs = filter_relevant_blogs(search_kakao_blogs(kakao_key, f"{core_place_q} 후기", size=5), core_place_q, title)
+        naver_place_blogs = filter_relevant_blogs(search_naver_blogs(naver_id, naver_secret, place_blog_q, display=5), core_place_q, title)
+        if len(naver_place_blogs) < 2:
+            naver_place_blogs = filter_relevant_blogs(search_naver_blogs(naver_id, naver_secret, f"{core_place_q} 후기", display=5), core_place_q, title)
 
         food_blogs = []
         naver_food_blogs = []
         if food_q:
-            food_kw = re.sub(r"[^가-힣a-zA-Z0-9 ]", " ", food_q)
-            food_blogs = search_kakao_blogs(kakao_key, f"{food_kw} 아기의자 주차 후기", size=3)
-            naver_food_blogs = search_naver_blogs(naver_id, naver_secret, f"{food_kw} 아기의자 주차 후기", display=2)
+            food_kw = re.sub(r"[^가-힣a-zA-Z0-9 ]", " ", food_q).strip()
+            food_blogs = filter_relevant_blogs(search_kakao_blogs(kakao_key, f"{food_kw} 아기의자 주차 후기", size=4), food_kw)
+            if not food_blogs:
+                food_blogs = filter_relevant_blogs(search_kakao_blogs(kakao_key, f"{food_kw} 후기", size=4), food_kw)
+            naver_food_blogs = filter_relevant_blogs(search_naver_blogs(naver_id, naver_secret, f"{food_kw} 아기의자 주차 후기", display=4), food_kw)
+            if not naver_food_blogs:
+                naver_food_blogs = filter_relevant_blogs(search_naver_blogs(naver_id, naver_secret, f"{food_kw} 후기", display=4), food_kw)
 
         # Web search for festival official schedule/info if festival
         web_info = []
         if sp.get("type") == "festival":
-            web_info = search_kakao_web(kakao_key, f"{title} 일정 입장료 주차", size=3)
+            web_info = search_kakao_web(kakao_key, f"{core_place_q} 일정 입장료 주차", size=3)
 
-        # Attach verified clickable blog links directly (deduplicated Kakao + Naver, max 4)
-        links = []
+        # Attach verified clickable blog links directly (reserve up to 3 place + up to 2 food, total max 4)
+        place_links = []
+        food_links = []
         seen_link_urls = set()
         for b in (naver_place_blogs[:2] + place_blogs[:2]):
             if b["url"] not in seen_link_urls:
                 seen_link_urls.add(b["url"])
-                links.append({"title": b["title"], "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
-        for b in (naver_food_blogs[:1] + food_blogs[:1]):
+                place_links.append({"title": b["title"], "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
+        for b in (naver_food_blogs[:2] + food_blogs[:2]):
             if b["url"] not in seen_link_urls:
                 seen_link_urls.add(b["url"])
-                links.append({"title": f"[맛집] {b['title']}", "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
-        sp["blogLinks"] = links[:4]
+                food_links.append({"title": f"[맛집] {b['title']}", "url": b["url"], "source": f"{b['blogname']} · {b['date']}".strip(" ·")})
+        # Guarantee at least 1 food link when available (up to 3 place + 1 food, or 2+2)
+        if food_links:
+            sp["blogLinks"] = place_links[:3] + food_links[:1]
+        else:
+            sp["blogLinks"] = place_links[:4]
 
         spots_ctx.append({
             "index": idx,
