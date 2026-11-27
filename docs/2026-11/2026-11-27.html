@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>11.28~11.29 주말 나들이 6선</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --green: #059669;
+      --green-soft: #d1fae5;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", sans-serif;
+    }
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+    }
+    header .sub { font-size: 0.85rem; opacity: 0.9; margin-bottom: 6px; }
+    header h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; }
+    .weather-strip { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.88rem; }
+    .weather-pill {
+      background: rgba(255,255,255,0.18);
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .spot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .spot-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.09);
+      border-color: #93c5fd;
+    }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
+    .badge.outing { background: var(--green-soft); color: var(--green); }
+    .badge.festival { background: var(--purple-soft); color: var(--purple); }
+    .badge.sat { background: var(--amber-soft); color: var(--amber); }
+    .badge.sun { background: var(--primary-soft); color: var(--primary); }
+    .spot-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
+    .spot-drive { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; font-weight: 600; }
+    .spot-summary { font-size: 0.9rem; color: #334155; margin-bottom: 16px; line-height: 1.5; }
+    .spot-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border);
+      padding-top: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .noodle-tag {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 560px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .close-btn {
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .detail-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .detail-box strong { display: block; margin-bottom: 6px; color: #0f172a; }
+    .noodle-detail {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .map-btn {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      background: #03c75a;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .map-btn.sub { background: #2563eb; }
+    .map-btn.site { background: #475569; }
+    .check-label { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; font-size: 0.9rem; }
+    .extra-section {
+      margin-top: 34px;
+      padding-top: 26px;
+      border-top: 1px solid var(--border);
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .section-head h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-head .section-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .extra-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+    .extra-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    }
+    .extra-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.09);
+      border-color: #93c5fd;
+    }
+    .extra-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px dashed var(--border);
+      padding-top: 10px;
+      margin-top: auto;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .blog-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #1e3a8a;
+    }
+    .blog-box strong { display: block; margin-bottom: 6px; color: #1d4ed8; }
+    .blog-sub { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #bfdbfe; }
+    .blog-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .blog-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #0f172a;
+      font-size: 0.86rem;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .blog-link-item:hover {
+      border-color: var(--primary);
+      background: #f8fafc;
+    }
+    .blog-link-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .blog-link-meta { font-size: 0.76rem; color: var(--muted); flex-shrink: 0; }
+    .addr-meta { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+    .extra-card .spot-title { margin-bottom: 2px; }
+    .extra-meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .mini-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .mini-box strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .badge.play { background: #e0f2fe; color: #0369a1; }
+    .badge.meal { background: #fef2f2; color: #dc2626; }
+    .badge.mild { background: var(--green-soft); color: var(--green); }
+    /*__WC_DARK_THEME__*/
+    :root[data-theme="dark"] {
+      --bg: #0b1120;
+      --card: #1e293b;
+      --primary: #6366f1;
+      --primary-soft: rgba(99, 102, 241, 0.2);
+      --green: #34d399;
+      --green-soft: rgba(16, 185, 129, 0.18);
+      --purple: #c084fc;
+      --purple-soft: rgba(168, 85, 247, 0.2);
+      --amber: #fbbf24;
+      --amber-soft: rgba(245, 158, 11, 0.18);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+    }
+    :root[data-theme="dark"] .spot-summary,
+    :root[data-theme="dark"] .info-box,
+    :root[data-theme="dark"] .modal-body { color: #cbd5e1 !important; }
+    :root[data-theme="dark"] .noodle-tag { background: rgba(245, 158, 11, 0.14) !important; border-color: rgba(245, 158, 11, 0.35) !important; color: #fde68a !important; }
+    :root[data-theme="dark"] .modal-box,
+    :root[data-theme="dark"] .ck-box { background: #111827 !important; border: 1px solid #334155; }
+    :root[data-theme="dark"] .info-box { background: #0f172a !important; border-color: #334155 !important; }
+        :root[data-theme="dark"] .modal { background: #111827 !important; color: #f1f5f9 !important; border: 1px solid #334155; }
+    :root[data-theme="dark"] .detail-box { background: #0f172a !important; border: 1px solid #334155 !important; color: #cbd5e1 !important; }
+    :root[data-theme="dark"] .detail-box strong { color: #f8fafc !important; }
+    :root[data-theme="dark"] .detail-box strong[style*="#166534"] { color: #4ade80 !important; }
+    :root[data-theme="dark"] #mParking { color: #bbf7d0 !important; }
+    :root[data-theme="dark"] .detail-box p,
+    :root[data-theme="dark"] .noodle-detail p,
+    :root[data-theme="dark"] .check-label { color: #cbd5e1 !important; }
+    :root[data-theme="dark"] .noodle-detail { background: rgba(245, 158, 11, 0.14) !important; border-color: rgba(245, 158, 11, 0.35) !important; color: #e2e8f0 !important; }
+    :root[data-theme="dark"] #mNoodleName { color: #fbbf24 !important; }
+    :root[data-theme="dark"] .close-btn { background: #1e293b !important; color: #f1f5f9 !important; }
+    :root[data-theme="dark"] .spot-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .mini-box { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+    :root[data-theme="dark"] .extra-footer { color: #a5b4fc !important; }
+    :root[data-theme="dark"] .blog-box { background: rgba(59, 130, 246, 0.12) !important; border-color: rgba(96, 165, 250, 0.35) !important; color: #dbeafe !important; }
+    :root[data-theme="dark"] .blog-box strong { color: #93c5fd !important; }
+    :root[data-theme="dark"] .blog-sub { border-top-color: rgba(96, 165, 250, 0.3); }
+    :root[data-theme="dark"] .blog-link-item { background: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+    :root[data-theme="dark"] .blog-link-item:hover { border-color: #818cf8 !important; background: #1e293b !important; }
+    :root[data-theme="dark"] .badge.play { background: rgba(14, 165, 233, 0.2); color: #38bdf8; }
+    :root[data-theme="dark"] .badge.meal { background: rgba(244, 63, 94, 0.2); color: #fda4af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="sub">📍 동탄 출발 · 👧 은우(7세) &amp; 👦 우준(3세) 맞춤 대시보드 (11.28~11.29)</div>
+      <h1>11.28~11.29 주말 나들이 6선</h1>
+      <div class="weather-strip">
+        <span class="weather-pill">토(11.28) 비 조금·약간 추움 4~8℃</span><span class="weather-pill">일(11.29) 맑음·초겨울추위 -2~8℃</span><span class="weather-pill">미세먼지 주말 낮 보통~좋음</span>
+      </div>
+    </header>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterSpots('all', this)">전체 (6)</button>
+      <button class="filter-btn" onclick="filterSpots('outing', this)">🌳 나들이 (3)</button>
+      <button class="filter-btn" onclick="filterSpots('festival', this)">🎉 축제·전시 (3)</button>
+      <button class="filter-btn" onclick="filterSpots('near', this)">⚡ 20분 이내</button>
+      <button class="filter-btn" onclick="scrollToSection('home-play-section')">🏠 집안 놀이 (3)</button>
+      <button class="filter-btn" onclick="scrollToSection('kids-meal-section')">🍳 아이 요리 (6)</button>
+      <button class="filter-btn" onclick="openChecklist()">📋 준비물 팩</button>
+    </div>
+
+    <div class="card-grid" id="grid"></div>
+
+    <section class="extra-section" id="home-play-section">
+      <div class="section-head">
+        <h2>🏠 추위·휴식 대비 집안 놀이 3종 추천</h2>
+        <span class="section-sub">은우(7세) &amp; 우준(3세) 함께 노는 저소음·저준비물 놀이 (카드 클릭 시 후기/링크 보기)</span>
+      </div>
+      <div class="extra-grid" id="homePlayGrid"></div>
+    </section>
+
+    <section class="extra-section" id="kids-meal-section">
+      <div class="section-head">
+        <h2>🍳 토·일 애들 먹일 비매운 요리 6종 추천</h2>
+        <span class="section-sub">맵지 않고 순한 국물·부드러운 식감 중심 (매운 양념 0% · 카드 클릭 시 후기/링크 보기)</span>
+      </div>
+      <div class="extra-grid" id="kidsMealGrid"></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="badges" id="mBadges"></div>
+          <h2 id="mTitle" style="font-size:1.35rem;"></h2>
+          <div id="mDrive" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+          <div id="mPlaceAddr" class="addr-meta" style="display:none;"></div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="detail-box">
+        <strong>👧 은우(7세) 맞춤 포인트</strong>
+        <p id="mGirl"></p>
+      </div>
+      <div class="detail-box">
+        <strong>👦 우준(3세) 맞춤 포인트</strong>
+        <p id="mBoy"></p>
+      </div>
+      <div class="detail-box">
+        <strong>🚼 유모차 &amp; 편의시설 팁</strong>
+        <p id="mTip"></p>
+      </div>
+      <div class="detail-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">
+        <strong style="color:#166534;">🅿️ 주차장 정보 &amp; 주차 팁</strong>
+        <p id="mParking" style="color:#14532d;"></p>
+      </div>
+      <div class="noodle-detail">
+        <strong id="mNoodleName" style="color:#92400e; display:block; margin-bottom:4px;"></strong>
+        <p id="mNoodleDesc"></p>
+        <div id="mFoodAddr" class="addr-meta" style="display:none;"></div>
+      </div>
+      <div class="blog-box" id="mBlogBox" style="display:none;">
+        <strong>📝 카카오 블로그 후기 핵심 요약</strong>
+        <p id="mBlogSummary"></p>
+        <div id="mNoodleBlogWrap" class="blog-sub" style="display:none;">
+          <strong>🍜 국수집 후기 요약</strong>
+          <p id="mNoodleBlogSummary"></p>
+        </div>
+        <div id="mBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 후기 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="mBlogLinks"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <a id="mPlaceLink" class="map-btn" target="_blank" rel="noopener noreferrer">🗺️ 장소 지도</a>
+        <a id="mFoodLink" class="map-btn sub" target="_blank" rel="noopener noreferrer">🍜 국수집 지도</a>
+        <a id="mSiteLink" class="map-btn site" target="_blank" rel="noopener noreferrer">🌐 공식 누리집</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="extraModalBackdrop" onclick="closeExtraModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <div class="badges" id="emBadges"></div>
+          <h2 id="emTitle" style="font-size:1.3rem;"></h2>
+          <div id="emMeta" class="spot-drive" style="margin-top:4px; margin-bottom:0;"></div>
+        </div>
+        <button class="close-btn" onclick="closeExtraModal()">✕</button>
+      </div>
+      <div id="emBody"></div>
+      <div class="blog-box" id="emBlogBox" style="display:none; margin-bottom:0;">
+        <strong>📝 블로그 후기 · 노하우 핵심 요약</strong>
+        <p id="emBlogSummary"></p>
+        <div id="emBlogLinksWrap" class="blog-sub" style="display:none;">
+          <strong>🔗 참고 블로그 직접 살펴보기</strong>
+          <div class="blog-links" id="emBlogLinks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="ckBackdrop" onclick="closeChecklist()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 style="font-size:1.25rem;">📋 주말 나들이 필수 준비물 팩</h2>
+        <button class="close-btn" onclick="closeChecklist()">✕</button>
+      </div>
+      <div class="detail-box">
+        <strong>👧 은우(7세)</strong>
+        <label class="check-label"><input type="checkbox"> 얇은 바람막이 겉옷</label>
+        <label class="check-label"><input type="checkbox"> 개인 텀블러·물병</label>
+        <label class="check-label"><input type="checkbox"> 편한 운동화·여벌 양말</label>
+      </div>
+      <div class="detail-box">
+        <strong>👦 우준(3세)</strong>
+        <label class="check-label"><input type="checkbox"> 휴대용 경량 유모차</label>
+        <label class="check-label"><input type="checkbox"> 국수용 실리콘 가위</label>
+        <label class="check-label"><input type="checkbox"> 기저귀 4~5개·물티슈·여벌 옷</label>
+      </div>
+      <div class="detail-box" style="margin-bottom:0;">
+        <strong>👨👩👧👦 가족 공통</strong>
+        <label class="check-label"><input type="checkbox"> 피크닉 돗자리·무릎담요</label>
+        <label class="check-label"><input type="checkbox"> 비상 상비약(밴드·연고)</label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const spots = [{"type": "outing", "day": "sat", "driveMin": 38, "badgeType": "🌳 나들이 1", "badgeDay": "❄️ 토요일 실내", "title": "의왕 철도박물관", "drive": "🚗 자차 약 38분 (20.5km · 의왕시 철도박물관로)", "summary": "약한 비가 예보된 토요일에 실내 열차 전시와 철도 디오라마, 기차 운전체험을 쾌적하게 즐길 수 있는 곳입니다.", "girl": "은우를 위한 열차 운전체험, 철도 모형 디오라마쇼 관람 및 야외 실물 기차 포토존 탐방", "boy": "우준이가 좋아하는 커다란 기차 구경과 평탄한 실내 전시실 유모차 관람", "tip": "수유실·기저귀교환대 및 유모차 대여가 가능하며, 화~일 09:30~17:00 운영합니다(월요일 휴관). 19개월 전후 아이는 유모차와 아기띠를 함께 챙기면 동선 이동이 훨씬 수월합니다.", "parking": "전용 무료 주차장이 있으나 주말 낮에는 붐빌 수 있어, 만차 시 인근 왕송호수 제2주차장(무료) 이용을 권장합니다.", "noodleTag": "🍜 봉덕칼국수 의왕본점", "noodleName": "🍜 연계 국수집: 봉덕칼국수 의왕본점 (차로 약 9분)", "noodleDesc": "매일 11:00~21:30 운영. 넉넉한 양과 빠른 회전율의 순한 칼국수 전문점으로 전용 주차가 가능합니다.", "placeQuery": "철도박물관", "foodQuery": "봉덕칼국수 의왕본점", "siteUrl": "https://mom-mom.net/travel/places/6408031b882c40b05d3822b2", "kakaoPlaceUrl": "http://place.map.kakao.com/10844769", "placeAddress": "경기 의왕시 철도박물관로 142", "placePhone": "031-461-3610", "kakaoFoodUrl": "http://place.map.kakao.com/28839094", "foodAddress": "경기 의왕시 징계골길 11", "foodPhone": "031-456-8464", "blogLinks": [{"title": "[의왕] 기차 좋아하는 20개월 아기랑 의왕 철도박물관 관람 후기", "url": "https://blog.naver.com/fjqnaudwls/224465660775", "source": "오늘도 할로 · 2026-11-05"}, {"title": "[ 의왕 아이랑 갈만한곳 ] 의왕 철도박물관 두돌아기와 방문한 후기", "url": "https://blog.naver.com/xodxodqhf1005/224481776641", "source": "감자의 일상 여행 · 2026-11-19"}, {"title": "의왕 철도박물관 아기랑 주말 나들이｜주차·입장가격·관람 후기", "url": "https://blog.naver.com/bepul_sun/224469120411", "source": "선굠의 육아 일상 · 2026-11-08"}, {"title": "[아기랑 의왕] 20개월 아기랑 의왕 철도 박물관 다녀온 후기 | 주차, 입장료, 관람팁 총정리", "url": "https://blog.naver.com/hgly0503/224367998269", "source": "쏠쏠부부의 육아여행 · 2026-08-04"}], "blogSummary": "기차를 좋아하는 아이와 방문하기 좋은 실내외 코스로, 동절기에는 09:30부터 운영되어 오전 나들이에 적합합니다. 주말 주차 공간이 협소할 수 있어 이른 방문이나 인근 왕송호수 주차장 활용이 필수입니다.", "noodleBlogSummary": "아기의자가 잘 구비되어 있고 주문 후 회전율이 빨라 아이 동반 가족 식사로 좋습니다. 맑은 지리 국물 등 순한 메뉴 선택이 가능합니다."}, {"type": "outing", "day": "sun", "driveMin": 45, "badgeType": "🌳 나들이 2", "badgeDay": "☀️ 일요일 낮 추천", "title": "성남 분당 율동공원", "drive": "🚗 자차 약 45분 (31.3km · 성남시 분당구)", "summary": "바람이 잔잔한 일요일 낮, 호수를 따라 이어진 평탄한 산책로와 아이누리 모래놀이터를 무료로 즐길 수 있습니다.", "girl": "은우가 좋아하는 아이누리 놀이터 미끄럼틀·그네 타기와 고운 모래놀이", "boy": "우준이를 위한 단차 없는 호수 산책로 유모차 이동 및 안전한 모래 촉감 놀이", "tip": "관리사무소 내에 수유실·기저귀교환대·유모차 대여소가 구비되어 있으며 공원 화장실과 매점이 가깝습니다.", "parking": "A·B 주차장 3시간 무료(이후 30분당 300원, 10분당 100원 추가)로 여유롭게 이용 가능하며 주말 오후에는 B주차장이 혼잡할 수 있습니다.", "noodleTag": "🍜 벚골도토리막국수 분당율동점", "noodleName": "🍜 연계 국수집: 벚골도토리막국수 분당율동점 (차로 약 11분)", "noodleDesc": "매일 10:30~20:00 영업. 넓은 주차장과 아기의자를 갖췄으며 순한 물 도토리막국수와 도토리 빈대떡이 가족 식사로 좋습니다.", "placeQuery": "율동공원", "foodQuery": "벚골도토리막국수 분당율동점", "siteUrl": "https://mom-mom.net/travel/places/6332c2b50161dd494b0a6a82", "kakaoPlaceUrl": "http://place.map.kakao.com/12455726", "placeAddress": "경기 성남시 분당구 문정로 145", "kakaoFoodUrl": "http://place.map.kakao.com/1280942487", "foodAddress": "경기 성남시 분당구 문정로144번길 8", "foodPhone": "031-702-1810", "blogLinks": [{"title": "아기랑 율동공원 다녀왔어요｜놀이터 + 분당저수지 산책｜주차정보", "url": "https://blog.naver.com/sarang_bean/224418168924", "source": "우리의 매일은 귀여워♡ · 2026-09-21"}, {"title": "[아기랑 카페] 분당 율동 공원 카페 추천! 디저트 39 프리미엄 디어스....", "url": "https://blog.naver.com/ramiyaa07/224471984460", "source": "라미의데일리 · 2026-11-10"}, {"title": "서현 맛집 중화 | 분당 중식당 코스요리가 맛있고 가성비 좋은 후기 (주차·아기랑)", "url": "https://blog.naver.com/lovec_a/224461020457", "source": "키드기의 육아일상 · 2026-11-01"}, {"title": "성남 태평공원 후기🤍아기랑 유모차 산책부터 원터치텐트 피크닉까지", "url": "https://blog.naver.com/kimbo8959/224474267435", "source": "뽀엄마의 일기장 · 2026-11-12"}], "blogSummary": "A주차장에 차를 대고 놀이터 휴식 후 분당저수지 코스로 돌면 유모차 산책과 아이 놀이 모두 완벽합니다. 주말 오후에는 주차대기가 생길 수 있어 여유 있게 움직이는 것이 좋습니다.", "noodleBlogSummary": "매장 내부가 쾌적하고 아기의자가 마련되어 있어 산책 후 방문하기 좋습니다. 자극적이지 않고 담백한 메뉴로 아이와 함께 먹기 적당합니다."}, {"type": "outing", "day": "sun", "driveMin": 52, "badgeType": "🌳 나들이 3", "badgeDay": "☀️ 일요일 낮 추천", "title": "용인 농촌테마파크", "drive": "🚗 자차 약 52분 (29.7km · 용인시 처인구)", "summary": "넓은 잔디광장과 꽃과 바람의 정원, 농촌 체험을 즐길 수 있는 가족 친화형 테마파크입니다(만 4세 이하 무료).", "girl": "은우 맞춤 농촌 체험 프로그램과 꽃과 바람의 정원 산책, 넓은 잔디광장 뛰어놀기", "boy": "우준이 유모차 이동이 편리한 무장애 경사로 및 완만한 잔디광장 산책", "tip": "수유실(방문자센터 2층)·유모차 대여·무장애 화장실을 갖추고 있으며, 09:30~17:30 운영합니다(월요일 휴관).", "parking": "전용 공공주차장이 마련되어 있으나 오후 시간대에는 매표소 앞이 만차되어 먼 주차장을 이용할 수 있으니 일찍 방문하세요.", "noodleTag": "🍜 원삼메밀집", "noodleName": "🍜 연계 국수집: 원삼메밀집 (차로 약 12분)", "noodleDesc": "10대 이상 주차 가능하며, 아이들이 먹기 좋은 순한 어린이 막국수와 수육 메뉴를 제공합니다.", "placeQuery": "용인농촌테마파크", "foodQuery": "용인 원삼메밀집", "siteUrl": "https://mom-mom.net/travel/places/633f8dc73b99dd2965f6a587", "kakaoPlaceUrl": "http://place.map.kakao.com/1125507111", "placeAddress": "경기 용인시 처인구 원삼면 농촌파크로 80-1", "placePhone": "031-6193-1099", "kakaoFoodUrl": "http://place.map.kakao.com/1743275720", "foodAddress": "경기 용인시 처인구 원삼면 죽양대로 1631", "foodPhone": "031-334-0104", "blogLinks": [{"title": "용인농촌테마파크 아기랑 후기 | 입장료, 유모차, 주차 정리", "url": "https://blog.naver.com/ing_2026/224432048854", "source": "짠마미의 짠짠한 육아살림 · 2026-10-05"}, {"title": "용인농촌테마파크  6개월 아기랑 가을 나들이｜단풍 명소, 유모차 ....", "url": "https://blog.naver.com/rlatjs9136/224479309880", "source": "이것저것 블로그 · 2026-11-16"}, {"title": "용인농촌테마파크 아기랑 가볼 만한 곳 주차 및 관람 꿀팁 찐후기 테마파크 준비물 동물체험 농업체험...", "url": "https://blog.naver.com/hhs2430/224437764552", "source": ". · 2026-10-11"}, {"title": "[맛집] 용인 처인구 ㅣ용담저수지 근처 식당 삼봉회관 삼봉막국수", "url": "https://blog.naver.com/jyjgus/224490189202", "source": "윤자씨와 아이 둘 · 2026-11-26"}], "blogSummary": "입장료가 저렴하고 관리가 잘 되어 있어 가성비 좋은 나들이 코스입니다. 오후 2시 이후에는 주차 공간이 협소해 경사가 있는 멀티 주차장을 쓸 수 있으니 오전 방문을 추천합니다.", "noodleBlogSummary": "매장 앞 넓은 공터 주차장이 있어 주말에도 주차가 수월하며, 유아의자와 아이 전용 메뉴가 준비되어 있어 가족 외식으로 훌륭합니다."}, {"type": "festival", "day": "sat", "driveMin": 26, "badgeType": "🎉 전시 1", "badgeDay": "❄️ 토요일 실내", "title": "경기도박물관 30주년 특별전", "drive": "🚗 자차 약 26분 (10.6km · 용인시 기흥구)", "summary": "개관 30주년 아카이브 특별전 《빛나는 순간들 : 경기도박물관 30년 이야기》가 2027.3.1까지 열리고 있습니다.", "girl": "은우 눈높이에 맞춘 전시 관람과 아카이브 기록·포스터 포토스팟 체험", "boy": "우준이를 위한 전 층 엘리베이터 유모차 이동 및 따뜻한 실내 관람 동선", "tip": "수유실과 유아 편의시설이 갖춰져 있으며, 화~일 10:00~18:00 운영합니다(월요일 휴관).", "parking": "박물관 전용 주차장 이용 가능(최초 60분 1,000원, 이후 10분당 200원, 경차·다자녀 등 50% 할인).", "noodleTag": "🍜 오늘국수", "noodleName": "🍜 연계 국수집: 오늘국수 (차로 약 17분)", "noodleDesc": "진한 멸치육수 국수와 키즈메뉴를 제공하며 아기의자와 주차장이 완비되어 있어 아이 동반 식사가 편합니다.", "placeQuery": "경기도박물관", "foodQuery": "용인 서천동 오늘국수", "siteUrl": "https://ggc.ggcf.kr/cultureEvents/view/6ae193cbd179b47f66217386", "kakaoPlaceUrl": "http://place.map.kakao.com/21800626", "placeAddress": "경기 용인시 기흥구 상갈로 6", "placePhone": "031-288-5300", "kakaoFoodUrl": "http://place.map.kakao.com/1671116186", "foodAddress": "경기 용인시 기흥구 서천로127번길 11-3", "foodPhone": "031-202-1323", "blogLinks": [{"title": "경기도박물관 개관 30주년, 유물보다 사람들의 이야기가 기억에 남....", "url": "https://blog.naver.com/dreamfarm_/224469108541", "source": "드림파머체험연구소 · 2026-11-09"}, {"title": "용인 아이와 어디 가지? 경기도어린이박물관 예약·주차·초등학생 ....", "url": "https://blog.naver.com/wjrkxms/224424251090", "source": "Ria's Daily · 2026-09-28"}, {"title": "경기도 용인시 경기도박물관 무료 전시 및 입장료 관람후기", "url": "https://blog.naver.com/comfort_blog/224466426751", "source": "여행한디아 · 2026-11-05"}, {"title": "용인 무료 전시 경기도박물관 혼자보긴 아까워서 기증 특별전", "url": "https://blog.naver.com/hyeonji3697/224378729095", "source": "자유롭게 여유롭게 · 2026-08-14"}], "blogSummary": "추운 날씨나 비오는 날 방문하기 좋은 실내 박물관으로 경기뮤지엄파크 내에 위치해 쾌적합니다. 전 층 엘리베이터가 잘 되어 있어 유모차 이동에 무리가 없습니다.", "noodleBlogSummary": "넓은 주차 공간과 아기의자를 갖추고 있어 아이와 함께 방문하기 편리하며, 자극지 않은 메뉴로 온 가족이 식사하기 좋습니다."}, {"type": "festival", "day": "sun", "driveMin": 60, "badgeType": "🎉 축제 2", "badgeDay": "🎄 12.27까지", "title": "이천 시몬스 테라스 일루미네이션", "drive": "🚗 자차 약 60분 (47.5km · 이천시 모가면)", "summary": "12월 27일까지 매일 11:00~20:00 무료 개방되는 크리스마스 트리 및 별빛 일루미네이션 행사입니다.", "girl": "은우가 좋아하는 6m 대형 크리스마스 트리와 빛의 터널, 트리 포레스트 포토존", "boy": "우준이와 유모차로 둘러보는 잔디 정원 조명과 따뜻한 실내 전시 공간", "tip": "지하 1층에 수유실과 유모차 파킹 공간이 마련되어 있어 영유아 동반 시 매우 편리합니다.", "parking": "전용 주차타워(최초 15분 무료, 초과 10분당 500원, 카페·마켓 1만원 이상 구매 시 3시간 무료). 만차 시 인근 테르메덴 주차장 이용 권장.", "noodleTag": "🍜 남이천 막국수", "noodleName": "🍜 연계 국수집: 남이천 막국수 (차로 약 1분)", "noodleDesc": "주차 가능하고 유아의자가 구비되어 있으며, 순한 물막국수와 칼국수, 편육을 가족이 함께 즐길 수 있습니다.", "placeQuery": "시몬스 테라스", "foodQuery": "이천 남이천 막국수", "siteUrl": "https://www.sedaily.com/article/20108457", "kakaoPlaceUrl": "http://place.map.kakao.com/298604859", "placeAddress": "경기 이천시 모가면 사실로 988", "placePhone": "031-631-4071", "kakaoFoodUrl": "http://place.map.kakao.com/1119754623", "foodAddress": "경기 이천시 모가면 사실로 979-8", "foodPhone": "031-633-9808", "blogLinks": [{"title": "이천 시몬스 테라스 크리스마스 콘서트, 아이랑 가면 무료라던데 총....", "url": "https://blog.naver.com/whalstj8854/224478127585", "source": ":) · 2026-11-15"}, {"title": "이천 시몬스 테라스 28일 케이시 무료 콘서트, 주차·트윙클 타임 먼....", "url": "https://blog.naver.com/youngmiwon/224487378734", "source": "오늘의 맛집·여행 노트 · 2026-11-22"}, {"title": "케이시 뜬다! 이천 시몬스테라스 크리스마스 후기, 무료 콘서트(ft. 반려견 동반)", "url": "https://blog.naver.com/eao0926/224492238801", "source": "소담러브 · 2026-11-26"}, {"title": "[이천 시몬스 테라스]이천 아이와 가볼만한곳 별빛 테라스 크리스마스트리 후기", "url": "https://blog.naver.com/kimnare1237/224487543793", "source": "우리넷;필랭하우스 · 2026-11-22"}], "blogSummary": "화려한 대형 트리와 빛의 터널 등 겨울 시즌 아이와 함께 인생샷을 남기기 최고의 야외 명소입니다. 주말 저녁 시간대에는 주차가 몰릴 수 있어 해 질 무렵보다 조금 일찍 방문하는 것이 좋습니다.", "noodleBlogSummary": "근처 테르메덴 및 인근에서 접근성이 좋고 이케아 아기의자 등 편의시설이 잘 갖춰져 있어 아이와 함께 방문하기 매우 편리합니다."}, {"type": "festival", "day": "sat", "driveMin": 32, "badgeType": "🎉 전시 3", "badgeDay": "❄️ 토요일 실내", "title": "수원광교박물관 틈새전시", "drive": "🚗 자차 약 32분 (15.4km · 수원시 영통구)", "summary": "아날로그 사진엽서와 디지털 소통을 연결한 2026 틈새전시 <엽서 한 장, 클릭 한 번>과 체험활동이 진행 중입니다.", "girl": "은우가 직접 나만의 명소를 기록해 보는 엽서 작성 및 전시 체험 활동", "boy": "우준이 유모차 무료 대여가 가능하고 실내 동선이 쾌적해 추운 날 관람하기 좋음", "tip": "유모차·휠체어 무료 대여 및 수유실 이용이 가능하며, 09:00~18:00 운영합니다.", "parking": "부설 주차장 132대 보유(차량번호 자동 인식 정산, 높이 2.3m 이상 차량 진입 제한, 3시간 1,000원으로 매우 저렴).", "noodleTag": "🍜 영통백합칼국수 광교점", "noodleName": "🍜 연계 국수집: 영통백합칼국수 광교점 (차로 약 17분)", "noodleDesc": "앨리웨이 광교 2층 위치(지하주차장 지원). 맑고 시원한 백합칼국수와 아기메뉴, 아기의자가 완비되어 있습니다.", "placeQuery": "수원광교박물관", "foodQuery": "영통백합칼국수 광교점", "siteUrl": "https://smuseum.suwon.go.kr/gg/main/view", "kakaoPlaceUrl": "http://place.map.kakao.com/17083416", "placeAddress": "경기 수원시 영통구 광교로 182", "placePhone": "031-5191-4175", "kakaoFoodUrl": "http://place.map.kakao.com/1641303184", "foodAddress": "경기 수원시 영통구 광교호수공원로 80", "foodPhone": "031-217-8324", "blogLinks": [{"title": "인생은 60부터, 신노년의 반란", "url": "https://blog.naver.com/casj007/224280451887", "source": "공저 포함 50권 저서 발간의 달인 - 홍경석 작가 · 2026-05-10"}, {"title": "[용인 리플렛 제작]고급 리플렛의 정석, 몽블랑 190g으로 제작한 용인....", "url": "https://blog.naver.com/woosinprint4020/224364072701", "source": "우신프린팅 · 2026-07-31"}, {"title": "수원 광교박물관 전시 후기ㅣ입장료 주차 카페 어린이체험실 관람 정보", "url": "https://blog.naver.com/dosa242424/224231875707", "source": "오늘의주선 · 2026-03-30"}, {"title": "[수원 광교박물관] 아이와 가볼만한곳! 주차, 할인 꿀팁부터 전시 관람 후기까지", "url": "https://blog.naver.com/kjju0307/224395678878", "source": "공연 체험 맛집을 즐기는 일상 · 2026-09-03"}], "blogSummary": "주차비가 저렴하고 규모가 아담하여 어린 자녀와 부담 없이 둘러보기 좋은 실내 박물관입니다. 야외 산책로와도 이어져 있어 날씨가 좋을 때 가볍게 걷기 좋습니다.", "noodleBlogSummary": "앨리웨이 내부에 위치해 주차가 편리하고 아기 식기류와 의자가 넉넉하게 구비되어 있습니다. 맑고 시원한 백합 국물 요리로 아이와 함께 안심하고 먹을 수 있습니다."}];
+    const homePlays = [{"title": "실내 기차역 & 종이테이프 레일 놀이", "materials": "마스킹테이프, 장난감 자동차/기차, 빈 종이박스", "girlPoint": "은우가 역 이름표와 신호등 표지판을 직접 그려 거실에 기차 노선도를 설계합니다.", "boyPoint": "우준이가 테이프 레일을 따라 장난감 기차를 밀고 박스 터널을 통과하며 대근육을 씁니다.", "parentTip": "바닥에 잘 떨어지는 종이 마스킹테이프를 쓰면 뒷정리가 1분 만에 끝납니다.", "blogLinks": [{"title": "일광 키즈풀 파티룸 풀스토리 | 기장 아이랑 실내수영장 어린이집 친구들이랑 다녀온 후기", "url": "https://blog.naver.com/yulhumom/224481218081", "source": "채채남매와 자라는 집 · 2026-11-18"}, {"title": "경기도 아이랑 가볼만한곳 경기도어린이박물관 30개월 아이랑 실내 체험 후기 예약 주차 식당 카페 정보", "url": "https://blog.naver.com/gpdls3602/224477694987", "source": "박남매랑 우당탕탕 '◡' · 2026-11-15"}], "tip": "바닥에 붙이는 종이테이프는 마스킹테이프나 종이 재질을 사용하여 매직테이프처럼 자국 없이 쉽게 떼어지도록 준비하고, 층간소음 방지를 위해 매트 위에서 운행하세요.", "blogSummary": "아이들이 좋아하는 기차 역할놀이와 테이프 놀이를 결합하여 집안에서도 오랜 시간 집중력을 유지할 수 있는 실전 놀이입니다."}, {"title": "겨울 이불 텐트 & 별빛 손전등 놀이", "materials": "큰 이불, 의자 2개, 스마트폰 손전등, 셀로판지 또는 종이컵", "girlPoint": "은우가 이불 동굴 안에서 그림자 동화 이야기를 만들고 별빛을 비춰봅니다.", "boyPoint": "우준이가 아늑한 텐트 안에서 손전등 불빛을 따라가며 시각 자극 놀이를 즐깁니다.", "parentTip": "구멍 뚫은 종이컵에 손전등을 비추면 시몬스 테라스 못지않은 실내 별빛 천장이 됩니다.", "blogLinks": [{"title": "겨울 아이랑 집에서 놀기 유아 실내놀이 아이디어 준비물 없이 하는 놀이부터 층간소음 걱정 없는 몸...", "url": "https://blog.naver.com/qhfka4785/224466643221", "source": "오늘하루즐겁게 · 2026-11-06"}, {"title": "춘천 용화산 프라임 캠핑장 : 아이들이 좋아하는 키즈 캠핑장 성지! 후기", "url": "https://blog.naver.com/pianochs1/224451252952", "source": "Julie의 여행 일기 · 2026-10-23"}], "tip": "이불이나 텐트 안에서 손전등을 사용할 때는 너무 강한 불빛보다는 은은한 무드등이나 셀림 전등을 활용해 아이의 시력을 보호하고 안전하게 캠핑 감성을 즐기세요.", "blogSummary": "집에 있는 겨울 이불과 원터치 텐트를 활용해 간단히 아늑한 실내 아기 캠핑장을 만들 수 있어 겨울철 에너지 발산에 좋습니다."}, {"title": "따뜻한 수면양말 볼링 & 바구니 골인", "materials": "빈 페트병 6개, 둥글게 만 수면양말 3켤레, 빨래바구니", "girlPoint": "은우가 거리 선을 정해 페트병 핀 쓰러뜨리기 점수 계산 놀이를 합니다.", "boyPoint": "우준이가 가까운 거리에서 부드러운 양말 공을 굴리고 던지며 성취감을 느낍니다.", "parentTip": "층간소음이 전혀 없어 추운 주말 저녁에도 안심하고 몸을 움직일 수 있습니다.", "blogLinks": [{"title": "유아 영어 바다나무 사운드 인형으로 지루한 주말 순삭 시키기", "url": "https://blog.naver.com/kkongteo1/224332314541", "source": "✅짜루마미 하루하루✅ · 2026-07-03"}, {"title": "초보 아빠의 출산·신생아 준비물 총정리: 속싸개부터 아기침대까지, 필수·편의·보류 체크리스트", "url": "https://devloper-angmond.tistory.com/163", "source": "클라우드 개발자 앙몬드 · 2026-09-30"}], "tip": "두툼한 수면양말 속에 솜이나 헌 옷을 채워 가볍고 말랑한 볼링핀을 만들고, 던지기 놀이 시 미끄러지지 않도록 매트나 러그 위에서 진행하세요.", "blogSummary": "도구 준비 없이 수면양말과 바구니만으로 안전하게 대근육을 쓰는 실내 신체 놀이를 완성할 수 있습니다."}];
+    const kidsMeals = [{"title": "맑은 소고기 무 떡만둣국", "cookTime": "20분", "ingredients": "소고기 양지, 무, 떡국떡, 아기용 물만두, 국간장, 참기름, 달걀지단", "steps": "1. 참기름에 소고기와 나박 썬 무를 볶아 물을 붓고 10분 끓입니다. 2. 물만두와 떡국떡을 넣고 떡이 떠오를 때까지 끓인 뒤 국간장으로 순하게 간합니다. 3. 달걀지단을 올려 완성합니다.", "kidTip": "후추와 대파 매운맛을 빼고 무의 달큰한 감칠맛을 살려 은우와 우준이 모두 잘 먹습니다.", "blogLinks": [{"title": "22개월 아기 뭐 먹이지? 실패 없는 저염 유아식 식단공유 & 아기반찬레시피모음", "url": "https://blog.naver.com/meal_1209/224461853663", "source": "대충 해먹는 집 · 2026-11-02"}, {"title": "두돌 세돌 유아식 식단표 모음｜편식 잡는 뚝딱 아기반찬 레시피 & 일주일 식판식 👶🥣", "url": "https://blog.naver.com/seoulbubu_/224469135963", "source": "서울부부 육아일기｜31개월 아기발달·육아정보·살림 · 2026-11-08"}], "recipe": "참기름에 소고기와 얇게 썬 무를 볶은 뒤 물을 붓고 푹 끓여 무 자체의 자연스러운 단맛을 우려냅니다. 국간장과 아기 소금으로 아주 연하게 간을 맞추고 떡과 만두를 넣어 부드럽게 익혀줍니다.", "tip": "겨울 무를 푹 끓이면 채소 자체의 달큰한 맛이 우러나와 별도의 진한 조미료 없이도 아이가 잘 먹습니다.", "blogSummary": "제철 무의 달큰함을 살려 별도의 강한 간 없이도 국물이 시원하고 담백해 아이들이 거부감 없이 잘 먹는 유아식 국물 메뉴입니다."}, {"title": "치즈 감자채전 & 햄야채 주먹밥", "cookTime": "20분", "ingredients": "감자 2개, 모짜렐라 치즈, 감자전분, 소금, 밥, 다진 당근·애호박·햄", "steps": "1. 얇게 채 썬 감자를 찬물에 헹궈 전분과 소금을 섞어 노릇하게 굽습니다. 2. 치즈를 얹어 반으로 접어 치즈 감자채전을 완성합니다. 3. 볶은 채소·햄을 밥과 버무려 한입 크기 주먹밥을 만듭니다.", "kidTip": "우준이 손에 쥐고 먹기 좋은 크기로 동글동글 말아주면 간식 겸 한 끼로 인기입니다.", "blogLinks": [{"title": "4세 유아식 아침 메뉴 7가지, 매일 돌려먹는 간단한 일주일 아침 식단", "url": "https://blog.naver.com/gorkang/224478048823", "source": "과체중 아기의 건강 성장 유아식 · 2026-11-15"}, {"title": "11개월 유아식 메뉴 모음｜돌지난 먹짱아기의 밥반찬부터 한 그릇 식단과 내돈내산 재료 공유", "url": "https://blog.naver.com/whgusrudqkqh/224464562272", "source": "Burning in water, Drawing in flame · 2026-11-04"}], "recipe": "삶은 감자를 으깨어 치즈와 섞은 뒤 동글하게 빚어 팬에 노릇하게 부치고, 밥에 볶은 야채와 김가루를 더해 한 입 크기 주먹밥으로 뭉쳐줍니다.", "tip": "감자채전은 얇게 채 썰어 찌거나 부쳐야 아이가 씹기 편하며, 맵지 않게 소금간은 생략하거나 치즈의 염분만 활용하세요.", "blogSummary": "감자와 치즈의 고소함 덕분에 편식하는 아이들도 손으로 집어 먹으며 즐겁게 식사할 수 있는 최고의 자기주도 유아식 메뉴입니다."}, {"title": "순한 버터간장 닭안심 계란덮밥", "cookTime": "15분", "ingredients": "닭안심, 버터 1조각, 진간장 1.5큰술, 올리고당 1큰술, 달걀 2개, 밥", "steps": "1. 한입 크기로 자른 닭안심을 버터에 익히다 간장·올리고당·물 2큰술을 넣고 조립니다. 2. 달걀은 부드러운 스크램블로 따로 익힙니다. 3. 따뜻한 밥 위에 닭안심과 스크램블을 나란히 올립니다.", "kidTip": "기름기 적은 닭안심을 사용해 3세 우준이도 질기지 않게 부드럽게 씹어 먹습니다.", "blogLinks": [{"title": "[육아] 12개월 무염유아식 시작 반찬 한그릇 간단 레시피 추천 (쉽게하는 방법)", "url": "https://blog.naver.com/aks_enen1/224398927884", "source": "mman BLOG · 2026-09-02"}, {"title": "15개월 유아식 닭안심 요리, 닭안심 야채 계란볶음 레시피 (힘줄 제거 팁) | 초보 엄마의 기록", "url": "https://blog.naver.com/heather_meal/224389325869", "source": "헤더키친 · 2026-08-25"}], "recipe": "닭안심의 하얀 힘줄과 지방을 깔끔하게 제거한 뒤 부드럽게 다져 야채와 함께 익힙니다. 무염 버터 소량과 아기 간장 아주 살짝, 계란을 풀어 밥 위에 촉촉하게 얹어줍니다.", "tip": "닭안심은 퍽퍽할 수 있으므로 조리 전 우유에 잠시 재우거나 잘게 다져 계란물과 함께 부드럽게 볶아주면 식감이 좋아집니다.", "blogSummary": "달콤 짭조름한 풍미와 부드러운 계란·닭안심 조합으로 밥태기 온 아이들도 싹 비우게 만드는 치트키 덮밥입니다."}, {"title": "멸치육수 부드러운 계란칼국수", "cookTime": "15분", "ingredients": "칼국수 생면, 멸치다시마육수, 애호박, 당근, 달걀 1개, 국간장", "steps": "1. 끓는 멸치다시마육수에 채 썬 애호박·당근을 넣습니다. 2. 전분을 털어낸 생면을 넣고 5분간 끓인 뒤 국간장으로 간을 맞춥니다. 3. 불을 끄기 직전 푼 달걀을 둘러 부드럽게 마무리합니다.", "kidTip": "국수 마니아 은우와 우준이를 위해 집에서도 맵지 않고 걸쭉한 칼국수를 15분 만에 낼 수 있습니다.", "blogLinks": [{"title": "아기 멸치볶음 레시피, 부드러운 멸치볶음 두돌 아기반찬 유아식", "url": "https://blog.naver.com/aod290519/224440313535", "source": "먕먕이의 일상 레시피 · 2026-10-13"}, {"title": "유아식국 버섯계란된장국 아기된장국 아기계란국 레시피", "url": "https://blog.naver.com/happyday4918/224444242877", "source": "로로네테이블 · 2026-10-17"}], "recipe": "멸치와 다시마로 슴슴하게 육수를 우려낸 뒤 국수를 삶아 넣고, 계란을 곱게 풀어 부드럽게 끓여냅니다.", "tip": "멸치 비린내가 나지 않도록 멸치를 뜨거운 물에 살짝 데쳐서 사용하고, 간은 아기 간장 반 스푼으로 최소화합니다.", "blogSummary": "따뜻하고 부드러운 국물과 계란의 식감이 어우러져 속을 편안하게 채워주는 영양 만점 면요리입니다."}, {"title": "들기름 간장 어묵 잔치국수", "cookTime": "15분", "ingredients": "소면, 사각어묵, 들기름 1큰술, 진간장 1큰술, 김가루, 애호박", "steps": "1. 소면을 삶아 찬물에 헹궈 물기를 뺍니다. 2. 팬에 들기름을 두르고 채 썬 어묵과 애호박을 볶다 진간장·올리고당 약간으로 간합니다. 3. 소면과 고명을 비비고 김가루를 뿌립니다.", "kidTip": "뜨거운 국물을 식히기 기다리지 않아도 바로 먹을 수 있어 배고플 때 빠르게 내기 좋습니다.", "blogLinks": [{"title": "19개월 아기 간단한 유아식 들기름 간장 국수 레시피", "url": "https://blog.naver.com/hidy9006/224439616593", "source": "오늘도 사랑충전 · 2026-10-13"}, {"title": "[유아식] 14개월 아기가 한 달 동안 먹은 유아식 모음 (+ 한 줄 레시피)", "url": "https://blog.naver.com/92moon923/224485472358", "source": "Moon-log · 2026-11-21"}], "recipe": "소면을 부드럽게 삶아 찬물에 헹군 뒤, 들기름 듬뿍과 아기 간장 소량을 넣고 조물조물 무쳐 완성합니다.", "tip": "어묵을 추가할 때는 뜨거운 물에 한번 데쳐서 염분과 기름기를 뺀 뒤 잘게 썰어 면과 함께 비벼주세요.", "blogSummary": "고소한 들기름 향 덕분에 별다른 고기 반찬 없이도 한 그릇 뚝딱 비우게 만드는 초간단 치트키 국수 레시피입니다."}, {"title": "달콤한 옥수수 크림 우동", "cookTime": "15분", "ingredients": "우동면 2인분, 우유 300ml, 슬라이스 치즈 2장, 스위트콘, 버터, 소금", "steps": "1. 버터에 스위트콘을 살짝 볶다 우유와 데친 우동면을 넣고 중불로 끓입니다. 2. 슬라이스 치즈 2장을 넣어 걸쭉한 크림 농도를 맞춥니다. 3. 소금 한 꼬집으로 순하게 간합니다.", "kidTip": "고소한 치즈 우유 소스에 톡톡 터지는 옥수수 식감이 더해져 아이들이 국물까지 비웁니다.", "blogLinks": [{"title": "15개월 유아식 모음｜실제로 먹인 아기 밥 기록 (Feat. 아픈 아기, 요리 지쳐 엄마)", "url": "https://blog.naver.com/pjs24699/224368621468", "source": "빵빵이랑 콩콩이랑 · 2026-08-05"}, {"title": "32개월 아기 식단 유아식 레시피", "url": "https://blog.naver.com/kjy7165/224392925567", "source": "늘 행복하자영❤ · 2026-08-28"}], "recipe": "부드럽게 삶은 우동면에 곱게 간 옥수수 크림과 우유(또는 아기 치즈)를 넣고 약불에서 자작하게 졸여 부드럽게 완성합니다.", "tip": "시판 크림소스 대신 삶은 옥수수와 우유를 갈아 쓰면 인위적인 단맛 없이 건강하고 부드러운 크림우동을 만들 수 있습니다.", "blogSummary": "달콤 고소한 옥수수 풍미가 살아 있어 면 요리를 좋아하는 아이들의 밥태기를 단번에 날려주는 인기 만점 별미 메뉴입니다."}];
+
+    function renderGrid(filter = 'all') {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      spots.forEach((s, idx) => {
+        if (filter === 'outing' && s.type !== 'outing') return;
+        if (filter === 'festival' && s.type !== 'festival') return;
+        if (filter === 'near' && s.driveMin > 20) return;
+        const card = document.createElement('div');
+        card.className = 'spot-card';
+        card.onclick = () => openModal(idx);
+        card.innerHTML = `
+          <div>
+            <div class="badges">
+              <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${s.badgeType}</span>
+              <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${s.badgeDay}</span>
+            </div>
+            <div class="spot-title">${s.title}</div>
+            <div class="spot-drive">${s.drive}</div>
+            <div class="spot-summary">${s.summary}</div>
+          </div>
+          <div class="spot-footer">
+            <span class="noodle-tag">${s.noodleTag}</span>
+            <span>상세 보기 →</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterSpots(filter, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(filter);
+    }
+
+    function escHtml(v) {
+      return String(v || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(u) {
+      const s = String(u || '').trim();
+      return /^https?:\/\//i.test(s) ? s : '#';
+    }
+
+    function renderBlogLinksHtml(links) {
+      if (!Array.isArray(links) || !links.length) return '';
+      return links.map(l => `
+        <a class="blog-link-item" href="${escHtml(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">
+          <span class="blog-link-title">${escHtml(l.title || '블로그 후기 보기')}</span>
+          <span class="blog-link-meta">${escHtml(l.source || '바로가기')} ↗</span>
+        </a>
+      `).join('');
+    }
+
+    function openModal(idx) {
+      const s = spots[idx];
+      document.getElementById('mBadges').innerHTML = `
+        <span class="badge ${s.type === 'outing' ? 'outing' : 'festival'}">${escHtml(s.badgeType)}</span>
+        <span class="badge ${s.day === 'sat' ? 'sat' : 'sun'}">${escHtml(s.badgeDay)}</span>
+      `;
+      document.getElementById('mTitle').textContent = s.title;
+      document.getElementById('mDrive').textContent = s.drive;
+
+      const placeAddrEl = document.getElementById('mPlaceAddr');
+      const addrParts = [s.placeAddress, s.placePhone].filter(Boolean);
+      if (addrParts.length) {
+        placeAddrEl.textContent = '📍 ' + addrParts.join(' · ☎️ ');
+        placeAddrEl.style.display = 'block';
+      } else {
+        placeAddrEl.style.display = 'none';
+      }
+
+      document.getElementById('mGirl').textContent = s.girl;
+      document.getElementById('mBoy').textContent = s.boy;
+      document.getElementById('mTip').textContent = s.tip;
+      document.getElementById('mParking').textContent = s.parking || '전용 주차장 완비 (주차 편의 우수)';
+      document.getElementById('mNoodleName').textContent = s.noodleName;
+      document.getElementById('mNoodleDesc').textContent = s.noodleDesc;
+
+      const foodAddrEl = document.getElementById('mFoodAddr');
+      const fAddrParts = [s.foodAddress, s.foodPhone].filter(Boolean);
+      if (fAddrParts.length) {
+        foodAddrEl.textContent = '📍 ' + fAddrParts.join(' · ☎️ ');
+        foodAddrEl.style.display = 'block';
+      } else {
+        foodAddrEl.style.display = 'none';
+      }
+
+      const blogBox = document.getElementById('mBlogBox');
+      const bSum = (s.blogSummary || '').trim();
+      const nbSum = (s.noodleBlogSummary || '').trim();
+      const bLinks = Array.isArray(s.blogLinks) ? s.blogLinks : [];
+      if (bSum || nbSum || bLinks.length) {
+        document.getElementById('mBlogSummary').textContent = bSum || '방문 전 아래 블로그 후기 링크에서 최신 주차·동선 정보를 확인하세요.';
+        const nbWrap = document.getElementById('mNoodleBlogWrap');
+        if (nbSum) {
+          document.getElementById('mNoodleBlogSummary').textContent = nbSum;
+          nbWrap.style.display = 'block';
+        } else {
+          nbWrap.style.display = 'none';
+        }
+        const blWrap = document.getElementById('mBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('mBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        blogBox.style.display = 'block';
+      } else {
+        blogBox.style.display = 'none';
+      }
+
+      const placeLinkEl = document.getElementById('mPlaceLink');
+      const foodLinkEl = document.getElementById('mFoodLink');
+      if (s.kakaoPlaceUrl && /^https?:\/\//i.test(s.kakaoPlaceUrl)) {
+        placeLinkEl.href = s.kakaoPlaceUrl;
+        placeLinkEl.textContent = '🗺️ 카카오맵 장소';
+      } else {
+        placeLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title);
+        placeLinkEl.textContent = '🗺️ 장소 지도';
+      }
+      if (s.kakaoFoodUrl && /^https?:\/\//i.test(s.kakaoFoodUrl)) {
+        foodLinkEl.href = s.kakaoFoodUrl;
+        foodLinkEl.textContent = '🍜 카카오맵 국수집';
+      } else {
+        foodLinkEl.href = 'https://map.naver.com/p/search/' + encodeURIComponent(s.foodQuery || s.noodleTag || '');
+        foodLinkEl.textContent = '🍜 국수집 지도';
+      }
+      document.getElementById('mSiteLink').href = s.siteUrl || ('https://map.naver.com/p/search/' + encodeURIComponent(s.placeQuery || s.title));
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    function openExtraModal(kind, idx) {
+      const item = kind === 'play' ? homePlays[idx] : kidsMeals[idx];
+      if (!item) return;
+      const badgesEl = document.getElementById('emBadges');
+      const titleEl = document.getElementById('emTitle');
+      const metaEl = document.getElementById('emMeta');
+      const bodyEl = document.getElementById('emBody');
+
+      if (kind === 'play') {
+        badgesEl.innerHTML = `<span class="badge play">🏠 집안 놀이 ${idx + 1}</span><span class="badge mild">${escHtml(item.tag || '실내 놀이')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.prep || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👧 은우(7세) 포인트</strong><p>${escHtml(item.girl || '')}</p></div>
+          <div class="detail-box"><strong>👦 우준(3세) 포인트</strong><p>${escHtml(item.boy || '')}</p></div>
+          <div class="detail-box"><strong>💡 부모 팁</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      } else {
+        badgesEl.innerHTML = `<span class="badge meal">${escHtml(item.dayBadge || '🍲 주말 추천')}</span><span class="badge mild">${escHtml(item.mildBadge || '🌶️ 맵기 0%')}</span>`;
+        titleEl.textContent = item.title || '';
+        metaEl.textContent = item.meta || '';
+        bodyEl.innerHTML = `
+          <div class="detail-box"><strong>👩‍🍳 3단계 초간단 레시피</strong><p>${escHtml(item.recipe || '')}</p></div>
+          <div class="detail-box"><strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong><p>${escHtml(item.tip || '')}</p></div>
+        `;
+      }
+
+      const bBox = document.getElementById('emBlogBox');
+      const bSum = (item.blogSummary || '').trim();
+      const bLinks = Array.isArray(item.blogLinks) ? item.blogLinks : [];
+      if (bSum || bLinks.length) {
+        document.getElementById('emBlogSummary').textContent = bSum || '아래 참고 블로그에서 실전 사진·세부 팁을 직접 확인해 보세요.';
+        const blWrap = document.getElementById('emBlogLinksWrap');
+        if (bLinks.length) {
+          document.getElementById('emBlogLinks').innerHTML = renderBlogLinksHtml(bLinks);
+          blWrap.style.display = 'block';
+        } else {
+          blWrap.style.display = 'none';
+        }
+        bBox.style.display = 'block';
+      } else {
+        bBox.style.display = 'none';
+      }
+
+      document.getElementById('extraModalBackdrop').classList.add('open');
+    }
+
+    function closeExtraModal() {
+      document.getElementById('extraModalBackdrop').classList.remove('open');
+    }
+
+    function openChecklist() {
+      document.getElementById('ckBackdrop').classList.add('open');
+    }
+
+    function closeChecklist() {
+      document.getElementById('ckBackdrop').classList.remove('open');
+    }
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderExtras() {
+      const playGrid = document.getElementById('homePlayGrid');
+      if (playGrid && Array.isArray(homePlays)) {
+        playGrid.innerHTML = homePlays.map((p, idx) => {
+          const linkCount = Array.isArray(p.blogLinks) ? p.blogLinks.length : 0;
+          const footerLabel = (p.blogSummary || linkCount) ? `📝 후기 요약${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '놀이 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('play', ${idx})">
+            <div class="badges">
+              <span class="badge play">🏠 집안 놀이 ${idx + 1}</span>
+              <span class="badge mild">${escHtml(p.tag || '실내 놀이')}</span>
+            </div>
+            <div class="spot-title">${escHtml(p.title)}</div>
+            <div class="extra-meta">${escHtml(p.prep || '')}</div>
+            <div class="mini-box"><strong>👧 은우(7세) 포인트</strong>${escHtml(p.girl || '')}</div>
+            <div class="mini-box"><strong>👦 우준(3세) 포인트</strong>${escHtml(p.boy || '')}</div>
+            <div class="mini-box"><strong>💡 부모 팁</strong>${escHtml(p.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
+      }
+      const mealGrid = document.getElementById('kidsMealGrid');
+      if (mealGrid && Array.isArray(kidsMeals)) {
+        mealGrid.innerHTML = kidsMeals.map((m, idx) => {
+          const linkCount = Array.isArray(m.blogLinks) ? m.blogLinks.length : 0;
+          const footerLabel = (m.blogSummary || linkCount) ? `📝 레시피 후기${linkCount ? ` · 링크 ${linkCount}개` : ''}` : '레시피 상세';
+          return `
+          <article class="extra-card" onclick="openExtraModal('meal', ${idx})">
+            <div class="badges">
+              <span class="badge meal">${escHtml(m.dayBadge || '🍲 주말 추천')}</span>
+              <span class="badge mild">${escHtml(m.mildBadge || '🌶️ 맵기 0%')}</span>
+            </div>
+            <div class="spot-title">${escHtml(m.title)}</div>
+            <div class="extra-meta">${escHtml(m.meta || '')}</div>
+            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${escHtml(m.recipe || '')}</div>
+            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 7세 · 우준 3세)</strong>${escHtml(m.tip || '')}</div>
+            <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
+          </article>`;
+        }).join('');
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeExtraModal();
+        closeChecklist();
+      }
+    });
+
+    renderGrid();
+    renderExtras();
+    /*__WC_DARK_JS__*/
+    function applyWcTheme(t) {
+      document.documentElement.dataset.theme = (t === 'dark') ? 'dark' : 'light';
+    }
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved) applyWcTheme(saved);
+    } catch (e) {}
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'wc-theme') applyWcTheme(e.data.theme);
+    });
+  </script>
+</body>
+</html>
