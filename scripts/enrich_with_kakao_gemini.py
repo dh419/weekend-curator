@@ -719,11 +719,41 @@ def refine_with_gemini(data, ctx, gemini_key, girl_age, boy_age):
     return data
 
 
+
+def normalize_extra_fields(data):
+    """Normalize alternate Gemini JSON keys (girlPoint/boyPoint/materials/cookTime) to template keys."""
+    for hp in data.get("homePlays") or []:
+        if not hp.get("prep") and hp.get("materials"):
+            hp["prep"] = f"🧰 준비물: {hp['materials']}"
+        if not hp.get("girl") and hp.get("girlPoint"):
+            hp["girl"] = hp["girlPoint"]
+        if not hp.get("boy") and hp.get("boyPoint"):
+            hp["boy"] = hp["boyPoint"]
+        if not hp.get("tip") and hp.get("parentTip"):
+            hp["tip"] = hp["parentTip"]
+    for km in data.get("kidsMeals") or []:
+        if not km.get("meta"):
+            parts = []
+            if km.get("cookTime"):
+                parts.append(f"⏱️ {km['cookTime']}")
+            if km.get("ingredients"):
+                parts.append(str(km["ingredients"]))
+            if parts:
+                km["meta"] = " · ".join(parts)
+        if not km.get("recipe") and km.get("steps"):
+            km["recipe"] = km["steps"]
+        if not km.get("tip") and km.get("kidTip"):
+            km["tip"] = km["kidTip"]
+    return data
+
+
 def enrich_weekend_data(data, girl_age, boy_age, kakao_key=None, gemini_key=None, naver_id=None, naver_secret=None):
     kakao_key = (kakao_key or os.environ.get("KAKAO_REST_API_KEY") or "").strip()
     gemini_key = (gemini_key or os.environ.get("GEMINI_API_KEY") or "").strip()
     naver_id = (naver_id or os.environ.get("NAVER_CLIENT_ID") or "").strip()
     naver_secret = (naver_secret or os.environ.get("NAVER_CLIENT_SECRET") or "").strip()
+
+    normalize_extra_fields(data)
 
     # Cap kidsMeals at 6 as requested
     if isinstance(data.get("kidsMeals"), list) and len(data["kidsMeals"]) > 6:

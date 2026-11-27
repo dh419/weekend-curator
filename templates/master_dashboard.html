@@ -656,21 +656,28 @@
       const bodyEl = document.getElementById('emBody');
 
       if (kind === 'play') {
+        const pPrep = item.prep || (item.materials ? '🧰 준비물: ' + item.materials : '');
+        const pGirl = item.girl || item.girlPoint || '';
+        const pBoy = item.boy || item.boyPoint || '';
+        const pTip = item.tip || item.parentTip || '';
         badgesEl.innerHTML = `<span class="badge play">🏠 집안 놀이 ${idx + 1}</span><span class="badge mild">${escHtml(item.tag || '실내 놀이')}</span>`;
         titleEl.textContent = item.title || '';
-        metaEl.textContent = item.prep || '';
+        metaEl.textContent = pPrep;
         bodyEl.innerHTML = `
-          <div class="detail-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong><p>${escHtml(item.girl || '')}</p></div>
-          <div class="detail-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong><p>${escHtml(item.boy || '')}</p></div>
-          <div class="detail-box"><strong>💡 부모 팁</strong><p>${escHtml(item.tip || '')}</p></div>
+          <div class="detail-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong><p>${escHtml(pGirl)}</p></div>
+          <div class="detail-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong><p>${escHtml(pBoy)}</p></div>
+          <div class="detail-box"><strong>💡 부모 팁</strong><p>${escHtml(pTip)}</p></div>
         `;
       } else {
+        const mMeta = item.meta || [item.cookTime ? '⏱️ ' + item.cookTime : '', item.ingredients || ''].filter(Boolean).join(' · ');
+        const mRecipe = item.recipe || item.steps || '';
+        const mTip = item.tip || item.kidTip || '';
         badgesEl.innerHTML = `<span class="badge meal">${escHtml(item.dayBadge || '🍲 주말 추천')}</span><span class="badge mild">${escHtml(item.mildBadge || '🌶️ 맵기 0%')}</span>`;
         titleEl.textContent = item.title || '';
-        metaEl.textContent = item.meta || '';
+        metaEl.textContent = mMeta;
         bodyEl.innerHTML = `
-          <div class="detail-box"><strong>👩‍🍳 3단계 초간단 레시피</strong><p>${escHtml(item.recipe || '')}</p></div>
-          <div class="detail-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong><p>${escHtml(item.tip || '')}</p></div>
+          <div class="detail-box"><strong>👩‍🍳 3단계 초간단 레시피</strong><p>${escHtml(mRecipe)}</p></div>
+          <div class="detail-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong><p>${escHtml(mTip)}</p></div>
         `;
       }
 
@@ -724,10 +731,10 @@
               <span class="badge mild">${escHtml(p.tag || '실내 놀이')}</span>
             </div>
             <div class="spot-title">${escHtml(p.title)}</div>
-            <div class="extra-meta">${escHtml(p.prep || '')}</div>
-            <div class="mini-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong>${escHtml(p.girl || '')}</div>
-            <div class="mini-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong>${escHtml(p.boy || '')}</div>
-            <div class="mini-box"><strong>💡 부모 팁</strong>${escHtml(p.tip || '')}</div>
+            <div class="extra-meta">${escHtml(p.prep || (p.materials ? '🧰 준비물: ' + p.materials : ''))}</div>
+            <div class="mini-box"><strong>👧 은우({{GIRL_AGE}}세) 포인트</strong>${escHtml(p.girl || p.girlPoint || '')}</div>
+            <div class="mini-box"><strong>👦 우준({{BOY_AGE}}세) 포인트</strong>${escHtml(p.boy || p.boyPoint || '')}</div>
+            <div class="mini-box"><strong>💡 부모 팁</strong>${escHtml(p.tip || p.parentTip || '')}</div>
             <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
           </article>`;
         }).join('');
@@ -744,9 +751,9 @@
               <span class="badge mild">${escHtml(m.mildBadge || '🌶️ 맵기 0%')}</span>
             </div>
             <div class="spot-title">${escHtml(m.title)}</div>
-            <div class="extra-meta">${escHtml(m.meta || '')}</div>
-            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${escHtml(m.recipe || '')}</div>
-            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong>${escHtml(m.tip || '')}</div>
+            <div class="extra-meta">${escHtml(m.meta || [m.cookTime ? '⏱️ ' + m.cookTime : '', m.ingredients || ''].filter(Boolean).join(' · '))}</div>
+            <div class="mini-box"><strong>👩‍🍳 3단계 초간단 레시피</strong>${escHtml(m.recipe || m.steps || '')}</div>
+            <div class="mini-box"><strong>👶 아이 맞춤 팁 (은우 {{GIRL_AGE}}세 · 우준 {{BOY_AGE}}세)</strong>${escHtml(m.tip || m.kidTip || '')}</div>
             <div class="extra-footer"><span>${footerLabel}</span><span>자세히 보기 →</span></div>
           </article>`;
         }).join('');
